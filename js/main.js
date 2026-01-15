@@ -1,11 +1,10 @@
-// ------------------ Variables ------------------
+// ---------- Variables ----------
 const landingScreen = document.getElementById('landing-screen');
 const roomsScreen = document.getElementById('rooms-screen');
 const chatScreen = document.getElementById('chat-screen');
 const privateChatScreen = document.getElementById('private-chat');
 
-const initBtn = document.getElementById('init-btn');
-const backLanding = document.getElementById('back-landing');
+const initBtn = document.getElementById('terminal-input');
 const roomsList = document.getElementById('rooms-list');
 const chatRoomName = document.getElementById('chat-room-name');
 const chatContainer = document.getElementById('chat-container');
@@ -20,13 +19,15 @@ const privateInput = document.getElementById('private-input');
 const privateSend = document.getElementById('private-send');
 const closePrivate = document.getElementById('close-private');
 
+const homeBtn = document.getElementById('home-btn');
+
 let currentRoom = '';
 let currentUser = 'User'+Math.floor(Math.random()*1000);
 let usersByRoom = {};
 let messagesByRoom = {};
 let privateMessages = {};
 
-// ------------------ Salas ------------------
+// ---------- Salas ----------
 const rooms = ['General','Norte','Sur','La Serena','VIP'];
 
 function showRooms() {
@@ -41,18 +42,29 @@ function showRooms() {
   });
 }
 
-// ------------------ Navegación ------------------
-initBtn.onclick = () => {
-  landingScreen.style.display='none';
-  roomsScreen.style.display='block';
-  showRooms();
-}
-backLanding.onclick = () => {
-  roomsScreen.style.display='none';
-  landingScreen.style.display='block';
-}
+// ---------- Terminal inicial ----------
+initBtn.addEventListener('keypress', e => {
+  if(e.key === 'Enter') {
+    const cmd = initBtn.value.trim().toLowerCase();
+    if(cmd === 'inicializar' || cmd === '') {
+      landingScreen.style.display='none';
+      roomsScreen.style.display='block';
+      showRooms();
+    } else {
+      alert('Comando desconocido. Escribe "inicializar" para continuar.');
+    }
+  }
+});
 
-// ------------------ Entrar a sala ------------------
+// ---------- Navegación home ----------
+homeBtn.addEventListener('click', () => {
+  landingScreen.style.display='block';
+  roomsScreen.style.display='none';
+  chatScreen.style.display='none';
+  privateChatScreen.style.display='none';
+});
+
+// ---------- Entrar y salir de sala ----------
 function enterRoom(room) {
   currentRoom = room;
   chatRoomName.textContent = room;
@@ -63,7 +75,6 @@ function enterRoom(room) {
   chatScreen.style.display='block';
 }
 
-// ------------------ Salir de sala ------------------
 exitRoom.onclick = () => {
   usersByRoom[currentRoom] = usersByRoom[currentRoom].filter(u=>u!==currentUser);
   chatScreen.style.display='none';
@@ -71,7 +82,7 @@ exitRoom.onclick = () => {
   showRooms();
 }
 
-// ------------------ Render chat ------------------
+// ---------- Chat sala ----------
 function renderChat() {
   chatContainer.innerHTML='';
   messagesByRoom[currentRoom].forEach(m=>{
@@ -83,7 +94,6 @@ function renderChat() {
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// ------------------ Enviar mensaje ------------------
 sendBtn.onclick = () => {
   const text = chatInput.value.trim();
   if(!text) return;
@@ -92,12 +102,11 @@ sendBtn.onclick = () => {
   renderChat();
 }
 
-// Enter en input
 chatInput.addEventListener('keypress', e=>{
   if(e.key==='Enter') sendBtn.click();
 });
 
-// ------------------ Render usuarios ------------------
+// ---------- Usuarios ----------
 function renderUsers() {
   usersList.innerHTML='';
   usersByRoom[currentRoom].forEach(u=>{
@@ -108,7 +117,7 @@ function renderUsers() {
   });
 }
 
-// ------------------ Chat privado ------------------
+// ---------- Chat privado ----------
 function openPrivate(user) {
   privateUserSpan.textContent=user;
   if(!privateMessages[user]) privateMessages[user]=[];
@@ -137,5 +146,5 @@ closePrivate.onclick = () => {
   renderUsers();
 }
 
-// Inicial render
+// ---------- Inicial render ----------
 showRooms();

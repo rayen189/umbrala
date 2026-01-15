@@ -1,5 +1,6 @@
+/* ------------------- Body y fondo ------------------- */
 body {
-  background-color: #0b0b0b;
+  background: linear-gradient(135deg, #0b0b0b, #1a1a1a);
   color: #7a7cff;
   font-family: 'Courier New', monospace;
   display: flex;
@@ -8,48 +9,123 @@ body {
   justify-content: center;
   min-height: 100vh;
   margin: 0;
+  overflow-x: hidden;
 }
 
+/* ------------------- Terminal ------------------- */
 .terminal-box {
-  background-color: #000;
+  background-color: rgba(0,0,0,0.9);
   padding: 20px;
+  border-radius: 12px;
   border: 2px solid #7a7cff;
   width: 80%;
   max-width: 600px;
   min-height: 350px;
   overflow-y: auto;
-  margin-bottom: 10px;
+  box-shadow: 0 0 20px #7a7cff66, 0 0 50px #7a7cff22;
 }
 
-.line { margin-bottom: 5px; }
-.line.glow { text-shadow: 0 0 5px #7a7cff, 0 0 10px #7a7cff; }
+/* ------------------- Mensajes ------------------- */
+.line { 
+  margin-bottom: 5px; 
+  font-size: 14px;
+}
+.line.system { color: #ff4b4b; font-style: italic; }
+.line.admin { color: #00ff00; font-weight: bold; }
 
-#chat-input, #room-select, #admin-nick, #admin-pass, #target-user {
+/* Glow en línea destacada */
+.line.glow { 
+  text-shadow: 0 0 5px #7a7cff, 0 0 15px #7a7cff88;
+}
+
+/* ------------------- Inputs y select ------------------- */
+input, select {
   width: 70%;
   padding: 10px;
   margin-top: 10px;
   background-color: #0b0b0b;
   border: 1px solid #7a7cff;
   color: #7a7cff;
+  border-radius: 6px;
+  transition: 0.3s;
 }
 
-#send-btn, #admin-login, #admin-logout, #ban-user, #shadowban-user, #clear-room, #shutdown-btn {
-  padding: 5px 10px;
+input:focus, select:focus {
+  outline: none;
+  border-color: #7a7cff;
+  box-shadow: 0 0 10px #7a7cffaa;
+}
+
+/* ------------------- Botones ------------------- */
+button {
+  padding: 6px 12px;
   margin: 5px 5px 0 0;
   background-color: #7a7cff;
   border: none;
   color: #000;
   cursor: pointer;
+  border-radius: 5px;
+  transition: 0.3s;
 }
 
-#alert-container { margin: 10px 0; font-weight: bold; color: #ff4b4b; }
+button:hover {
+  background-color: #5e5edd;
+  box-shadow: 0 0 10px #7a7cffaa;
+}
 
-#admin-panel {
-  margin-top: 15px;
-  padding: 10px;
-  border: 1px solid #ff4b4b;
-  background: #120000;
+/* ------------------- Alertas ------------------- */
+#alert-container {
+  margin: 10px 0; 
+  font-weight: bold; 
   color: #ff4b4b;
+  animation: fadeInOut 3s forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ------------------- Panel Admin ------------------- */
+#admin-panel {
+  background: rgba(18,0,0,0.9);
+  border-radius: 10px;
+  padding: 15px;
+  border: 2px solid #ff4b4b;
+  box-shadow: 0 0 20px #ff4b4b55;
   width: 80%;
   max-width: 600px;
+  margin-top: 15px;
+}
+
+/* ------------------- Admin Log ------------------- */
+#admin-log {
+  margin-top: 10px;
+  max-height: 100px;
+  overflow-y: auto;
+  background: #111;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ff4b4b;
+}
+
+/* ------------------- Cursor tipo terminal ------------------- */
+body::after {
+  content: "|";
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ------------------- Scroll custom ------------------- */
+.terminal-box::-webkit-scrollbar {
+  width: 8px;
+}
+.terminal-box::-webkit-scrollbar-thumb {
+  background-color: #7a7cff44;
+  border-radius: 4px;
 }

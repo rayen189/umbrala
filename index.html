@@ -3,76 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <title>Umbrala</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#7a7cff">
   <link rel="stylesheet" href="css/style.css">
-  <script defer src="js/particles.js"></script>
-  <script defer src="js/main.js"></script>
 </head>
-<body class="page center">
+<body class="page">
 
-  <!-- PARTICLES -->
   <canvas id="particles"></canvas>
 
   <!-- PANTALLA PRINCIPAL -->
-  <div id="landing-screen" class="screen center">
-    <h1 id="site-title">UMBRALA</h1>
-    <p>Comunica en las
-sombras
-Chat anónimo y efímero. Sin registro. Sin rastros.
-      Solo tú, tu mensaje, y el vacío </p>
-    <button id="init-btn">Inicializar</button>
-    <button id="root-btn">Login Root</button>
+  <div id="landingScreen" class="screen">
+    <h1 id="site-title" class="clickable-title">UMBRALA</h1>
+    <p>Comunicación efímera y anónima con estilo cyberpunk</p>
+    <button id="initializeBtn">Inicializar</button>
+    <button id="rootLoginBtn">Login Root</button>
   </div>
 
   <!-- SALAS -->
-  <div id="rooms-screen" class="screen center" style="display:none">
-    <h2>Salas</h2>
-    <div id="rooms-list"></div>
-    <p id="user-count"></p>
-    <button id="home-btn">Volver al inicio</button>
+  <div id="roomsScreen" class="screen" style="display:none;">
+    <h1 id="site-title-rooms" class="clickable-title">UMBRALA</h1>
+    <div id="roomsList"></div>
+    <div id="chatContainer">
+      <div id="chatMessages" class="chat-container"></div>
+      <input id="chatInput" type="text" placeholder="Escribe tu mensaje...">
+      <button id="sendBtn">Enviar</button>
+      <button id="exitRoomBtn">Salir</button>
+      <div id="emoji-picker"></div>
+    </div>
   </div>
 
-  <!-- CHAT -->
-  <div id="chat-screen" class="screen center" style="display:none">
-    <h2 id="chat-room-name"></h2>
-    <div id="chat-container" class="chat-container"></div>
-    <input id="chat-input" placeholder="Escribe tu mensaje...">
-    <button id="send-btn">Enviar</button>
-    <button id="exit-room">Salir</button>
-    <ul id="users-list"></ul>
+  <!-- DASHBOARD ROOT -->
+  <div id="rootScreen" class="screen" style="display:none;">
+    <h1>UMBRALA ROOT</h1>
+    <div id="rootDashboard">
+      <div class="root-section">
+        <h2>Usuarios</h2>
+        <ul id="rootUsers"></ul>
+      </div>
+      <div class="root-section">
+        <h2>Salas</h2>
+        <ul id="rootRooms"></ul>
+      </div>
+      <div class="root-section">
+        <h2>Sistema</h2>
+        <button id="freezeGlobalBtn">Freeze Global</button>
+        <button id="godViewBtn">God View</button>
+        <button id="shutdownBtn">Apagar Umbrala</button>
+      </div>
+      <div class="root-section">
+        <h2>Timeline</h2>
+        <div id="root-console" class="chat-container"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- ROOT LOGIN -->
-  <div id="root-login" class="screen center" style="display:none">
-    <h2>Login Root</h2>
-    <input id="root-nick" placeholder="Nick root">
-    <input id="root-pass" type="password" placeholder="Clave primaria">
-    <button id="root-login-btn">Entrar</button>
-    <p id="root-error"></p>
-  </div>
-
-  <!-- ROOT DASHBOARD VISUAL -->
-  <div id="root-dashboard" class="screen center" style="display:none">
-    <h2>ROOT DASHBOARD</h2>
-    <div class="root-section">
-      <h3>Usuarios</h3>
-      <ul id="root-users-list"></ul>
-    </div>
-    <div class="root-section">
-      <h3>Salas</h3>
-      <ul id="root-rooms-list"></ul>
-    </div>
-    <div class="root-section">
-      <h3>Acciones Globales</h3>
-      <button id="root-freeze-btn">Freeze Global ❄️</button>
-      <button id="root-godview-btn">God View 🌐</button>
-      <button id="root-shutdown-btn">Apagar Umbrala 💀</button>
-    </div>
-    <div class="root-section">
-      <h3>Timeline</h3>
-      <div id="root-console"></div>
-    </div>
-    <button id="root-logout-btn">Salir Root</button>
-  </div>
-
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

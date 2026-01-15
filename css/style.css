@@ -1,16 +1,26 @@
-/* ---------- General ---------- */
 body {
-  background: linear-gradient(135deg, #0b0b0b, #1a1a1a);
-  color: #00ffff;
-  font-family: 'Courier New', monospace;
   margin: 0;
   overflow-x: hidden;
+  font-family: 'Courier New', monospace;
+  background: #0b0b0b;
+  color: #00ffff;
+  position: relative;
 }
 
-/* ---------- Encabezado ---------- */
+/* Canvas de partículas */
+#particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+/* Encabezado */
 header {
   width: 100%;
-  background: #000;
+  background: rgba(0,0,0,0.8);
   padding: 10px 0;
   text-align: center;
   border-bottom: 2px solid #00ffff;
@@ -21,80 +31,73 @@ header {
   z-index: 1000;
   cursor: pointer;
 }
-
 header h1 {
   margin: 0;
   color: #00ffff;
-  font-size: 24px;
-  text-shadow: 0 0 5px #00ffff, 0 0 20px #00ffffaa;
+  font-size: 26px;
+  text-shadow: 0 0 10px #00ffff, 0 0 25px #00ffffaa;
 }
 
-/* ---------- Pantalla ---------- */
+/* Pantalla */
 .screen {
   width: 90%;
   max-width: 800px;
-  margin: 80px auto 0 auto; /* Para dejar espacio al header */
+  margin: 80px auto 0 auto;
   text-align: center;
 }
 
-/* ---------- Terminal Landing ---------- */
+/* Terminal inicial */
 .terminal-screen {
   display: flex;
   justify-content: center;
   align-items: center;
   height: calc(100vh - 80px);
 }
-
 .terminal-box {
-  background: #000;
-  color: #00ffea;
+  background: rgba(0,0,0,0.7);
   padding: 20px;
   width: 100%;
   max-width: 600px;
   border-radius: 8px;
-  border: 2px solid #00ffea;
-  box-shadow: 0 0 20px #00ffea55, 0 0 50px #00ffea22;
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 20px #00ffff55, 0 0 50px #00ffff22;
   font-family: 'Courier New', monospace;
 }
+.line.glow { text-shadow: 0 0 10px #00ffea, 0 0 25px #00ffeaaa; }
 
-.line { margin-bottom: 10px; }
-.line.glow { text-shadow: 0 0 10px #00ffea, 0 0 30px #00ffea66; }
-
-/* ---------- Botón Inicializar ---------- */
 #init-btn {
   padding: 12px 25px;
   margin-top: 20px;
   background-color: #00ffff;
   color: #000;
   border-radius: 8px;
-  box-shadow: 0 0 10px #00ffff77, 0 0 20px #00ffff33;
+  box-shadow: 0 0 15px #00ffff77, 0 0 30px #00ffff33;
   font-weight: bold;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 #init-btn:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 30px #00ffffaa, 0 0 60px #00ffff55;
+  box-shadow: 0 0 40px #00ffffaa, 0 0 80px #00ffff55;
 }
 
-/* ---------- Salas ---------- */
+/* Salas */
 #rooms-list div {
   background: rgba(0,255,255,0.05);
   border: 2px solid #00ffff;
   border-radius: 12px;
   padding: 12px;
   margin: 10px 0;
-  box-shadow: 0 0 20px #00ffff55;
+  box-shadow: 0 0 25px #00ffff55;
   transition: all 0.3s;
 }
 #rooms-list div:hover {
   transform: translateY(-5px);
-  box-shadow: 0 0 40px #00ffffaa,0 0 80px #00ffff33;
+  box-shadow: 0 0 50px #00ffffaa,0 0 100px #00ffff33;
 }
 
-/* ---------- Chat ---------- */
+/* Chat */
 #chat-container, #private-container {
   background: rgba(0,0,0,0.85);
   border: 2px solid #00ffff;
@@ -103,16 +106,24 @@ header h1 {
   margin: 10px 0;
   padding: 10px;
   border-radius: 10px;
+  color: #00ffff;
 }
-#chat-container div { margin-bottom:5px; }
-#chat-container div.admin {
-  color: #00ff00;
-  font-weight: bold;
-  text-shadow: 0 0 5px #00ff00;
+#chat-container div.user, #private-container div.user {
+  color: #00ffff;
+  text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffffaa;
+  transition: all 0.3s ease;
 }
-#chat-container div.user { color: #00ffff; }
+#chat-container div.user.new-msg {
+  animation: glow 0.8s;
+}
 
-/* ---------- Usuarios ---------- */
+@keyframes glow {
+  0% { text-shadow: 0 0 5px #00ffff; }
+  50% { text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffffaa; }
+  100% { text-shadow: 0 0 5px #00ffff; }
+}
+
+/* Usuarios */
 #users-panel {
   background: rgba(0,0,0,0.9);
   border-radius: 10px;
@@ -133,7 +144,7 @@ header h1 {
   box-shadow: 0 0 10px #00ffffaa;
 }
 
-/* ---------- Inputs ---------- */
+/* Inputs */
 input {
   padding: 10px;
   width: 70%;

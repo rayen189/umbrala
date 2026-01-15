@@ -3,63 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <title>Umbrala</title>
-  <link rel="stylesheet" href="css/style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="js/particles.js"></script>
+  <script defer src="js/main.js"></script>
 </head>
-<body class="page center terminal">
+<body class="page center">
 
-  <!-- NOMBRE CLICKABLE -->
+  <canvas id="particles"></canvas>
+
+  <!-- TITULO PRINCIPAL -->
   <h1 id="site-title">UMBRALA</h1>
 
-  <!-- PANTALLA PRINCIPAL -->
+  <!-- LANDING SCREEN -->
   <div id="landing-screen" class="screen">
-    <p>Comunicación anónima y efímera</p>
-    <button id="init-btn">Inicializar</button>
-    <button id="root-btn">Login Root</button>
-  </div>
-
-  <!-- LOGIN ROOT -->
-  <div id="root-login" class="screen" style="display:none;">
-    <h2>Root Login</h2>
-    <input id="root-nick" placeholder="Usuario">
-    <input id="root-pass" placeholder="Contraseña" type="password">
-    <button id="root-login-btn">Entrar</button>
-    <p id="root-error" style="color:red"></p>
-    <button id="home-btn">Volver</button>
-  </div>
-
-  <!-- TERMINAL ROOT -->
-  <div id="root-terminal" class="screen" style="display:none;">
-    <h2>UMBRALA :: ROOT</h2>
-    <div id="root-console"></div>
-    <input id="root-command" placeholder="root@umbrala ›_" autocomplete="off">
-    <button id="root-exec">Ejecutar</button>
-    <button id="root-exit">Salir</button>
+    <p>Comunicación efímera y anónima</p>
+    <button id="init-btn" class="primary">Inicializar</button>
+    <button id="root-btn" class="primary">Login Root</button>
   </div>
 
   <!-- SALAS -->
   <div id="rooms-screen" class="screen" style="display:none;">
-    <h2>Salas</h2>
     <div id="rooms-list"></div>
+    <button id="home-btn" class="primary">Volver</button>
   </div>
 
-  <!-- CHAT SALA -->
+  <!-- CHAT -->
   <div id="chat-screen" class="screen" style="display:none;">
     <h2 id="chat-room-name"></h2>
     <div id="chat-container"></div>
-    <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autocomplete="off">
-    <button id="send-btn">Enviar</button>
-    <input type="file" id="chat-file" accept="image/*,video/*">
-    <button id="send-file-btn">Enviar archivo</button>
-    <div id="users-panel">
-      <h3>Usuarios conectados: <span id="user-count">0</span></h3>
-      <ul id="users-list"></ul>
-    </div>
-    <button id="exit-room">Salir de la sala</button>
-    <button id="home-btn-2">Volver</button>
+    <input type="text" id="chat-input" placeholder="Escribe un mensaje...">
+    <input type="file" id="chat-file">
+    <button id="send-btn" class="primary">Enviar</button>
+    <button id="send-file-btn" class="primary">Subir archivo</button>
+    <ul id="users-list"></ul>
+    <span id="user-count"></span>
+    <button id="exit-room" class="primary">Salir</button>
+    <button id="home-btn-2" class="primary">Volver</button>
   </div>
 
-  <script src="js/particles.js"></script>
-  <script src="js/main.js"></script>
+  <!-- ROOT LOGIN -->
+  <div id="root-login" class="screen" style="display:none;">
+    <input id="root-nick" placeholder="Nick">
+    <input id="root-pass" type="password" placeholder="Clave">
+    <button id="root-login-btn" class="primary">Entrar</button>
+    <p id="root-error" style="color:red;"></p>
+  </div>
+
+  <!-- ROOT TERMINAL -->
+  <div id="root-terminal" class="screen" style="display:none;">
+    <div id="root-console"></div>
+    <input id="root-command" placeholder="Escribe un comando root">
+    <button id="root-exec" class="primary">Ejecutar</button>
+    <button id="root-exit" class="primary">Salir Root</button>
+  </div>
+
 </body>
 </html>

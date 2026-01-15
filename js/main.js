@@ -9,6 +9,7 @@ const ROOT = {
   secondary: 'umbralaSecret'
 };
 
+// ---------- ESTADO GLOBAL ----------
 let currentUser = null;
 let isRoot = false;
 let rootSecured = false;
@@ -21,6 +22,7 @@ const hiddenRooms = ['Sala Fantasma', 'Observatorio'];
 
 const usersByRoom = {};
 const messagesByRoom = {};
+const shadowBannedUsers = {};
 
 // ---------- ELEMENTOS ----------
 const landingScreen = document.getElementById('landing-screen');
@@ -121,9 +123,8 @@ rootCmd.addEventListener('keydown', e => {
 
 rootExit.onclick = () => location.reload();
 
-// ---------- GOD VIEW ULTRA ----------
+// ---------- GOD VIEW ULTRA CYBERPUNK ----------
 let mapInterval = null;
-
 const ROOM_COLORS = {
   Norte: '#00ffff',
   Centro: '#ff00ff',
@@ -144,7 +145,7 @@ function startGodView() {
 
   mapInterval = setInterval(() => {
     rootConsole.innerHTML = '';
-    rootPrint('🌌 UMBRALA :: GOD VIEW');
+    rootPrint('🌌 UMBRALA :: GOD VIEW ULTRA');
 
     rooms.concat(hiddenRooms).forEach(room => {
       const users = usersByRoom[room] || [];
@@ -152,17 +153,18 @@ function startGodView() {
       const label = hiddenRooms.includes(room) ? `🔒 ${room}` : room;
 
       const header = document.createElement('div');
-      header.innerHTML = `%c[${label}] → ${users.length} usuario(s)`;
+      header.textContent = `[${label}] → ${users.length} usuario(s)`;
       header.style.color = color;
-      header.style.textShadow = `0 0 10px ${color}`;
+      header.style.textShadow = `0 0 10px ${color},0 0 20px ${color}`;
       rootConsole.appendChild(header);
 
       users.forEach(u => {
-        const last = (messagesByRoom[room] || []).filter(m => m.user === u).slice(-1)[0];
+        const last =
+          (messagesByRoom[room] || []).filter(m => m.user === u).slice(-1)[0];
         const line = document.createElement('div');
-        line.innerHTML = `• ${u} : ${last ? last.text : '[sin mensajes]'}`;
+        line.textContent = `• ${u} : ${last ? last.text : '[sin mensajes]'}`;
         line.style.color = color;
-        line.style.textShadow = `0 0 8px ${color}`;
+        line.style.textShadow = `0 0 5px ${color},0 0 10px ${color}`;
         rootConsole.appendChild(line);
       });
 
@@ -196,11 +198,30 @@ function execRootCommand(cmd) {
   else if (cmd === '/freeze') toggleFreeze();
   else if (cmd === '/timeline') replayTimeline();
   else if (cmd === '/shutdown') shutdown();
-  else if (cmd === '/help') {
-    rootPrint('/map ultra | /map stop | /freeze | /timeline | /shutdown');
+  else if (cmd.startsWith('/shadowban ')) {
+    const nick = cmd.split(' ')[1];
+    shadowBanUser(nick);
+  } else if (cmd.startsWith('/unshadow ')) {
+    const nick = cmd.split(' ')[1];
+    unshadowUser(nick);
+  } else if (cmd === '/help') {
+    rootPrint(
+      '/map ultra | /map stop | /freeze | /timeline | /shutdown | /shadowban nick | /unshadow nick'
+    );
   } else {
     rootPrint('Comando desconocido');
   }
+}
+
+// ---------- SHADOWBAN REAL ----------
+function shadowBanUser(nick) {
+  shadowBannedUsers[nick] = true;
+  rootPrint(`🕳️ Usuario ${nick} shadowbaneado`);
+}
+
+function unshadowUser(nick) {
+  delete shadowBannedUsers[nick];
+  rootPrint(`✅ Usuario ${nick} ya no está shadowbaneado`);
 }
 
 // ---------- SALAS ----------
@@ -255,19 +276,26 @@ exitRoomBtn.onclick = () => {
 
 // ---------- MENSAJES ----------
 function addMessage(text, file = null) {
-  const msg = {
-    user: currentUser,
-    text,
-    file,
-    time: Date.now()
-  };
-  messagesByRoom[currentRoom].push(msg);
+  const msg = { user: currentUser, text, file, time: Date.now() };
+
+  if (shadowBannedUsers[currentUser] && currentUser !== ROOT.nick) {
+    if (!messagesByRoom[currentRoom + '_shadow'])
+      messagesByRoom[currentRoom + '_shadow'] = [];
+    messagesByRoom[currentRoom + '_shadow'].push(msg);
+  } else {
+    if (!messagesByRoom[currentRoom]) messagesByRoom[currentRoom] = [];
+    messagesByRoom[currentRoom].push(msg);
+  }
+
   renderChat();
 }
 
 function renderChat() {
   chatContainer.innerHTML = '';
-  (messagesByRoom[currentRoom] || []).forEach(m => {
+  const roomMsgs = messagesByRoom[currentRoom] || [];
+  const shadowMsgs = messagesByRoom[currentRoom + '_shadow'] || [];
+
+  roomMsgs.forEach(m => {
     const div = document.createElement('div');
     div.className = 'user';
     div.textContent = `${m.user}: ${m.text}`;
@@ -282,8 +310,29 @@ function renderChat() {
     }
     chatContainer.appendChild(div);
   });
+
+  if (shadowBannedUsers[currentUser] && currentUser !== ROOT.nick) {
+    shadowMsgs.forEach(m => {
+      const div = document.createElement('div');
+      div.className = 'user';
+      div.textContent = `${m.user}: ${m.text}`;
+      if (m.file) {
+        const el = document.createElement(
+          m.file.startsWith('data:image') ? 'img' : 'video'
+        );
+        el.src = m.file;
+        el.style.maxWidth = '200px';
+        if (el.tagName === 'VIDEO') el.controls = true;
+        div.appendChild(el);
+      }
+      chatContainer.appendChild(div);
+    });
+  }
+
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
+// ---------- USUARIOS ----------
 function renderUsers() {
   usersList.innerHTML = '';
   const users = usersByRoom[currentRoom] || [];
@@ -315,118 +364,4 @@ function shutdown() {
     <h1 style="color:#0ff;text-align:center;margin-top:40vh;">
       UMBRALA APAGADO
     </h1>`;
-}
-// ===============================
-// SHADOWBAN REAL
-// ===============================
-
-// Objeto para almacenar los usuarios shadowbaneados
-const shadowBannedUsers = {};
-
-// Comando root: /shadowban nick
-function shadowBanUser(nick) {
-  shadowBannedUsers[nick] = true;
-  rootPrint(`🕳️ Usuario ${nick} ahora está shadowbaneado`);
-}
-
-// Comando root: /unshadow nick
-function unshadowUser(nick) {
-  delete shadowBannedUsers[nick];
-  rootPrint(`✅ Usuario ${nick} ya no está shadowbaneado`);
-}
-
-// Modificación de addMessage para shadowban
-function addMessage(text, file = null) {
-  const msg = {
-    user: currentUser,
-    text,
-    file,
-    time: Date.now()
-  };
-
-  // Si el usuario está shadowbaneado y no es root, el mensaje solo se guarda para él
-  if (shadowBannedUsers[currentUser] && currentUser !== ROOT.nick) {
-    // Crear un chat "fantasma" solo para el usuario
-    if (!messagesByRoom[currentRoom + '_shadow']) messagesByRoom[currentRoom + '_shadow'] = [];
-    messagesByRoom[currentRoom + '_shadow'].push(msg);
-  } else {
-    // Mensaje normal visible a todos
-    if (!messagesByRoom[currentRoom]) messagesByRoom[currentRoom] = [];
-    messagesByRoom[currentRoom].push(msg);
-  }
-
-  renderChat();
-}
-
-// Modificación de renderChat para shadowban
-function renderChat() {
-  chatContainer.innerHTML = '';
-  const roomMsgs = messagesByRoom[currentRoom] || [];
-  const shadowMsgs = messagesByRoom[currentRoom + '_shadow'] || [];
-
-  // Todos los mensajes normales
-  roomMsgs.forEach(m => {
-    const div = document.createElement('div');
-    div.className = 'user';
-    div.textContent = `${m.user}: ${m.text}`;
-    if (m.file) {
-      const el = document.createElement(m.file.startsWith('data:image') ? 'img' : 'video');
-      el.src = m.file;
-      el.style.maxWidth = '200px';
-      if (el.tagName === 'VIDEO') el.controls = true;
-      div.appendChild(el);
-    }
-    chatContainer.appendChild(div);
-  });
-
-  // Mostrar shadow messages solo si el usuario es shadowbaneado
-  if (shadowBannedUsers[currentUser] && currentUser !== ROOT.nick) {
-    shadowMsgs.forEach(m => {
-      const div = document.createElement('div');
-      div.className = 'user';
-      div.textContent = `${m.user}: ${m.text}`;
-      if (m.file) {
-        const el = document.createElement(m.file.startsWith('data:image') ? 'img' : 'video');
-        el.src = m.file;
-        el.style.maxWidth = '200px';
-        if (el.tagName === 'VIDEO') el.controls = true;
-        div.appendChild(el);
-      }
-      chatContainer.appendChild(div);
-    });
-  }
-
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-}
-
-// ---------- COMANDOS ROOT MODIFICADOS ----------
-function execRootCommand(cmd) {
-  if (!rootSecured) {
-    if (cmd === ROOT.secondary) {
-      rootSecured = true;
-      rootPrint('🔓 ROOT SECURED — ACCESO TOTAL');
-    } else {
-      rootPrint('Clave secundaria incorrecta');
-    }
-    return;
-  }
-
-  rootPrint('> ' + cmd);
-
-  if (cmd === '/map ultra') startGodView();
-  else if (cmd === '/map stop') stopGodView();
-  else if (cmd === '/freeze') toggleFreeze();
-  else if (cmd === '/timeline') replayTimeline();
-  else if (cmd === '/shutdown') shutdown();
-  else if (cmd.startsWith('/shadowban ')) {
-    const nick = cmd.split(' ')[1];
-    shadowBanUser(nick);
-  } else if (cmd.startsWith('/unshadow ')) {
-    const nick = cmd.split(' ')[1];
-    unshadowUser(nick);
-  } else if (cmd === '/help') {
-    rootPrint('/map ultra | /map stop | /freeze | /timeline | /shutdown | /shadowban nick | /unshadow nick');
-  } else {
-    rootPrint('Comando desconocido');
-  }
 }

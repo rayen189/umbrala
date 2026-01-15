@@ -268,3 +268,110 @@ function replayTimeline() {
   }
   step();
 }
+// ===============================
+// GOD VIEW CYBERPUNK ULTRA VISUAL
+// ===============================
+
+let mapUltraInterval = null;
+
+const ROOM_COLORS_ULTRA = {
+  'Norte': '#0ff',
+  'Sur': '#ff0',
+  'Centro': '#f0f',
+  'La Serena': '#7a7cff',
+  'VIP': '#ff007f',
+  'Sala Fantasma': '#888',
+  'VIP Oculta': '#555'
+};
+
+function showMapUltra() {
+  if (!isRoot || !rootSecured) {
+    rootPrint('⚠️ Acceso denegado: Root no seguro');
+    return;
+  }
+
+  rootPrint('--- GOD VIEW ULTRA VISUAL ACTIVADO ---');
+
+  if (mapUltraInterval) clearInterval(mapUltraInterval);
+
+  mapUltraInterval = setInterval(() => {
+    rootConsole.innerHTML = ''; // limpia consola
+
+    rootPrint('--- 🌌 UMBRALA :: GOD VIEW CYBERPUNK ULTRA ---');
+
+    rooms.concat(hiddenRooms).forEach(r => {
+      const users = usersByRoom[r] || [];
+      const color = ROOM_COLORS_ULTRA[r] || '#0ff';
+      const roomLabel = hiddenRooms.includes(r) ? `🔒 ${r}` : r;
+
+      // Sala
+      const roomDiv = document.createElement('div');
+      roomDiv.innerHTML = `<span style="color:${color}; font-weight:bold; text-shadow:0 0 5px ${color}, 0 0 10px ${color};">[${roomLabel}] → ${users.length} usuario(s)</span>`;
+      rootConsole.appendChild(roomDiv);
+
+      // Usuarios
+      users.forEach(u => {
+        const userDiv = document.createElement('div');
+        const glow = `text-shadow:0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}; animation: glowAnim 1s infinite alternate;`;
+        const lastMsg = (messagesByRoom[r] || []).filter(m => m.user === u).slice(-1)[0];
+        const msgText = lastMsg ? lastMsg.text || '[archivo]' : '[sin mensaje]';
+        userDiv.innerHTML = `<span style="color:${color}; ${glow}">• ${u} : ${msgText}</span>`;
+        rootConsole.appendChild(userDiv);
+      });
+
+      rootConsole.appendChild(document.createElement('br'));
+    });
+  }, 1500); // refresco más rápido para efecto dinámico
+}
+
+// Detener mapa ultra visual
+function stopMapUltra() {
+  if (mapUltraInterval) {
+    clearInterval(mapUltraInterval);
+    mapUltraInterval = null;
+    rootPrint('--- GOD VIEW ULTRA VISUAL DESACTIVADO ---');
+  }
+}
+
+// ---------- COMANDOS ROOT ----------
+function execRootCommand(cmd) {
+  if (!rootSecured) {
+    if (cmd === ROOT.secondary) {
+      rootSecured = true;
+      rootPrint('Acceso total ROOT ACTIVADO 🔐');
+    } else {
+      rootPrint('Clave secundaria incorrecta');
+    }
+    return;
+  }
+
+  rootPrint('> ' + cmd);
+
+  switch (true) {
+    case cmd.startsWith('/map ultra'):
+      showMapUltra();
+      break;
+
+    case cmd.startsWith('/map stop'):
+      stopMapUltra();
+      break;
+
+    case cmd.startsWith('/help'):
+      rootPrint('/map ultra | /map stop | /ban nick | /shadowban nick | /freeze ...');
+      break;
+
+    default:
+      rootPrint('Comando no reconocido. /help');
+  }
+}
+
+// ---------- ANIMACIÓN CSS GLOW ----------
+const styleGlow = document.createElement('style');
+styleGlow.innerHTML = `
+@keyframes glowAnim {
+  0% { text-shadow: 0 0 5px #0ff,0 0 10px #0ff,0 0 15px #0ff; }
+  50% { text-shadow: 0 0 10px #0ff,0 0 20px #0ff,0 0 30px #0ff; }
+  100% { text-shadow: 0 0 5px #0ff,0 0 10px #0ff,0 0 15px #0ff; }
+}
+`;
+document.head.appendChild(styleGlow);

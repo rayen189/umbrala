@@ -1,12 +1,12 @@
 const canvas = document.getElementById('particles');
 const ctx = canvas.getContext('2d');
 
-let w, h;
-function resize() { w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
+let w,h;
+function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
 window.addEventListener('resize', resize);
 resize();
 
-const particles = [];
+const particles=[];
 for(let i=0;i<120;i++){
   particles.push({
     x: Math.random()*w,
@@ -26,8 +26,8 @@ function draw(){
     ctx.fill();
     p.x += p.dx;
     p.y += p.dy;
-    if(p.x<0||p.x>w) p.dx*=-1;
-    if(p.y<0||p.y>h) p.dy*=-1;
+    if(p.x<0||p.x>w)p.dx*=-1;
+    if(p.y<0||p.y>h)p.dy*=-1;
   }
   requestAnimationFrame(draw);
 }

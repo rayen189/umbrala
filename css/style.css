@@ -23,15 +23,15 @@ body.page, .screen {
 /* ==========================
    TÍTULOS & BOTONES
 =========================== */
-h1#site-title {
-  font-size: 4rem;
-  text-align: center;
+h1.clickable-title {
+  font-size: 3rem;
   cursor: pointer;
   text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff;
   transition: 0.3s;
+  text-align: center;
 }
 
-h1#site-title:hover {
+h1.clickable-title:hover {
   text-shadow: 0 0 20px #0ff, 0 0 40px #0ff, 0 0 80px #0ff;
 }
 
@@ -98,7 +98,7 @@ ul li button {
 }
 
 /* ==========================
-   INPUTS
+   INPUTS & EMOJIS
 =========================== */
 input {
   padding: 0.5rem;
@@ -106,6 +106,24 @@ input {
   border: 1px solid #0ff;
   background: #111;
   color: #0ff;
+}
+
+#emoji-picker {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 200px;
+  margin-top: 5px;
+}
+
+.emoji {
+  cursor: pointer;
+  margin: 0.2rem;
+  font-size: 1.5rem;
+  transition: 0.2s;
+}
+
+.emoji:hover {
+  transform: scale(1.3);
 }
 
 /* ==========================

@@ -60,22 +60,10 @@ header h1 {
 .line { margin-bottom: 10px; }
 .line.glow { text-shadow: 0 0 10px #00ffea, 0 0 30px #00ffea66; }
 
-#terminal-input {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  background: #111;
-  color: #00ffea;
-  font-family: 'Courier New', monospace;
-  font-size: 16px;
-}
-
-#terminal-input:focus { outline: none; box-shadow: 0 0 10px #00ffea; }
-
-/* ---------- Botones ---------- */
-button {
-  padding: 10px 20px; margin: 10px;
+/* ---------- Botón Inicializar ---------- */
+#init-btn {
+  padding: 12px 25px;
+  margin-top: 20px;
   background-color: #00ffff;
   color: #000;
   border-radius: 8px;
@@ -86,7 +74,7 @@ button {
   transition: all 0.3s ease;
 }
 
-button:hover {
+#init-btn:hover {
   transform: scale(1.1);
   box-shadow: 0 0 30px #00ffffaa, 0 0 60px #00ffff55;
 }

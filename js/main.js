@@ -1,93 +1,112 @@
-const boot = document.getElementById("boot");
-const rooms = document.getElementById("rooms");
-const chat = document.getElementById("chat");
-const roomName = document.getElementById("roomName");
-const chatWith = document.getElementById("chatWith");
-const messages = document.getElementById("messages");
-const usersBox = document.getElementById("users");
-const typing = document.getElementById("typing");
-const glitchSound = document.getElementById("glitchSound");
+const WS_URL = "wss://TU-PROYECTO.up.railway.app"; // CAMBIAR
+const socket = new WebSocket(WS_URL);
+
+let username = "u" + Math.floor(Math.random() * 9999);
+let currentRoom = null;
+let privateTarget = null;
 
 const PUBLIC_LIFE = 15000;
 const PRIVATE_LIFE = 60000;
 
-let currentRoom = "";
-let privateUser = null;
+socket.onmessage = e => {
+  const data = JSON.parse(e.data);
 
-const users = ["Axiom", "Nova", "Echo", "Void"];
+  if (data.type === "users") {
+    users.innerHTML = data.users
+      .filter(u => u !== username)
+      .map(u => `<div onclick="startPrivate('${u}')">${u}</div>`)
+      .join("");
+  }
 
-document.getElementById("initBtn").onclick = () => {
-  glitchSound.play();
+  if (data.type === "message") {
+    const m = document.createElement("div");
+    m.className = "message";
+    m.textContent = `${data.user}: ${data.text}`;
+    messages.appendChild(m);
+    autoDestroy(m, data.private ? PRIVATE_LIFE : PUBLIC_LIFE);
+  }
+
+  if (data.type === "typing") {
+    typing.textContent = `${data.user} escribiendo…`;
+    setTimeout(() => typing.textContent = "", 1000);
+  }
+};
+
+function autoDestroy(el, t) {
+  setTimeout(() => {
+    el.style.opacity = 0;
+    setTimeout(() => el.remove(), 800);
+  }, t);
+}
+
+initBtn.onclick = () => {
   boot.classList.add("hidden");
   rooms.classList.remove("hidden");
 };
 
-document.getElementById("exitBtn").onclick = () => {
-  rooms.classList.add("hidden");
-  boot.classList.remove("hidden");
-};
-
-document.getElementById("logo").onclick = () => location.reload();
-
-function enterRoom(room) {
-  currentRoom = room;
-  roomName.textContent = room;
-  chatWith.textContent = "";
+function enterRoom(r) {
+  currentRoom = r;
   rooms.classList.add("hidden");
   chat.classList.remove("hidden");
-  renderUsers();
+  roomName.textContent = r;
+
+  socket.send(JSON.stringify({
+    type: "join",
+    room: r,
+    user: username
+  }));
+}
+
+chatForm.onsubmit = e => {
+  e.preventDefault();
+  if (!msgInput.value) return;
+
+  socket.send(JSON.stringify({
+    type: "message",
+    text: msgInput.value,
+    private: !!privateTarget,
+    to: privateTarget
+  }));
+
+  msgInput.value = "";
+};
+
+msgInput.oninput = () => {
+  socket.send(JSON.stringify({ type: "typing" }));
+};
+
+function startPrivate(u) {
+  privateTarget = u;
+  roomName.textContent = `Privado con ${u}`;
 }
 
 function backRooms() {
+  privateTarget = null;
   chat.classList.add("hidden");
   rooms.classList.remove("hidden");
 }
 
-function renderUsers() {
-  usersBox.innerHTML = "";
-  users.forEach(u => {
-    const d = document.createElement("div");
-    d.textContent = u;
-    d.onclick = () => {
-      privateUser = u;
-      chatWith.textContent = "🔐 " + u;
-      document.querySelectorAll("#users div").forEach(e=>e.classList.remove("active"));
-      d.classList.add("active");
-    };
-    usersBox.appendChild(d);
-  });
+function goHome() {
+  location.reload();
 }
 
-document.getElementById("chatForm").onsubmit = e => {
-  e.preventDefault();
-  const input = msgInput.value.trim();
-  if (!input) return;
+/* Anti-captura */
+document.body.classList.add("protected");
+const overlay = document.getElementById("antiOverlay");
+const watermark = document.getElementById("watermark");
 
-  const msg = document.createElement("div");
-  msg.className = "message";
-
-  if (privateUser) {
-    msg.classList.add("private");
-    msg.textContent = "🔐 " + input;
-    autoDestroy(msg, PRIVATE_LIFE);
-  } else {
-    msg.textContent = input;
-    autoDestroy(msg, PUBLIC_LIFE);
-  }
-
-  messages.appendChild(msg);
-  msgInput.value = "";
-};
-
-function autoDestroy(el, time) {
-  setTimeout(() => {
-    el.classList.add("fade-out");
-    setTimeout(() => el.remove(), 800);
-  }, time);
+function protect(on) {
+  document.body.classList.toggle("blur-screen", on);
+  overlay.style.display = on ? "flex" : "none";
 }
 
-msgInput.oninput = () => {
-  typing.style.opacity = 1;
-  clearTimeout(window.t);
-  window.t = setTimeout(()=>typing.style.opacity=0,800);
-};
+addEventListener("blur", () => protect(true));
+addEventListener("focus", () => protect(false));
+document.addEventListener("visibilitychange", () =>
+  protect(document.hidden)
+);
+
+setInterval(() => {
+  watermark.textContent =
+    `UMBRALA · ${username} · ${new Date().toLocaleTimeString()}`;
+}, 1000);

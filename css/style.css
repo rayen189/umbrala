@@ -1,12 +1,7 @@
-/* ==================================================
-   Umbrala CSS — Actualizado
-   Futurista · Terminal · Violeta oscuro
-================================================== */
-
 body.page {
   font-family: 'Courier New', monospace;
   background: #000;
-  color: #aa88ff; /* Violeta futurista */
+  color: #aa88ff;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -83,21 +78,22 @@ body.page {
 #chatScreen {
   flex-direction: row;
   justify-content: space-between;
-  width: 90%;
-  height: 90%;
+  width: 100%;
+  height: 100vh;
+  padding-top: 3rem;
 }
 
 #chatContainer {
   flex: 1;
   display: flex;
   flex-direction: column;
+  height: 100%;
   margin-right: 1rem;
 }
 
 #chatMessages {
   flex: 1;
   width: 100%;
-  max-height: 500px;
   overflow-y: auto;
   border: 1px solid #aa88ff;
   padding: 0.5rem;
@@ -137,30 +133,36 @@ body.page {
   font-weight: bold;
 }
 
-#stalkerlessPanel {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(50,0,80,0.9);
-  padding: 1rem;
-  border: 2px solid #aa88ff;
-  z-index: 999;
-  text-align: center;
-  box-shadow: 0 0 15px #aa88ff;
+#rootBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(40,0,70,0.95);
+  border-bottom: 1px solid #aa88ff;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.4rem;
+  z-index: 1000;
 }
 
-#stalkerlessPanel button {
-  margin: 0.3rem;
-  padding: 0.5rem 1rem;
+#rootBar span {
+  margin-right: 1rem;
+  font-weight: bold;
+  color: #ff66ff;
+  text-shadow: 0 0 10px #ff66ff;
+}
+
+#rootBar button {
   background: #111;
-  color: #aa88ff;
   border: 1px solid #aa88ff;
+  color: #aa88ff;
   cursor: pointer;
-  transition: 0.2s;
+  padding: 0.3rem 0.6rem;
 }
 
-#stalkerlessPanel button:hover {
+#rootBar button:hover {
   background: #aa88ff;
   color: #000;
   box-shadow: 0 0 10px #aa88ff, 0 0 20px #aa88ff;

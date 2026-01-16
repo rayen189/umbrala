@@ -12,6 +12,8 @@ let rooms = [
   {name:"Sala Secreta 🕳️", users:[], hidden:true}
 ];
 let timeline = [];
+let privateChats = {};
+let activePrivateChat = null;
 
 /* =========================
    ELEMENTOS DEL DOM
@@ -109,27 +111,55 @@ function updateConnectedUsers(){
     rooms[currentRoom].users.forEach(u=>{
       const li = document.createElement('li');
       li.textContent = u;
+      li.style.cursor = "pointer";
+      li.onclick = ()=> openPrivateChat(u);
       connectedUsers.appendChild(li);
     });
   }
 }
 
-sendBtn.onclick = () => {
-  if(currentRoom===null) return;
-  const msg = chatInput.value.trim();
-  if(!msg) return;
-  const user = rooms[currentRoom].users[rooms[currentRoom].users.length-1];
-  const data = {user,msg,room:rooms[currentRoom].name,time:new Date()};
-  timeline.push(data);
-
-  const div = document.createElement('div');
-  div.textContent = `[${data.room}] ${data.user}: ${data.msg}`;
-  div.className='glow';
-  chatMessages.appendChild(div);
+/* =========================
+   CHAT PRIVADO
+========================= */
+function openPrivateChat(user){
+  activePrivateChat = user;
+  chatMessages.innerHTML = '';
+  if(!privateChats[user]) privateChats[user] = [];
+  privateChats[user].forEach(data=>{
+    const div = document.createElement('div');
+    div.textContent = `${data.user}: ${data.msg}`;
+    div.className='glow';
+    chatMessages.appendChild(div);
+  });
   chatMessages.scrollTop = chatMessages.scrollHeight;
-  chatInput.value='';
-  updateConnectedUsers();
-  updateTotalUsers();
+  updateChatHeader(user);
+}
+
+function updateChatHeader(user){
+  chatTitle.textContent = "Privado con " + user;
+  let backBtn = document.getElementById('backToRoomBtn');
+  if(!backBtn){
+    backBtn = document.createElement('button');
+    backBtn.id = 'backToRoomBtn';
+    backBtn.textContent = "Volver a la sala";
+    backBtn.onclick = ()=> backToRoomChat();
+    chatTitle.parentNode.insertBefore(backBtn, chatTitle.nextSibling);
+  }
+}
+
+function backToRoomChat(){
+  activePrivateChat = null;
+  chatTitle.textContent = rooms[currentRoom].name;
+  document.getElementById('backToRoomBtn').remove();
+  chatMessages.innerHTML = '';
+  timeline.filter(d => d.room === rooms[currentRoom].name)
+          .forEach(data=>{
+            const div = document.createElement('div');
+            div.textContent = `[${data.room}] ${data.user}: ${data.msg}`;
+            div.className = 'glow';
+            chatMessages.appendChild(div);
+          });
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 /* =========================
@@ -137,6 +167,41 @@ sendBtn.onclick = () => {
 ========================= */
 exitChatBtn.onclick = () => showScreen(roomsListScreen);
 exitRoomsListBtn.onclick = () => showScreen(landingScreen);
+
+/* =========================
+   ENVÍO DE MENSAJES
+========================= */
+sendBtn.onclick = () => {
+  if(currentRoom===null) return;
+  const msg = chatInput.value.trim();
+  if(!msg) return;
+  const user = rooms[currentRoom].users[rooms[currentRoom].users.length-1];
+
+  if(activePrivateChat){
+    if(!privateChats[activePrivateChat]) privateChats[activePrivateChat] = [];
+    const data = {user,msg};
+    privateChats[activePrivateChat].push(data);
+
+    const div = document.createElement('div');
+    div.textContent = `${data.user}: ${data.msg}`;
+    div.className = 'glow';
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  } else {
+    const data = {user,msg,room:rooms[currentRoom].name,time:new Date()};
+    timeline.push(data);
+
+    const div = document.createElement('div');
+    div.textContent = `[${data.room}] ${data.user}: ${data.msg}`;
+    div.className = 'glow';
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  chatInput.value='';
+  updateConnectedUsers();
+  updateTotalUsers();
+}
 
 /* =========================
    SUBIDA DE IMAGEN

@@ -13,6 +13,9 @@ let rooms = [
 ];
 let timeline = [];
 
+/* =========================
+   ELEMENTOS DEL DOM
+========================= */
 const landingScreen = document.getElementById('landingScreen');
 const roomsListScreen = document.getElementById('roomsListScreen');
 const chatScreen = document.getElementById('chatScreen');
@@ -29,6 +32,7 @@ const initializeBtn = document.getElementById('initializeBtn');
 const totalUsersCounter = document.getElementById('totalUsersCounter');
 const connectedUsers = document.getElementById('connectedUsers');
 const emojiPicker = document.getElementById('emoji-picker');
+const chatTitle = document.getElementById('chatTitle');
 
 /* =========================
    EMOJIS
@@ -74,6 +78,9 @@ function renderRooms(){
   updateTotalUsers();
 }
 
+/* =========================
+   CONTADOR DE USUARIOS
+========================= */
 function updateTotalUsers(){
   let count = rooms.reduce((acc,r)=>acc+r.users.length,0);
   totalUsersCounter.textContent = "Usuarios conectados: " + count;
@@ -84,6 +91,7 @@ function updateTotalUsers(){
 ========================= */
 function enterRoom(i){
   currentRoom = i;
+  chatTitle.textContent = rooms[i].name;
   const userName = isRoot ? 'Root' : 'User'+Math.floor(Math.random()*1000);
   rooms[i].users.push(userName);
   showScreen(chatScreen);

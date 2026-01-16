@@ -9,15 +9,17 @@
 </head>
 
 <body>
-
 <canvas id="particles"></canvas>
+
+<!-- PROTECCIÓN -->
+<div id="antiOverlay">⚠ CONTENIDO PROTEGIDO</div>
+<div id="watermark"></div>
 
 <!-- BOOT -->
 <div id="boot" class="screen center">
-  <div class="terminal glitch">
+  <div class="terminal">
     <p>UMBRALA v1.0</p>
     <p>Sistema latente…</p>
-    <p>Comunicación efímera preparada.</p>
     <button id="initBtn">INICIALIZAR</button>
   </div>
 </div>
@@ -25,16 +27,14 @@
 <!-- SALAS -->
 <div id="rooms" class="screen hidden">
   <header>
-    <h1 id="logo">UMBRALA</h1>
-    <div id="userCounter">👁 1</div>
-    <button id="exitBtn">Salir</button>
+    <h1 onclick="goHome()">UMBRALA</h1>
   </header>
 
   <div class="room-list">
+    <button onclick="enterRoom('Global')">🌍 Global</button>
     <button onclick="enterRoom('Norte')">🌵 Norte</button>
     <button onclick="enterRoom('Centro')">🏙️ Centro</button>
     <button onclick="enterRoom('Sur')">❄️ Sur</button>
-    <button onclick="enterRoom('Global')">🌍 Global</button>
     <button onclick="enterRoom('Curiosidades')">🧠 Curiosidades</button>
   </div>
 </div>
@@ -43,26 +43,18 @@
 <div id="chat" class="screen hidden">
   <header>
     <span id="roomName"></span>
-    <span id="chatWith"></span>
+    <span id="typing"></span>
     <button onclick="backRooms()">←</button>
   </header>
 
-  <div class="chat-body">
-    <aside id="users"></aside>
-    <div id="messages" class="dropzone"></div>
-  </div>
-
-  <div id="typing">Alguien está escribiendo…</div>
+  <div id="users"></div>
+  <div id="messages"></div>
 
   <form id="chatForm">
-    <input type="file" id="imgInput" accept="image/*,.gif" hidden>
-    <button type="button" id="imgBtn">📷</button>
     <input id="msgInput" placeholder="Mensaje efímero…" autocomplete="off">
-    <button type="submit">➤</button>
+    <button>➤</button>
   </form>
 </div>
-
-<audio id="glitchSound" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA="></audio>
 
 <script src="js/particles.js"></script>
 <script src="js/main.js"></script>

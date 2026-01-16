@@ -1,5 +1,5 @@
 /* =========================
-   VARIABLES
+   VARIABLES PRINCIPALES
 ========================= */
 let isRoot = false;
 let currentRoom = null;
@@ -11,19 +11,14 @@ let rooms = [
   {name:"Curiosidades 🧠", users:[]},
   {name:"Sala Secreta 🕳️", users:[], hidden:true}
 ];
-let globalFreeze = false;
 let timeline = [];
 
-/* =========================
-   SELECTORES
-========================= */
 const landingScreen = document.getElementById('landingScreen');
 const roomsListScreen = document.getElementById('roomsListScreen');
 const chatScreen = document.getElementById('chatScreen');
-const rootScreen = document.getElementById('rootScreen');
 
-const chatInput = document.getElementById('chatInput');
 const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
 const exitChatBtn = document.getElementById('exitChatBtn');
 const roomsList = document.getElementById('roomsList');
@@ -31,10 +26,13 @@ const exitRoomsListBtn = document.getElementById('exitRoomsListBtn');
 const imageInput = document.getElementById('imageInput');
 const initializeBtn = document.getElementById('initializeBtn');
 
+const totalUsersCounter = document.getElementById('totalUsersCounter');
+const connectedUsers = document.getElementById('connectedUsers');
+const emojiPicker = document.getElementById('emoji-picker');
+
 /* =========================
    EMOJIS
 ========================= */
-const emojiPicker = document.getElementById('emoji-picker');
 const emojiList = ["😎","🔥","💀","✨","🕳️","💻","⚡"];
 emojiList.forEach(e=>{
   const span = document.createElement('span');
@@ -48,12 +46,12 @@ emojiList.forEach(e=>{
    FUNCIONES DE PANTALLA
 ========================= */
 function showScreen(screen){
-  [landingScreen, roomsListScreen, chatScreen, rootScreen].forEach(s=>s.style.display='none');
+  [landingScreen, roomsListScreen, chatScreen].forEach(s=>s.style.display='none');
   screen.style.display='flex';
 }
 
 /* =========================
-   BOTÓN INICIALIZAR
+   INICIALIZAR
 ========================= */
 initializeBtn.onclick = () => {
   showScreen(roomsListScreen);
@@ -61,47 +59,80 @@ initializeBtn.onclick = () => {
 };
 
 /* =========================
-   RENDER SALAS PORTAL
+   SALAS ESTILO PORTAL
 ========================= */
 function renderRooms(){
   roomsList.innerHTML='';
   rooms.forEach((room,i)=>{
     if(room.hidden && !isRoot) return;
     const btn = document.createElement('button');
-    btn.className = 'portal-btn';
+    btn.className='portal-btn';
     btn.textContent = room.name;
-    btn.onclick = () => enterRoom(i);
+    btn.onclick = ()=> enterRoom(i);
     roomsList.appendChild(btn);
   });
+  updateTotalUsers();
 }
 
-exitRoomsListBtn.onclick = () => showScreen(landingScreen);
+function updateTotalUsers(){
+  let count = rooms.reduce((acc,r)=>acc+r.users.length,0);
+  totalUsersCounter.textContent = "Usuarios conectados: " + count;
+}
 
+/* =========================
+   ENTRAR A SALA
+========================= */
 function enterRoom(i){
   currentRoom = i;
-  chatMessages.innerHTML='';
+  const userName = isRoot ? 'Root' : 'User'+Math.floor(Math.random()*1000);
+  rooms[i].users.push(userName);
   showScreen(chatScreen);
+  updateConnectedUsers();
+  updateTotalUsers();
+  renderRooms();
 }
 
 /* =========================
    CHAT
 ========================= */
+function updateConnectedUsers(){
+  connectedUsers.innerHTML='';
+  if(currentRoom!==null){
+    rooms[currentRoom].users.forEach(u=>{
+      const li = document.createElement('li');
+      li.textContent = u;
+      connectedUsers.appendChild(li);
+    });
+  }
+}
+
 sendBtn.onclick = () => {
-  if(globalFreeze || currentRoom===null) return;
+  if(currentRoom===null) return;
   const msg = chatInput.value.trim();
   if(!msg) return;
-  const data = {user:'User'+Math.floor(Math.random()*1000), msg, room:rooms[currentRoom].name, time:new Date()};
+  const user = rooms[currentRoom].users[rooms[currentRoom].users.length-1];
+  const data = {user,msg,room:rooms[currentRoom].name,time:new Date()};
   timeline.push(data);
+
   const div = document.createElement('div');
   div.textContent = `[${data.room}] ${data.user}: ${data.msg}`;
   div.className='glow';
   chatMessages.appendChild(div);
   chatMessages.scrollTop = chatMessages.scrollHeight;
   chatInput.value='';
-};
+  updateConnectedUsers();
+  updateTotalUsers();
+}
 
+/* =========================
+   BOTONES DE SALIR
+========================= */
 exitChatBtn.onclick = () => showScreen(roomsListScreen);
+exitRoomsListBtn.onclick = () => showScreen(landingScreen);
 
+/* =========================
+   SUBIDA DE IMAGEN
+========================= */
 imageInput.onchange = e => {
   const file = e.target.files[0];
   if(!file) return;

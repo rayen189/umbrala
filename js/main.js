@@ -1,9 +1,8 @@
 /* =========================
-   VARIABLES PRINCIPALES
+   VARIABLES
 ========================= */
 let isRoot = false;
 let currentRoom = null;
-let users = [];
 let rooms = [
   {name:"Norte de Chile 🌵", users:[]},
   {name:"Sur de Chile 🗻", users:[]},
@@ -16,16 +15,13 @@ let globalFreeze = false;
 let timeline = [];
 
 /* =========================
-   SELECTORES DE PANTALLAS
+   SELECTORES
 ========================= */
 const landingScreen = document.getElementById('landingScreen');
 const roomsListScreen = document.getElementById('roomsListScreen');
 const chatScreen = document.getElementById('chatScreen');
 const rootScreen = document.getElementById('rootScreen');
 
-/* =========================
-   SELECTORES CHAT
-========================= */
 const chatInput = document.getElementById('chatInput');
 const chatMessages = document.getElementById('chatMessages');
 const sendBtn = document.getElementById('sendBtn');
@@ -33,16 +29,7 @@ const exitChatBtn = document.getElementById('exitChatBtn');
 const roomsList = document.getElementById('roomsList');
 const exitRoomsListBtn = document.getElementById('exitRoomsListBtn');
 const imageInput = document.getElementById('imageInput');
-
-/* =========================
-   SELECTORES ROOT
-========================= */
-const rootUsersList = document.getElementById('rootUsers');
-const rootRoomsList = document.getElementById('rootRooms');
-const rootConsole = document.getElementById('root-console');
-const freezeGlobalBtn = document.getElementById('freezeGlobalBtn');
-const godViewBtn = document.getElementById('godViewBtn');
-const shutdownBtn = document.getElementById('shutdownBtn');
+const initializeBtn = document.getElementById('initializeBtn');
 
 /* =========================
    EMOJIS
@@ -66,31 +53,15 @@ function showScreen(screen){
 }
 
 /* =========================
-   BOTONES LANDING
+   BOTÓN INICIALIZAR
 ========================= */
-document.getElementById('initializeBtn').onclick = () => {
+initializeBtn.onclick = () => {
   showScreen(roomsListScreen);
   renderRooms();
 };
 
-document.getElementById('rootLoginBtn').onclick = () => {
-  const nick = prompt("Usuario Root:");
-  const pass = prompt("Clave Root:");
-  if(nick==='root' && pass==='1234'){ // Cambiar clave aquí
-    isRoot = true;
-    showScreen(rootScreen);
-    renderRoot();
-    logRoot("Root ha iniciado sesión");
-  } else alert("Credenciales incorrectas");
-};
-
 /* =========================
-   BOTONES SALAS
-========================= */
-exitRoomsListBtn.onclick = () => showScreen(landingScreen);
-
-/* =========================
-   RENDER DE SALAS COMO PORTALES
+   RENDER SALAS PORTAL
 ========================= */
 function renderRooms(){
   roomsList.innerHTML='';
@@ -104,12 +75,11 @@ function renderRooms(){
   });
 }
 
+exitRoomsListBtn.onclick = () => showScreen(landingScreen);
+
 function enterRoom(i){
   currentRoom = i;
   chatMessages.innerHTML='';
-  const userName = isRoot ? 'Root' : 'User'+Math.floor(Math.random()*1000);
-  rooms[i].users.push(userName);
-  renderRooms();
   showScreen(chatScreen);
 }
 
@@ -117,34 +87,21 @@ function enterRoom(i){
    CHAT
 ========================= */
 sendBtn.onclick = () => {
-  if(globalFreeze) return alert("¡Chat congelado!");
-  if(currentRoom===null) return;
+  if(globalFreeze || currentRoom===null) return;
   const msg = chatInput.value.trim();
   if(!msg) return;
-  const user = isRoot ? 'Root' : 'User'+Math.floor(Math.random()*1000);
-  const data = {user, msg, room:rooms[currentRoom].name, time:new Date()};
+  const data = {user:'User'+Math.floor(Math.random()*1000), msg, room:rooms[currentRoom].name, time:new Date()};
   timeline.push(data);
-  appendMessage(data);
-  chatInput.value='';
-};
-
-exitChatBtn.onclick = () => {
-  currentRoom = null;
-  showScreen(roomsListScreen);
-};
-
-function appendMessage(data){
   const div = document.createElement('div');
   div.textContent = `[${data.room}] ${data.user}: ${data.msg}`;
   div.className='glow';
   chatMessages.appendChild(div);
   chatMessages.scrollTop = chatMessages.scrollHeight;
-  logRoot(`[MSG] ${data.user} -> ${data.msg}`);
-}
+  chatInput.value='';
+};
 
-/* =========================
-   ENVIO DE IMAGENES
-========================= */
+exitChatBtn.onclick = () => showScreen(roomsListScreen);
+
 imageInput.onchange = e => {
   const file = e.target.files[0];
   if(!file) return;
@@ -162,100 +119,3 @@ imageInput.onchange = e => {
   reader.readAsDataURL(file);
   imageInput.value = "";
 }
-
-/* =========================
-   ROOT DASHBOARD
-========================= */
-function renderRoot(){
-  renderRootUsers();
-  renderRootRooms();
-}
-
-function renderRootUsers(){
-  rootUsersList.innerHTML='';
-  let allUsers=[];
-  rooms.forEach(r=>allUsers.push(...r.users));
-  allUsers = [...new Set(allUsers)];
-  allUsers.forEach(u=>{
-    const li = document.createElement('li');
-    li.textContent = u;
-    const shadowBtn = document.createElement('button');
-    shadowBtn.textContent = 'Shadowban';
-    shadowBtn.onclick = () => shadowUser(u);
-    li.appendChild(shadowBtn);
-    rootUsersList.appendChild(li);
-  });
-}
-
-function renderRootRooms(){
-  rootRoomsList.innerHTML='';
-  rooms.forEach((r,i)=>{
-    const li = document.createElement('li');
-    li.textContent = r.name;
-    const freezeBtn = document.createElement('button');
-    freezeBtn.textContent = 'Freeze';
-    freezeBtn.onclick = () => toggleFreezeRoom(i);
-    li.appendChild(freezeBtn);
-    const hideBtn = document.createElement('button');
-    hideBtn.textContent = r.hidden ? 'Mostrar' : 'Ocultar';
-    hideBtn.onclick = () => toggleRoomVisibility(i);
-    li.appendChild(hideBtn);
-    rootRoomsList.appendChild(li);
-  });
-}
-
-/* =========================
-   FUNCIONES ROOT
-========================= */
-function shadowUser(user){
-  timeline.push({user:'Root',msg:`Shadowban a ${user}`,time:new Date()});
-  logRoot(`Shadowban aplicado a ${user}`);
-  alert(`Shadowban aplicado a ${user}`);
-}
-
-function toggleFreezeRoom(i){
-  rooms[i].freeze = !rooms[i].freeze;
-  logRoot(`${rooms[i].name} freeze: ${rooms[i].freeze}`);
-}
-
-function toggleRoomVisibility(i){
-  rooms[i].hidden = !rooms[i].hidden;
-  logRoot(`${rooms[i].name} hidden: ${rooms[i].hidden}`);
-  renderRooms();
-}
-
-freezeGlobalBtn.onclick = () => {
-  globalFreeze = !globalFreeze;
-  logRoot(`Freeze global: ${globalFreeze}`);
-  alert(`Freeze global: ${globalFreeze}`);
-}
-
-godViewBtn.onclick = () => alert("God View activado (visual completo de todas las salas y usuarios)");
-
-shutdownBtn.onclick = () => {
-  logRoot("Umbrala se apagará en 5 segundos...");
-  setTimeout(()=>{ location.reload(); },5000);
-}
-
-/* =========================
-   TIMELINE ROOT
-========================= */
-function logRoot(msg){
-  const div = document.createElement('div');
-  div.textContent = `[ROOT] ${msg}`;
-  div.className='glow';
-  rootConsole.appendChild(div);
-  rootConsole.scrollTop = rootConsole.scrollHeight;
-}
-
-/* =========================
-   TITULO CLICK LANDING
-========================= */
-document.querySelectorAll('.clickable-title').forEach(title=>{
-  title.onclick = () => { if(!isRoot) showScreen(landingScreen); };
-});
-
-/* =========================
-   INICIALIZAR
-========================= */
-renderRooms();

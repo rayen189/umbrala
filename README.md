@@ -1,83 +1,175 @@
-# 🌌 UMBRALA
+# 🜏 UMBRALA  
+### Comunicación efímera · Presencia sin rastro · Sistema liminal
 
-Bienvenido a **Umbrala**, el universo digital anónimo y efímero donde cada mensaje deja huella y cada sala es un misterio.  
+> *Nada queda. Nada se guarda. Todo ocurre.*
 
-💻 **Versión:** Full Root / Cyberpunk / Visual + Terminal  
-🚀 **Estado:** Funcional en GitHub Pages  
-🌐 **Demo:** [rayen189.github.io/Umbrala](https://rayen189.github.io/Umbrala/)  
+Umbrala no es una red social.  
+No es un chat tradicional.  
+No es un archivo de recuerdos.
 
-![Umbrala Banner](https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif)
-
----
-
-## 🔹 Qué es Umbrala
-
-Umbrala no es un chat cualquiera: es **una experiencia futurista y visual**, donde:  
-
-- 🕳️ Salas invisibles solo para root  
-- 🧬 Timeline completo de mensajes y logs visuales  
-- 🔒 Shadowban real: los usuarios no saben que están baneados  
-- 🛑 Freeze global: nadie puede escribir salvo root  
-- ✨ Glow animado, partículas interactivas y estética cyberpunk  
-- ⚡ Chat 1:1 y grupal con conteo de usuarios conectados en tiempo real  
-
-**Un lugar donde tus mensajes viajan directo al vacío…**  
-
-![Umbrala Particles](https://media.giphy.com/media/l0HlOvJ7yaacpuSas/giphy.gif)
+**Umbrala es un espacio temporal de comunicación efímera**, donde los mensajes nacen, existen unos segundos… y desaparecen para siempre.
 
 ---
 
-## 🔹 Funciones Root (Full Control)
+## ✦ FILOSOFÍA
 
-El **root** tiene control total, todo **visual**, sin comandos:  
+En Umbrala:
+- No hay historiales
+- No hay perfiles
+- No hay identidades persistentes
+- No hay promesas de permanencia
 
-- 🛠️ Shadowban / Unshadow usuarios con un click  
-- ⚡ Freeze Global de salas con un toggle  
-- 🕳️ Ocultar o mostrar salas secretas  
-- 🌐 God View: ver todas las salas y usuarios en tiempo real  
-- 💥 Apagar Umbrala desde el dashboard  
-- 🧾 Timeline visual con logs animados  
+Cada sesión es única.  
+Cada mensaje es mortal.  
+Cada imagen es un destello.
 
-![Root Dashboard](https://media.giphy.com/media/26BRuo6sLetdllPAQ/giphy.gif)
-
----
-
-## 🔹 Panel Root
-
-El **dashboard visual** incluye:  
-
-- **Usuarios**: Shadowban / Liberar  
-- **Salas**: Toggle visible/oculta  
-- **Acciones globales**: Freeze, God View, Shutdown  
-- **Timeline**: Logs en tiempo real con colores y glow  
+Umbrala está diseñada para **hablar sin dejar huella**.
 
 ---
 
-## 🔹 Estética y UX
+## ✦ CARACTERÍSTICAS PRINCIPALES
 
-- Pantalla principal tipo terminal con **UMBRALA centrado y clickeable**  
-- Botón “Inicializar” para entrar a salas  
-- Contadores de usuarios conectados con glow animado  
-- Fondo de partículas futurista interactivo  
-- Mensajes y logs root con colores y glow, totalmente visual  
+### ⏳ Comunicación efímera
+- Mensajes de texto con cuenta regresiva
+- Imágenes y GIFs que se autodestruyen
+- Nada se guarda, nada se recupera
 
-![Chat y Salas](https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif)
+### 👥 Presencia compartida (sin backend)
+- Multiusuario local mediante `BroadcastChannel`
+- Cada pestaña = una presencia
+- Sin servidores, sin bases de datos
+
+### 🖼️ Imágenes y GIFs
+- Envío de imágenes locales
+- Soporte GIF animado
+- Drag & Drop directo al chat
+- Todo desaparece
+
+### 🌐 Salas temáticas
+- Norte
+- Centro
+- Sur
+- Global
+- Curiosidades
+- (y una sala que no todos ven)
+
+### 🜏 Modo Root (invisible)
+Un observador que no deja rastro.
+
+El **Root** puede:
+- Entrar a una sala exclusiva
+- Chatear sin ser identificado
+- Ver todo lo que ocurre
+- Moderar silenciosamente
+- Existir sin existir
+
+Nadie sabe que está ahí.
 
 ---
 
-## 🔹 Cómo usar
+## ✦ ARQUITECTURA
 
-1. Abrir [Umbrala en GitHub Pages](https://rayen189.github.io/Umbrala/)  
-2. Pantalla principal: click en **Inicializar** para ver salas  
-3. Root: click en **Login Root**, ingresar **nick y clave primaria**  
-4. Explorar salas, enviar mensajes, ver timeline y usar dashboard root  
-5. Disfrutar de la estética cyberpunk y los logs visuales  
+Umbrala funciona **100% en frontend**:
+
+- HTML
+- CSS
+- JavaScript puro
+- Canvas para partículas
+- `BroadcastChannel` para sincronización local
+
+📡 **No usa Firebase, Supabase ni backend**  
+📁 **Compatible con GitHub Pages**
+
+Esto no es una limitación.  
+Es una decisión de diseño.
 
 ---
 
-## ⚠️ Nota final
+## ✦ ESTRUCTURA DEL PROYECTO
+Umbrala/
+│
+├── index.html
+├── css/
+│   └── style.css
+│
+├── js/
+│   ├── main.js
+│   └── particles.js
 
-Umbrala no es un simple chat, es un **universo paralelo digital**:  
-cada acción y cada mensaje viajan **directo al vacío**, mientras root observa y controla todo con estilo futurista.  
+---
 
-💫 Bienvenido a la experiencia **Umbrala**, donde el cyberpunk y la comunicación anónima se encuentran.
+## ✦ CÓMO USAR
+
+1. Clona o descarga el repositorio
+2. Súbelo a GitHub Pages (o ábrelo local)
+3. Inicializa Umbrala
+4. Entra a una sala
+5. Habla
+6. Observa cómo todo desaparece
+
+Para simular múltiples usuarios:
+- Abre Umbrala en varias pestañas del mismo navegador
+
+---
+
+## ✦ ADVERTENCIA
+
+- No hay persistencia
+- No hay recuperación
+- No hay historial
+- No hay anonimato absoluto (es frontend)
+
+Umbrala **no promete seguridad**,  
+promete **impermanencia**.
+
+---
+
+## ✦ MANIFIESTO
+
+> En un mundo que archiva todo,  
+> Umbrala elige olvidar.
+
+> En un internet que vigila,  
+> Umbrala observa en silencio.
+
+> En una red que acumula identidades,  
+> Umbrala permite desaparecer.
+
+---
+
+## ✦ ESTADO DEL PROYECTO
+
+🟣 Experimental  
+🟣 Conceptual  
+🟣 Funcional  
+🟣 En evolución
+
+Umbrala no busca escalar.  
+Busca **sentirse**.
+
+---
+
+## ✦ FUTURO POSIBLE
+
+- Blur progresivo antes de desaparecer
+- Rituales colectivos temporales
+- Comandos root ocultos
+- Modo espectador
+- Versión PWA instalable
+
+Nada es permanente.  
+Ni siquiera el proyecto.
+
+---
+
+## ✦ LICENCIA
+
+Libre para explorar, modificar y reinterpretar.  
+No para vigilar.  
+No para archivar.
+
+---
+
+🜏 **UMBRALA**  
+*Lo que ocurre aquí no se queda aquí.*  
+*Simplemente deja de existir.*

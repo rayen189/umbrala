@@ -1,30 +1,32 @@
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
+let w, h, particles = [];
 
 function resize() {
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
+  w = canvas.width = innerWidth;
+  h = canvas.height = innerHeight;
 }
+window.addEventListener("resize", resize);
 resize();
-addEventListener("resize", resize);
 
-const dots = Array.from({ length: 90 }, () => ({
-  x: Math.random() * canvas.width,
-  y: Math.random() * canvas.height,
-  r: Math.random() * 2 + 1,
-  v: Math.random() * 0.4 + 0.2
-}));
-
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  dots.forEach(d => {
-    d.y -= d.v;
-    if (d.y < 0) d.y = canvas.height;
-    ctx.fillStyle = "#4ff";
-    ctx.beginPath();
-    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-    ctx.fill();
+for (let i = 0; i < 120; i++) {
+  particles.push({
+    x: Math.random() * w,
+    y: Math.random() * h,
+    s: Math.random() * 2 + 1
   });
-  requestAnimationFrame(animate);
 }
-animate();
+
+function draw() {
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = "#4fdcff";
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.s, 0, Math.PI*2);
+    ctx.fill();
+    p.y += p.s * .3;
+    if (p.y > h) p.y = 0;
+  });
+  requestAnimationFrame(draw);
+}
+draw();

@@ -5,7 +5,6 @@
   <title>Umbrala</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#7a7cff">
-  <!-- CSS -->
   <link rel="stylesheet" href="./css/style.css">
 </head>
 <body class="page">
@@ -15,14 +14,14 @@
   <!-- PANTALLA PRINCIPAL -->
   <div id="landingScreen" class="screen">
     <h1 id="site-title" class="clickable-title">UMBRALA</h1>
-    <p>Comunicación efímera y anónima con estilo cyberpunk</p>
-    <button id="initializeBtn">Inicializar</button>
-    <button id="rootLoginBtn">Login Root</button>
+    <p>Comunicación efímera · Presencia sin rastro · Sistema liminal</p>
+    <button id="initializeBtn">Entrar a salas</button>
+    <button id="rootLoginBtn">Modo Root</button>
   </div>
 
   <!-- SALAS -->
   <div id="roomsScreen" class="screen" style="display:none;">
-    <h1 id="site-title-rooms" class="clickable-title">UMBRALA</h1>
+    <h1 class="clickable-title">UMBRALA</h1>
     <div id="roomsList"></div>
     <div id="chatContainer">
       <div id="chatMessages" class="chat-container"></div>
@@ -30,6 +29,7 @@
       <button id="sendBtn">Enviar</button>
       <button id="exitRoomBtn">Salir</button>
       <div id="emoji-picker"></div>
+      <input type="file" id="imageInput" accept="image/*" style="margin-top:5px;">
     </div>
   </div>
 
@@ -58,7 +58,6 @@
     </div>
   </div>
 
-  <!-- JS -->
   <script src="./js/particles.js"></script>
   <script src="./js/main.js"></script>
 </body>

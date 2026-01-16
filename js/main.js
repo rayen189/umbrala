@@ -1,140 +1,93 @@
-/* =========================
-   UMBRALA — MAIN SYSTEM
-   ========================= */
+const boot = document.getElementById("boot");
+const rooms = document.getElementById("rooms");
+const chat = document.getElementById("chat");
+const roomName = document.getElementById("roomName");
+const chatWith = document.getElementById("chatWith");
+const messages = document.getElementById("messages");
+const usersBox = document.getElementById("users");
+const typing = document.getElementById("typing");
+const glitchSound = document.getElementById("glitchSound");
 
-const bootScreen = document.getElementById("boot");
-const roomsScreen = document.getElementById("rooms");
-const chatScreen = document.getElementById("chat");
+const PUBLIC_LIFE = 15000;
+const PRIVATE_LIFE = 60000;
 
-const initBtn = document.getElementById("initBtn");
-const exitBtn = document.getElementById("exitBtn");
-const logo = document.getElementById("logo");
+let currentRoom = "";
+let privateUser = null;
 
-const roomNameEl = document.getElementById("roomName");
-const messagesEl = document.getElementById("messages");
+const users = ["Axiom", "Nova", "Echo", "Void"];
 
-const chatForm = document.getElementById("chatForm");
-const msgInput = document.getElementById("msgInput");
-const imgInput = document.getElementById("imgInput");
-const imgBtn = document.getElementById("imgBtn");
-
-/* =========================
-   STATE
-   ========================= */
-
-let currentRoom = null;
-
-/* =========================
-   AUDIO (GLITCH)
-   ========================= */
-
-const glitchSound = new Audio("data:audio/wav;base64,UklGRjQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=");
-glitchSound.volume = 0.4;
-
-/* =========================
-   BOOT
-   ========================= */
-
-initBtn.addEventListener("click", () => {
+document.getElementById("initBtn").onclick = () => {
   glitchSound.play();
-  bootScreen.classList.add("hidden");
-  roomsScreen.classList.remove("hidden");
-});
+  boot.classList.add("hidden");
+  rooms.classList.remove("hidden");
+};
 
-/* =========================
-   NAVIGATION
-   ========================= */
+document.getElementById("exitBtn").onclick = () => {
+  rooms.classList.add("hidden");
+  boot.classList.remove("hidden");
+};
 
-exitBtn.addEventListener("click", () => {
-  glitchSound.play();
-  roomsScreen.classList.add("hidden");
-  bootScreen.classList.remove("hidden");
-});
-
-logo.addEventListener("click", () => {
-  glitchSound.play();
-  roomsScreen.classList.add("hidden");
-  bootScreen.classList.remove("hidden");
-});
+document.getElementById("logo").onclick = () => location.reload();
 
 function enterRoom(room) {
-  glitchSound.play();
   currentRoom = room;
-  roomNameEl.textContent = room;
-  messagesEl.innerHTML = "";
-  roomsScreen.classList.add("hidden");
-  chatScreen.classList.remove("hidden");
+  roomName.textContent = room;
+  chatWith.textContent = "";
+  rooms.classList.add("hidden");
+  chat.classList.remove("hidden");
+  renderUsers();
 }
 
 function backRooms() {
-  glitchSound.play();
-  chatScreen.classList.add("hidden");
-  roomsScreen.classList.remove("hidden");
+  chat.classList.add("hidden");
+  rooms.classList.remove("hidden");
 }
 
-/* =========================
-   CHAT
-   ========================= */
+function renderUsers() {
+  usersBox.innerHTML = "";
+  users.forEach(u => {
+    const d = document.createElement("div");
+    d.textContent = u;
+    d.onclick = () => {
+      privateUser = u;
+      chatWith.textContent = "🔐 " + u;
+      document.querySelectorAll("#users div").forEach(e=>e.classList.remove("active"));
+      d.classList.add("active");
+    };
+    usersBox.appendChild(d);
+  });
+}
 
-chatForm.addEventListener("submit", e => {
+document.getElementById("chatForm").onsubmit = e => {
   e.preventDefault();
-  if (!msgInput.value.trim()) return;
-  sendMessage({ text: msgInput.value });
-  msgInput.value = "";
-});
-
-imgBtn.addEventListener("click", () => {
-  imgInput.click();
-});
-
-imgInput.addEventListener("change", () => {
-  const file = imgInput.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    sendMessage({ image: reader.result });
-  };
-  reader.readAsDataURL(file);
-  imgInput.value = "";
-});
-
-/* =========================
-   MESSAGE HANDLER
-   ========================= */
-
-function sendMessage({ text = null, image = null }) {
-  glitchSound.currentTime = 0;
-  glitchSound.play();
+  const input = msgInput.value.trim();
+  if (!input) return;
 
   const msg = document.createElement("div");
-  msg.className = "message glitch";
+  msg.className = "message";
 
-  if (text) {
-    msg.textContent = text;
+  if (privateUser) {
+    msg.classList.add("private");
+    msg.textContent = "🔐 " + input;
+    autoDestroy(msg, PRIVATE_LIFE);
+  } else {
+    msg.textContent = input;
+    autoDestroy(msg, PUBLIC_LIFE);
   }
 
-  if (image) {
-    const img = document.createElement("img");
-    img.src = image;
-    msg.appendChild(img);
-  }
+  messages.appendChild(msg);
+  msgInput.value = "";
+};
 
-  messagesEl.appendChild(msg);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-
-  setTimeout(() => msg.classList.remove("glitch"), 300);
-
-  // Ephemeral destruction (15s)
+function autoDestroy(el, time) {
   setTimeout(() => {
-    msg.style.opacity = "0";
-    setTimeout(() => msg.remove(), 400);
-  }, 15000);
+    el.classList.add("fade-out");
+    setTimeout(() => el.remove(), 800);
+  }, time);
 }
 
-/* =========================
-   GLOBAL ACCESS (HTML)
-   ========================= */
-
-window.enterRoom = enterRoom;
-window.backRooms = backRooms;
+msgInput.oninput = () => {
+  typing.style.opacity = 1;
+  clearTimeout(window.t);
+  window.t = setTimeout(()=>typing.style.opacity=0,800);
+};

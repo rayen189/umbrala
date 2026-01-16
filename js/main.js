@@ -19,7 +19,7 @@ let currentRoom = "";
 let isRoot = false;
 
 /* ===============================
-   AUDIO GLITCH (WEB AUDIO)
+   AUDIO GLITCH
    =============================== */
 
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -32,17 +32,17 @@ function playGlitch() {
   const gain = audioCtx.createGain();
 
   osc.type = "square";
-  osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.12);
+  osc.frequency.setValueAtTime(1600, audioCtx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(220, audioCtx.currentTime + 0.18);
 
   gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
 
   osc.connect(gain);
   gain.connect(audioCtx.destination);
 
   osc.start();
-  osc.stop(audioCtx.currentTime + 0.15);
+  osc.stop(audioCtx.currentTime + 0.2);
 }
 
 /* ===============================
@@ -122,7 +122,7 @@ channel.onmessage = e => {
 };
 
 /* ===============================
-   RENDER + EFÍMERO
+   RENDER + EFÍMERO (15s)
    =============================== */
 
 function renderMessage(msg) {
@@ -141,7 +141,8 @@ function renderMessage(msg) {
 
   const timer = document.createElement("span");
   timer.className = "timer";
-  let t = 10;
+
+  let t = 15; // ⏳ DURACIÓN TOTAL
   timer.textContent = ` ${t}`;
   div.appendChild(timer);
 
@@ -155,9 +156,9 @@ function renderMessage(msg) {
     timer.textContent = ` ${t}`;
 
     /* BLUR PROGRESIVO */
-    if (t === 6) div.classList.add("blur-1");
-    if (t === 4) div.classList.add("blur-2");
-    if (t === 2) div.classList.add("blur-3");
+    if (t === 9) div.classList.add("blur-1");
+    if (t === 6) div.classList.add("blur-2");
+    if (t === 3) div.classList.add("blur-3");
 
     /* GLITCH + SONIDO FINAL */
     if (t === 1 && !glitchPlayed) {

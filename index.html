@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Umbrala</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#7a7cff">
+  <meta name="theme-color" content="#7a2be2">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="page">
@@ -26,25 +26,34 @@
     <button id="initializeBtn">Inicializar</button>
   </div>
 
-  <!-- PANTALLA DE SALAS -->
+  <!-- SALAS -->
   <div id="roomsListScreen" class="screen" style="display:none;">
-    <h1 class="clickable-title">Salas de Umbrala</h1>
+    <div style="display:flex; align-items:center; gap:1rem;">
+      <h1 class="clickable-title">Salas de Umbrala</h1>
+      <div id="totalUsersCounter">Usuarios conectados: 0</div>
+    </div>
     <div id="roomsList" class="portal-list"></div>
     <button id="exitRoomsListBtn">Salir a inicio</button>
   </div>
 
-  <!-- PANTALLA CHAT -->
-  <div id="chatScreen" class="screen" style="display:none;">
-    <h1 id="chatTitle">Sala</h1>
-    <div id="chatMessages" class="chat-container"></div>
-    <input id="chatInput" type="text" placeholder="Escribe tu mensaje...">
-    <button id="sendBtn">Enviar</button>
-    <input type="file" id="imageInput" accept="image/*">
-    <div id="emoji-picker"></div>
-    <button id="exitChatBtn">Salir a salas</button>
+  <!-- CHAT -->
+  <div id="chatScreen" class="screen chat-screen" style="display:none;">
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+      <h1 id="chatTitle">Sala</h1>
+      <div id="chatMessages" class="chat-container"></div>
+      <input id="chatInput" type="text" placeholder="Escribe tu mensaje...">
+      <button id="sendBtn">Enviar</button>
+      <input type="file" id="imageInput" accept="image/*">
+      <div id="emoji-picker"></div>
+      <button id="exitChatBtn">Salir a salas</button>
+    </div>
+    <div class="users-container">
+      <h3>Usuarios conectados</h3>
+      <ul id="connectedUsers"></ul>
+    </div>
   </div>
 
-  <!-- PANTALLA ROOT -->
+  <!-- ROOT -->
   <div id="rootScreen" class="screen" style="display:none;">
     <h1>UMBRALA ROOT</h1>
     <div id="rootDashboard">

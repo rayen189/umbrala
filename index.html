@@ -1,52 +1,71 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Umbrala</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#7a7cff">
-  <meta name="description" content="Comunicación efímera y anónima">
-
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-  <!-- PARTÍCULAS -->
-  <canvas id="particles"></canvas>
+<canvas id="particles"></canvas>
 
-  <!-- APP -->
-  <div class="app">
-
-    <h1 id="rootTrigger">UMBRALA</h1>
-
-    <!-- SALAS -->
-    <div class="rooms">
-      <button onclick="enterRoom('norte')">Norte</button>
-      <button onclick="enterRoom('centro')">Centro</button>
-      <button onclick="enterRoom('sur')">Sur</button>
+<!-- PANTALLA INICIO -->
+<div id="screen-init" class="screen active">
+  <div class="terminal">
+    <div class="terminal-text">
+      UMBRALA v1.0<br>
+      Sistema latente…<br>
+      Comunicación efímera preparada.
     </div>
 
-    <!-- CHAT -->
-    <div id="chat" class="hidden">
-      <div id="messages"></div>
+    <button id="initBtn">INICIALIZAR</button>
 
-      <form id="chatForm">
-        <input id="messageInput" placeholder="Escribe algo efímero..." autocomplete="off">
-        <button>➤</button>
-      </form>
+    <div class="root-login">
+      <input id="rootUser" placeholder="root user">
+      <input id="rootPass" type="password" placeholder="password">
+      <button id="rootLoginBtn">login root</button>
     </div>
-
   </div>
+</div>
 
-  <!-- FIREBASE -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!-- PANTALLA SALAS -->
+<div id="screen-rooms" class="screen">
+  <header>
+    <h1 id="goHome">UMBRALA</h1>
+    <button id="exitBtn">SALIR</button>
+  </header>
 
-  <script src="js/firebase.js"></script>
-  <script src="js/particles.js"></script>
-  <script src="js/main.js"></script>
+  <div class="rooms">
+    <button onclick="enterRoom('norte')">Norte</button>
+    <button onclick="enterRoom('centro')">Centro</button>
+    <button onclick="enterRoom('sur')">Sur</button>
+    <button onclick="enterRoom('global')">Global</button>
+    <button onclick="enterRoom('curiosidades')">Curiosidades</button>
+    <button id="rootRoomBtn" class="hidden" onclick="enterRoom('root')">🜏 Root</button>
+  </div>
+</div>
 
+<!-- PANTALLA CHAT -->
+<div id="screen-chat" class="screen">
+  <header>
+    <span id="roomName"></span>
+    <button onclick="backToRooms()">← Salir</button>
+  </header>
+
+  <div id="messages" class="dropzone"></div>
+
+  <form id="chatForm">
+    <input id="imageInput" type="file" accept="image/*,.gif" hidden>
+    <button type="button" id="imageBtn">📷</button>
+    <input id="messageInput" placeholder="Mensaje efímero…">
+    <button>➤</button>
+  </form>
+</div>
+
+<script src="js/particles.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

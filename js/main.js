@@ -49,13 +49,11 @@ emojiList.forEach(e=>{
 });
 
 /* =========================
-   Pantallas
+   Mostrar pantalla
 ========================= */
 function showScreen(screen){
-  landingScreen.style.display = 'none';
-  roomsScreen.style.display = 'none';
-  rootScreen.style.display = 'none';
-  screen.style.display = 'flex';
+  document.querySelectorAll('.screen').forEach(s=>s.style.display='none');
+  screen.style.display='flex';
 }
 
 /* =========================
@@ -69,7 +67,7 @@ document.getElementById('initializeBtn').onclick=()=>{
 document.getElementById('rootLoginBtn').onclick=()=>{
   const nick = prompt("Usuario Root:");
   const pass = prompt("Clave Root:");
-  if(nick==='root' && pass==='1234'){  // Cambiar clave aquí si quieres
+  if(nick==='root' && pass==='1234'){ // Cambiar clave aquí
     isRoot=true;
     showScreen(rootScreen);
     renderRoot();
@@ -83,7 +81,7 @@ document.getElementById('rootLoginBtn').onclick=()=>{
 function renderRooms(){
   roomsList.innerHTML='';
   rooms.forEach((room,i)=>{
-    if(room.hidden && !isRoot) return; // Solo root ve salas ocultas
+    if(room.hidden && !isRoot) return;
     const div = document.createElement('div');
     div.textContent=`${room.name} (${room.users.length} usuarios)`;
     div.style.cursor='pointer';
@@ -95,7 +93,8 @@ function renderRooms(){
 function enterRoom(i){
   currentRoom=i;
   chatMessages.innerHTML='';
-  rooms[i].users.push(isRoot?'Root':'User'+Math.floor(Math.random()*1000));
+  const userName=isRoot?'Root':'User'+Math.floor(Math.random()*1000);
+  rooms[i].users.push(userName);
   renderRooms();
 }
 
@@ -108,7 +107,6 @@ sendBtn.onclick=()=>{
   const msg = chatInput.value.trim();
   if(!msg) return;
   const user = isRoot?'Root':'User'+Math.floor(Math.random()*1000);
-  rooms[currentRoom].users.push(user);
   const data = {user,msg,room:rooms[currentRoom].name,time:new Date()};
   timeline.push(data);
   appendMessage(data);
@@ -143,7 +141,7 @@ function renderRootUsers(){
   rooms.forEach(r=>allUsers.push(...r.users));
   allUsers=[...new Set(allUsers)];
   allUsers.forEach(u=>{
-    const li = document.createElement('li');
+    const li=document.createElement('li');
     li.textContent=u;
     const shadowBtn=document.createElement('button');
     shadowBtn.textContent='Shadowban';
@@ -222,6 +220,6 @@ document.querySelectorAll('.clickable-title').forEach(title=>{
 });
 
 /* =========================
-   Iniciar render inicial
+   Inicializar
 ========================= */
 renderRooms();

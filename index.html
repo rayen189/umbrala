@@ -4,57 +4,64 @@
   <meta charset="UTF-8">
   <title>Umbrala</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#7a2be2">
+  <meta name="theme-color" content="#7a7cff">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="page">
 
+  <!-- CANVAS DE PARTICULAS -->
   <canvas id="particles"></canvas>
 
-  <!-- INICIO TERMINAL -->
+  <!-- =========================
+       PANTALLA INICIO
+  ========================= -->
   <div id="landingScreen" class="screen">
-    <div class="terminal-box">
-      <div class="line glow">UMBRALA</div>
-      <div class="line">Comunica en las sombras</div>
-      <div class="line">Solo tú, tu mensaje, y el vacío.</div>
-      <div class="line">Anónimo: Sin rastro, sin identidad</div>
-      <div class="line">Efímero: Los mensajes desaparecen</div>
-      <div class="line">Seguro: Conexión encriptada</div>
-      <div class="line">Privado: No logs, no tracking</div>
-    </div>
+    <h1>UMBRALA</h1>
+    <p>
+      Comunica en las sombras<br>
+    Solo tú, tu mensaje, y el vacío.<br>
+      <br>
+      <strong>Anónimo:</strong> Sin rastro, sin identidad<br>
+      <strong>Efímero:</strong> Los mensajes desaparecen<br>
+      <strong>Seguro:</strong> Conexión encriptada<br>
+      <strong>Privado:</strong> No logs, no tracking
+    </p>
     <button id="initializeBtn">Inicializar</button>
+    <button id="stalkerlessBtn">Modo Stalkerless</button>
   </div>
 
-  <!-- SALAS -->
+  <!-- =========================
+       PANTALLA SALAS
+  ========================= -->
   <div id="roomsListScreen" class="screen" style="display:none;">
-    <div style="display:flex; align-items:center; justify-content:center; gap:1rem; flex-wrap: wrap;">
-      <h1 class="clickable-title">Salas de Umbrala</h1>
-      <div id="totalUsersCounter">Usuarios conectados: 0</div>
-    </div>
-    <div id="roomsList" class="portal-list"></div>
-    <button id="exitRoomsListBtn">Salir a inicio</button>
+    <h2>Salas <span id="totalUsersCounter"></span></h2>
+    <div id="roomsList"></div>
   </div>
 
-  <!-- CHAT -->
-  <div id="chatScreen" class="screen chat-screen" style="display:none;">
-    <div class="chat-left">
-      <h1 id="chatTitle" class="chat-title">Sala</h1>
+  <!-- =========================
+       PANTALLA CHAT
+  ========================= -->
+  <div id="chatScreen" class="screen" style="display:none; flex-direction: row; justify-content: space-between;">
+    
+    <!-- CHAT IZQUIERDO -->
+    <div id="chatContainer">
+      <h3 id="chatTitle">Sala</h3>
       <div id="chatMessages" class="chat-container"></div>
-      <div class="chat-inputs">
-        <input id="chatInput" type="text" placeholder="Escribe tu mensaje...">
-        <button id="sendBtn">Enviar</button>
-        <input type="file" id="imageInput" accept="image/*">
-        <div id="emoji-picker"></div>
-      </div>
-      <button id="exitChatBtn">Salir a salas</button>
+      <input id="chatInput" type="text" placeholder="Escribe tu mensaje...">
+      <button id="sendBtn">Enviar</button>
+      <input type="file" id="imageInput" accept="image/*">
+      <div id="emoji-picker"></div>
     </div>
-    <div class="chat-right">
-      <h3>Usuarios conectados</h3>
-      <ul id="connectedUsers"></ul>
-    </div>
+
+    <!-- USUARIOS DERECHA -->
+    <ul id="connectedUsers"></ul>
   </div>
 
+  <!-- =========================
+       SCRIPTS
+  ========================= -->
   <script src="js/particles.js"></script>
   <script src="js/main.js"></script>
+
 </body>
 </html>

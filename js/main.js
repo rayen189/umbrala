@@ -5,12 +5,12 @@ let isRoot = false;
 let currentRoom = null;
 let users = [];
 let rooms = [
-  {name:"Norte", users:[]},
-  {name:"Centro", users:[]},
-  {name:"Sur", users:[]},
-  {name:"Global", users:[]},
-  {name:"Curiosidades", users:[]},
-  {name:"Sala Secreta", users:[], hidden:true}
+  {name:"Norte de Chile 🌵", users:[]},
+  {name:"Sur de Chile 🗻", users:[]},
+  {name:"Centro 🌃", users:[]},
+  {name:"Global 🌎", users:[]},
+  {name:"Curiosidades 🧠", users:[]},
+  {name:"Sala Secreta 🕳️", users:[], hidden:true}
 ];
 let globalFreeze = false;
 let timeline = [];
@@ -90,17 +90,17 @@ document.getElementById('rootLoginBtn').onclick = () => {
 exitRoomsListBtn.onclick = () => showScreen(landingScreen);
 
 /* =========================
-   RENDER DE SALAS
+   RENDER DE SALAS COMO PORTALES
 ========================= */
 function renderRooms(){
   roomsList.innerHTML='';
   rooms.forEach((room,i)=>{
     if(room.hidden && !isRoot) return;
-    const div = document.createElement('div');
-    div.textContent = `${room.name} (${room.users.length} usuarios)`;
-    div.style.cursor = 'pointer';
-    div.onclick = () => enterRoom(i);
-    roomsList.appendChild(div);
+    const btn = document.createElement('button');
+    btn.className = 'portal-btn';
+    btn.textContent = room.name;
+    btn.onclick = () => enterRoom(i);
+    roomsList.appendChild(btn);
   });
 }
 
@@ -129,7 +129,6 @@ sendBtn.onclick = () => {
 };
 
 exitChatBtn.onclick = () => {
-  // Salir de chat vuelve a la lista de salas
   currentRoom = null;
   showScreen(roomsListScreen);
 };

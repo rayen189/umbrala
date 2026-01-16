@@ -1,15 +1,10 @@
-/* =========================
-   VARIABLES GLOBALES
-========================= */
-let isStalkerless = false;
-let currentRoom = null;
-let activePrivateChat = null;
-let users = [];
-let timeline = [];
-let privateTimeline = [];
-let globalFreeze = false;
+window.onload=()=>{
 
-let rooms = [
+let isStalkerless=false, currentRoom=null, activePrivateChat=null;
+let timeline=[], privateTimeline=[];
+let globalFreeze=false;
+
+let rooms=[
   {name:"Norte de Chile 🌵", users:[]},
   {name:"Sur de Chile 🗻", users:[]},
   {name:"Centro 🌃", users:[]},
@@ -18,209 +13,69 @@ let rooms = [
   {name:"Directo al 🕳️", users:[], hidden:true}
 ];
 
-/* =========================
-   ELEMENTOS HTML
-========================= */
-const landingScreen = document.getElementById('landingScreen');
-const roomsListScreen = document.getElementById('roomsListScreen');
-const chatScreen = document.getElementById('chatScreen');
+const landingScreen=document.getElementById('landingScreen');
+const roomsListScreen=document.getElementById('roomsListScreen');
+const chatScreen=document.getElementById('chatScreen');
 
-const chatInput = document.getElementById('chatInput');
-const imageInput = document.getElementById('imageInput');
-const chatMessages = document.getElementById('chatMessages');
-const privateChatContainer = document.getElementById('privateChatContainer');
-const privateChatMessages = document.getElementById('privateChatMessages');
-const privateChatName = document.getElementById('privateChatName');
-const sendBtn = document.getElementById('sendBtn');
-const roomsList = document.getElementById('roomsList');
-const connectedUsersList = document.getElementById('connectedUsers');
-const totalUsersCounter = document.getElementById('totalUsersCounter');
+const chatInput=document.getElementById('chatInput');
+const chatMessages=document.getElementById('chatMessages');
+const privateChatMessages=document.getElementById('privateChatMessages');
+const sendBtn=document.getElementById('sendBtn');
+const roomsList=document.getElementById('roomsList');
+const connectedUsersList=document.getElementById('connectedUsers');
+const totalUsersCounter=document.getElementById('totalUsersCounter');
 
-const rootBar = document.getElementById('rootBar');
-const shadowBtn = document.getElementById('shadowBtn');
-const viewMapBtn = document.getElementById('viewMapBtn');
-const freezeBtn = document.getElementById('freezeBtn');
-const godViewBtn = document.getElementById('godViewBtn');
-const vanishBtn = document.getElementById('vanishBtn');
+const rootBar=document.getElementById('rootBar');
+const shadowBtn=document.getElementById('shadowBtn');
+const viewMapBtn=document.getElementById('viewMapBtn');
+const freezeBtn=document.getElementById('freezeBtn');
+const godViewBtn=document.getElementById('godViewBtn');
+const vanishBtn=document.getElementById('vanishBtn');
 
-/* =========================
-   FUNCIONES DE PANTALLAS
-========================= */
+const privateChatContainer=document.getElementById('privateChatContainer');
+const privateChatName=document.getElementById('privateChatName');
+
+const imageBtn=document.getElementById('imageBtn');
+const imageInput=document.getElementById('imageInput');
+
 function showScreen(screen){
-  document.querySelectorAll('.screen').forEach(s => s.style.display='none');
-  screen.style.display='flex';
+  document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active'); s.classList.add('inactive');});
+  screen.classList.remove('inactive'); screen.classList.add('active');
 }
 
-/* =========================
-   TOTAL USUARIOS
-========================= */
 function updateTotalUsers(){
-  let allUsers = [];
-  rooms.forEach(r => allUsers.push(...r.users));
-  const uniqueUsers = [...new Set(allUsers)];
-  totalUsersCounter.textContent = `(${uniqueUsers.length} usuarios conectados)`;
+  let allUsers=[]; rooms.forEach(r=>allUsers.push(...r.users));
+  const unique=[...new Set(allUsers)];
+  totalUsersCounter.textContent=`Usuarios conectados: ${unique.length}`;
 }
 
-/* =========================
-   RENDER SALAS
-========================= */
 function renderRooms(){
-  roomsList.innerHTML = '';
+  roomsList.innerHTML='';
   rooms.forEach((r,i)=>{
     if(r.hidden && !isStalkerless) return;
-    const btn = document.createElement('button');
-    btn.textContent = `${r.name} (${r.users.length})`;
+    const btn=document.createElement('button');
+    btn.textContent=`${r.name} (${r.users.length})`;
     btn.className='portal-btn';
-    btn.onclick = ()=> enterRoom(i);
+    btn.onclick=()=>enterRoom(i);
     roomsList.appendChild(btn);
   });
   updateTotalUsers();
 }
 
-/* =========================
-   ENTRAR A SALA
-========================= */
 function enterRoom(i){
-  currentRoom = i;
-  chatMessages.innerHTML='';
-  const userName = isStalkerless ? 'Stalkerless' : 'User'+Math.floor(Math.random()*1000);
-  rooms[i].users.push(userName);
-  renderRooms();
+  currentRoom=i; chatMessages.innerHTML='';
+  const user=isStalkerless?'Stalkerless':'User'+Math.floor(Math.random()*1000);
+  rooms[i].users.push(user); renderRooms(); showScreen(chatScreen);
+  document.getElementById('currentRoomName').textContent=rooms[i].name;
   renderConnectedUsers();
-  showScreen(chatScreen);
-  document.getElementById('currentRoomName').textContent = rooms[i].name;
-  if(isStalkerless) rootBar.style.display='flex';
 }
 
-/* =========================
-   CHAT
-========================= */
-sendBtn.onclick = () => {
-  if(globalFreeze) return alert("¡Chat congelado!");
-  const msg = chatInput.value.trim();
-  if(!msg && !imageInput.files.length) return;
-
-  const user = isStalkerless ? 'Stalkerless' : 'User'+Math.floor(Math.random()*1000);
-
-  if(activePrivateChat){
-    // Chat privado
-    const data = {user, msg, privateWith: activePrivateChat, time: new Date(), image: imageInput.files[0] ? URL.createObjectURL(imageInput.files[0]) : null};
-    privateTimeline.push(data);
-    appendPrivateMessage(data);
-    setTimeout(()=> removePrivateMessage(data), 60000);
-  } else {
-    // Sala pública
-    const data = {user, msg, room: rooms[currentRoom].name, time: new Date(), image: imageInput.files[0] ? URL.createObjectURL(imageInput.files[0]) : null};
-    timeline.push(data);
-    appendMessage(data);
-    setTimeout(()=> removeMessage(data), 30000);
-  }
-  chatInput.value='';
-  imageInput.value='';
-};
-
-function appendMessage(data){
-  const div = document.createElement('div');
-  div.className='glow';
-  div.innerHTML = data.image ? `[${data.room}] <b>${data.user}</b>: ${data.msg}<br><img src="${data.image}" style="max-width:200px;">` : `[${data.room}] <b>${data.user}</b>: ${data.msg}`;
-  chatMessages.appendChild(div);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+function appendMessage(d){
+  const div=document.createElement('div');
+  if(d.img) { const img=document.createElement('img'); img.src=d.img; img.style.maxWidth='150px'; div.appendChild(img); }
+  div.appendChild(document.createTextNode(d.msg ? ` ${d.msg}` : ''));
+  div.className='glow'; chatMessages.appendChild(div); chatMessages.scrollTop=chatMessages.scrollHeight;
 }
-
-function appendPrivateMessage(data){
-  const div = document.createElement('div');
-  div.className='glow';
-  div.innerHTML = data.image ? `<b>${data.user}</b>: ${data.msg}<br><img src="${data.image}" style="max-width:200px;">` : `<b>${data.user}</b>: ${data.msg}`;
-  privateChatMessages.appendChild(div);
-  privateChatMessages.scrollTop = privateChatMessages.scrollHeight;
-}
-
-function removeMessage(data){
-  chatMessages.querySelectorAll('div').forEach(div=>{
-    if(div.textContent.includes(data.msg)) div.remove();
-  });
-  const index = timeline.indexOf(data);
-  if(index!==-1) timeline.splice(index,1);
-}
-
-function removePrivateMessage(data){
-  privateChatMessages.querySelectorAll('div').forEach(div=>{
-    if(div.textContent.includes(data.msg)) div.remove();
-  });
-  const index = privateTimeline.indexOf(data);
-  if(index!==-1) privateTimeline.splice(index,1);
-}
-
-/* =========================
-   USUARIOS CONECTADOS
-========================= */
-function renderConnectedUsers(){
-  connectedUsersList.innerHTML='';
-  rooms[currentRoom].users.forEach(u=>{
-    const li = document.createElement('li');
-    li.textContent = u;
-    li.onclick = ()=> openPrivateChat(u);
-    connectedUsersList.appendChild(li);
-  });
-}
-
-function openPrivateChat(user){
-  if(user === (isStalkerless ? 'Stalkerless' : null)) return;
-  activePrivateChat = user;
-  privateChatContainer.style.display='flex';
-  privateChatName.textContent = user;
-}
-
-/* =========================
-   BOTONES ROOT
-========================= */
-shadowBtn.onclick = () => alert("ShadowBan aplicado");
-viewMapBtn.onclick = () => alert("ViewMap activado");
-freezeBtn.onclick = () => { globalFreeze=!globalFreeze; alert(`Freeze global: ${globalFreeze}`); };
-godViewBtn.onclick = () => alert("GodView activado");
-vanishBtn.onclick = () => alert("Modo invisible activado");
-
-/* =========================
-   BOTONES NAVEGACIÓN
-========================= */
-document.getElementById("backToStartBtn").onclick = ()=>{
-  showScreen(landingScreen);
-  currentRoom = null;
-  activePrivateChat = null;
-  privateChatContainer.style.display='none';
-};
-
-document.getElementById("backToRoomsBtn").onclick = ()=>{
-  showScreen(roomsListScreen);
-  activePrivateChat = null;
-  privateChatContainer.style.display='none';
-  renderRooms();
-};
-
-/* =========================
-   LOGIN STALKERLESS
-========================= */
-document.getElementById("rootLoginBtn").onclick = ()=>{
-  const nick = prompt("Usuario Root:");
-  const pass = prompt("Clave Root:");
-  if(nick==='stalkerless' && pass==='stalkerless1234'){
-    isStalkerless=true;
-    alert("Bienvenido Stalkerless");
-    showScreen(roomsListScreen);
-    renderRooms();
-  } else alert("Credenciales incorrectas");
-};
-
-/* =========================
-   BOTÓN INICIALIZAR
-========================= */
-document.getElementById("initializeBtn").onclick = ()=>{
-  showScreen(roomsListScreen);
-  renderRooms();
-};
-
-/* =========================
-   INICIALIZACIÓN
-========================= */
-renderRooms();
-showScreen(landingScreen);
+function appendPrivateMessage(d){
+  const div=document.createElement('div');
+ 

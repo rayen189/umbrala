@@ -1,7 +1,12 @@
-body.page, .screen {
+/* ==================================================
+   Umbrala CSS — Actualizado
+   Futurista · Terminal · Violeta oscuro
+================================================== */
+
+body.page {
   font-family: 'Courier New', monospace;
-  background: transparent;
-  color: #8a2be2;
+  background: #000;
+  color: #aa88ff; /* Violeta futurista */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,159 +16,207 @@ body.page, .screen {
   overflow: hidden;
 }
 
+/* =========================
+   Pantallas
+========================= */
 .screen {
   width: 100%;
   height: 100%;
   padding: 1rem;
-  position: relative;
-  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-/* TERMINAL */
-.terminal-box {
-  background: rgba(0,0,0,0.3);
-  padding: 1rem 2rem;
-  border: 1px solid #8a2be2;
-  box-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2;
+/* =========================
+   Pantalla Inicio Terminal
+========================= */
+#landingScreen h1 {
+  font-size: 3rem;
+  text-align: center;
+  cursor: default;
+  text-shadow: 0 0 10px #aa88ff, 0 0 20px #aa88ff, 0 0 40px #aa88ff;
+  margin-bottom: 1rem;
+}
+
+#landingScreen p {
+  font-size: 1.1rem;
   margin-bottom: 2rem;
 }
 
-.line {
-  margin: 0.2rem 0;
-}
-
-.line.glow {
-  font-size: 2rem;
-  text-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2, 0 0 40px #8a2be2;
-  text-align: center;
-}
-
-button {
+#landingScreen button {
   padding: 0.7rem 1.5rem;
+  margin: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
   background: #111;
-  color: #8a2be2;
-  border: 1px solid #8a2be2;
+  color: #aa88ff;
+  border: 1px solid #aa88ff;
+  text-shadow: 0 0 5px #aa88ff;
+  transition: 0.2s;
+}
+
+#landingScreen button:hover {
+  background: #aa88ff;
+  color: #000;
+  box-shadow: 0 0 10px #aa88ff, 0 0 20px #aa88ff, 0 0 40px #aa88ff;
+}
+
+/* =========================
+   Salas Portal
+========================= */
+#roomsListScreen {
+  flex-direction: column;
+  align-items: center;
+}
+
+.portal-btn {
+  margin: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  background: #111;
+  color: #aa88ff;
+  border: 1px solid #aa88ff;
+  text-shadow: 0 0 5px #aa88ff;
+  transition: 0.2s;
+}
+
+.portal-btn:hover {
+  background: #aa88ff;
+  color: #000;
+  box-shadow: 0 0 15px #aa88ff, 0 0 25px #aa88ff;
+}
+
+/* =========================
+   Chat Screen
+========================= */
+#chatScreen {
+  flex-direction: row;
+  justify-content: space-between;
+  width: 90%;
+  height: 90%;
+}
+
+/* Chat izquierdo (mensajes) */
+#chatContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-right: 1rem;
+}
+
+/* Contenedor mensajes */
+#chatMessages {
+  flex: 1;
+  width: 100%;
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #aa88ff;
+  padding: 0.5rem;
+  background: rgba(0,0,0,0.5);
+  box-shadow: 0 0 10px #aa88ff;
+}
+
+/* Input y botones */
+#chatInput, #sendBtn, #imageInput {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #aa88ff;
+  background: #111;
+  color: #aa88ff;
+}
+
+/* Usuarios a la derecha */
+#connectedUsers {
+  width: 200px;
+  border: 1px solid #aa88ff;
+  background: rgba(0,0,0,0.5);
+  padding: 0.5rem;
+  overflow-y: auto;
+  list-style: none;
+}
+
+#connectedUsers li {
+  margin: 0.3rem 0;
   cursor: pointer;
   transition: 0.2s;
-  text-shadow: 0 0 5px #8a2be2;
-  font-size: 1rem;
-  margin-top: 1rem;
 }
 
-button:hover {
-  background: #8a2be2;
+#connectedUsers li:hover {
+  color: #fff;
+}
+
+/* =========================
+   Contador usuarios
+========================= */
+#totalUsersCounter {
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+/* =========================
+   Panel Stalkerless
+========================= */
+#stalkerlessPanel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(50,0,80,0.9);
+  padding: 1rem;
+  border: 2px solid #aa88ff;
+  z-index: 999;
+  text-align: center;
+  box-shadow: 0 0 15px #aa88ff;
+}
+
+#stalkerlessPanel button {
+  margin: 0.3rem;
+  padding: 0.5rem 1rem;
+  background: #111;
+  color: #aa88ff;
+  border: 1px solid #aa88ff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#stalkerlessPanel button:hover {
+  background: #aa88ff;
   color: #000;
-  box-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2, 0 0 40px #8a2be2;
+  box-shadow: 0 0 10px #aa88ff, 0 0 20px #aa88ff;
 }
 
+/* =========================
+   Emojis
+========================= */
+.emoji {
+  cursor: pointer;
+  margin: 0.2rem;
+  font-size: 1.5rem;
+  transition: 0.2s;
+}
+
+.emoji:hover {
+  transform: scale(1.3);
+}
+
+/* =========================
+   Mensajes glow
+========================= */
+.glow {
+  text-shadow: 0 0 5px #aa88ff, 0 0 10px #aa88ff, 0 0 20px #aa88ff;
+}
+
+/* =========================
+   Canvas Partículas
+========================= */
 canvas#particles {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* SALAS PORTAL */
-.portal-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.portal-btn {
-  background: linear-gradient(135deg, #8a2be2, #4b0082);
-  border: 2px solid #8a2be2;
-  padding: 1.5rem 2rem;
-  font-size: 1.2rem;
-  color: #fff;
-  font-weight: bold;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 0 15px #8a2be2, 0 0 30px #8a2be2;
-  transition: 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.portal-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 25px #8a2be2, 0 0 50px #8a2be2;
-}
-
-/* CONTADOR DE USUARIOS */
-#totalUsersCounter {
-  margin-left: 1rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #fff;
-}
-
-/* CHAT */
-.chat-screen {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  gap: 1rem;
-  padding: 1rem;
-  justify-content: center;
-}
-
-.chat-left {
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.chat-title {
-  text-align: center;
-  margin-bottom: 0.5rem;
-}
-
-.chat-container {
-  flex: 1;
-  max-height: 400px;
-  overflow-y: auto;
-  border: 1px solid #8a2be2;
-  padding: 0.5rem;
-  background: rgba(0,0,0,0.5);
-  box-shadow: 0 0 10px #8a2be2;
-}
-
-.chat-inputs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.chat-inputs input[type=text] {
-  flex: 1;
-  padding: 0.5rem;
-  border: 1px solid #8a2be2;
-  background: #111;
-  color: #8a2be2;
-}
-
-.chat-right {
-  flex: 0 0 200px;
-  max-height: 500px;
-  overflow-y: auto;
-  border: 1px solid #8a2be2;
-  padding: 0.5rem;
-  background: rgba(0,0,0,0.5);
-  box-shadow: 0 0 10px #8a2be2;
-}
-
-.users-container ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  z-index: -1;
 }

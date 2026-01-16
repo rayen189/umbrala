@@ -4,8 +4,11 @@
 let isStalkerless = false;
 let currentRoom = null;
 let activePrivateChat = null;
-
 let users = [];
+let timeline = [];
+let privateTimeline = [];
+let globalFreeze = false;
+
 let rooms = [
   {name:"Norte de Chile 🌵", users:[]},
   {name:"Sur de Chile 🗻", users:[]},
@@ -15,10 +18,6 @@ let rooms = [
   {name:"Directo al 🕳️", users:[], hidden:true}
 ];
 
-let globalFreeze = false;
-let timeline = [];
-let privateTimeline = [];
-
 /* =========================
    ELEMENTOS HTML
 ========================= */
@@ -27,10 +26,15 @@ const roomsListScreen = document.getElementById('roomsListScreen');
 const chatScreen = document.getElementById('chatScreen');
 
 const chatInput = document.getElementById('chatInput');
-const chatMessages = document.getElementById('chatMessages');
-const sendBtn = document.getElementById('sendBtn');
 const imageInput = document.getElementById('imageInput');
+const chatMessages = document.getElementById('chatMessages');
+const privateChatContainer = document.getElementById('privateChatContainer');
+const privateChatMessages = document.getElementById('privateChatMessages');
+const privateChatName = document.getElementById('privateChatName');
+const sendBtn = document.getElementById('sendBtn');
 const roomsList = document.getElementById('roomsList');
+const connectedUsersList = document.getElementById('connectedUsers');
+const totalUsersCounter = document.getElementById('totalUsersCounter');
 
 const rootBar = document.getElementById('rootBar');
 const shadowBtn = document.getElementById('shadowBtn');
@@ -39,28 +43,27 @@ const freezeBtn = document.getElementById('freezeBtn');
 const godViewBtn = document.getElementById('godViewBtn');
 const vanishBtn = document.getElementById('vanishBtn');
 
-const connectedUsersList = document.getElementById('connectedUsers');
-const totalUsersCounter = document.getElementById('totalUsersCounter');
-
-const privateChatContainer = document.getElementById('privateChatContainer');
-const privateChatMessages = document.getElementById('privateChatMessages');
-const privateChatName = document.getElementById('privateChatName');
-
 /* =========================
-   FUNCIONES PRINCIPALES
+   FUNCIONES DE PANTALLAS
 ========================= */
 function showScreen(screen){
-  document.querySelectorAll('.screen').forEach(s=>s.style.display='none');
+  document.querySelectorAll('.screen').forEach(s => s.style.display='none');
   screen.style.display='flex';
 }
 
+/* =========================
+   TOTAL USUARIOS
+========================= */
 function updateTotalUsers(){
   let allUsers = [];
   rooms.forEach(r => allUsers.push(...r.users));
   const uniqueUsers = [...new Set(allUsers)];
-  totalUsersCounter.textContent = `Usuarios conectados: ${uniqueUsers.length}`;
+  totalUsersCounter.textContent = `(${uniqueUsers.length} usuarios conectados)`;
 }
 
+/* =========================
+   RENDER SALAS
+========================= */
 function renderRooms(){
   roomsList.innerHTML = '';
   rooms.forEach((r,i)=>{
@@ -74,56 +77,44 @@ function renderRooms(){
   updateTotalUsers();
 }
 
+/* =========================
+   ENTRAR A SALA
+========================= */
 function enterRoom(i){
   currentRoom = i;
   chatMessages.innerHTML='';
   const userName = isStalkerless ? 'Stalkerless' : 'User'+Math.floor(Math.random()*1000);
   rooms[i].users.push(userName);
+  renderRooms();
+  renderConnectedUsers();
   showScreen(chatScreen);
   document.getElementById('currentRoomName').textContent = rooms[i].name;
-  renderConnectedUsers();
+  if(isStalkerless) rootBar.style.display='flex';
 }
 
 /* =========================
    CHAT
 ========================= */
-sendBtn.onclick = ()=>{
+sendBtn.onclick = () => {
   if(globalFreeze) return alert("¡Chat congelado!");
-  if(currentRoom===null && !activePrivateChat) return;
-
   const msg = chatInput.value.trim();
-  const file = imageInput.files[0];
-
-  if(!msg && !file) return;
+  if(!msg && !imageInput.files.length) return;
 
   const user = isStalkerless ? 'Stalkerless' : 'User'+Math.floor(Math.random()*1000);
 
   if(activePrivateChat){
-    const data = {user, msg, file, privateWith: activePrivateChat, time: new Date()};
+    // Chat privado
+    const data = {user, msg, privateWith: activePrivateChat, time: new Date(), image: imageInput.files[0] ? URL.createObjectURL(imageInput.files[0]) : null};
     privateTimeline.push(data);
     appendPrivateMessage(data);
-
-    setTimeout(()=>{
-      const index = privateTimeline.indexOf(data);
-      if(index!==-1){
-        privateTimeline.splice(index,1);
-        removePrivateMessageFromDOM(data);
-      }
-    }, 60000); // 60 segundos
+    setTimeout(()=> removePrivateMessage(data), 60000);
   } else {
-    const data = {user, msg, file, room: rooms[currentRoom].name, time: new Date()};
+    // Sala pública
+    const data = {user, msg, room: rooms[currentRoom].name, time: new Date(), image: imageInput.files[0] ? URL.createObjectURL(imageInput.files[0]) : null};
     timeline.push(data);
     appendMessage(data);
-
-    setTimeout(()=>{
-      const index = timeline.indexOf(data);
-      if(index!==-1){
-        timeline.splice(index,1);
-        removeMessageFromDOM(data);
-      }
-    }, 30000); // 30 segundos
+    setTimeout(()=> removeMessage(data), 30000);
   }
-
   chatInput.value='';
   imageInput.value='';
 };
@@ -131,15 +122,7 @@ sendBtn.onclick = ()=>{
 function appendMessage(data){
   const div = document.createElement('div');
   div.className='glow';
-  if(data.msg) div.textContent = `[${data.room}] ${data.user}: ${data.msg}`;
-  if(data.file){
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(data.file);
-    img.style.maxWidth = '200px';
-    img.style.maxHeight = '150px';
-    img.style.display = 'block';
-    div.appendChild(img);
-  }
+  div.innerHTML = data.image ? `[${data.room}] <b>${data.user}</b>: ${data.msg}<br><img src="${data.image}" style="max-width:200px;">` : `[${data.room}] <b>${data.user}</b>: ${data.msg}`;
   chatMessages.appendChild(div);
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
@@ -147,33 +130,25 @@ function appendMessage(data){
 function appendPrivateMessage(data){
   const div = document.createElement('div');
   div.className='glow';
-  if(data.msg) div.textContent = `${data.user}: ${data.msg}`;
-  if(data.file){
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(data.file);
-    img.style.maxWidth = '200px';
-    img.style.maxHeight = '150px';
-    img.style.display = 'block';
-    div.appendChild(img);
-  }
+  div.innerHTML = data.image ? `<b>${data.user}</b>: ${data.msg}<br><img src="${data.image}" style="max-width:200px;">` : `<b>${data.user}</b>: ${data.msg}`;
   privateChatMessages.appendChild(div);
   privateChatMessages.scrollTop = privateChatMessages.scrollHeight;
 }
 
-function removeMessageFromDOM(data){
-  const divs = document.querySelectorAll('#chatMessages div');
-  divs.forEach(div=>{
-    if(data.msg && div.textContent.includes(`[${data.room}] ${data.user}: ${data.msg}`)) div.remove();
-    if(data.file && div.querySelector('img') && div.querySelector('img').src === URL.createObjectURL(data.file)) div.remove();
+function removeMessage(data){
+  chatMessages.querySelectorAll('div').forEach(div=>{
+    if(div.textContent.includes(data.msg)) div.remove();
   });
+  const index = timeline.indexOf(data);
+  if(index!==-1) timeline.splice(index,1);
 }
 
-function removePrivateMessageFromDOM(data){
-  const divs = document.querySelectorAll('#privateChatMessages div');
-  divs.forEach(div=>{
-    if(data.msg && div.textContent.includes(`${data.user}: ${data.msg}`)) div.remove();
-    if(data.file && div.querySelector('img') && div.querySelector('img').src === URL.createObjectURL(data.file)) div.remove();
+function removePrivateMessage(data){
+  privateChatMessages.querySelectorAll('div').forEach(div=>{
+    if(div.textContent.includes(data.msg)) div.remove();
   });
+  const index = privateTimeline.indexOf(data);
+  if(index!==-1) privateTimeline.splice(index,1);
 }
 
 /* =========================
@@ -190,7 +165,7 @@ function renderConnectedUsers(){
 }
 
 function openPrivateChat(user){
-  if(user=== (isStalkerless ? 'Stalkerless' : null)) return;
+  if(user === (isStalkerless ? 'Stalkerless' : null)) return;
   activePrivateChat = user;
   privateChatContainer.style.display='flex';
   privateChatName.textContent = user;
@@ -200,11 +175,8 @@ function openPrivateChat(user){
    BOTONES ROOT
 ========================= */
 shadowBtn.onclick = () => alert("ShadowBan aplicado");
-viewMapBtn.onclick = () => alert("Mapa activado");
-freezeBtn.onclick = () => {
-  globalFreeze = !globalFreeze;
-  alert(`Freeze global: ${globalFreeze}`);
-};
+viewMapBtn.onclick = () => alert("ViewMap activado");
+freezeBtn.onclick = () => { globalFreeze=!globalFreeze; alert(`Freeze global: ${globalFreeze}`); };
 godViewBtn.onclick = () => alert("GodView activado");
 vanishBtn.onclick = () => alert("Modo invisible activado");
 
@@ -214,6 +186,8 @@ vanishBtn.onclick = () => alert("Modo invisible activado");
 document.getElementById("backToStartBtn").onclick = ()=>{
   showScreen(landingScreen);
   currentRoom = null;
+  activePrivateChat = null;
+  privateChatContainer.style.display='none';
 };
 
 document.getElementById("backToRoomsBtn").onclick = ()=>{
@@ -224,25 +198,25 @@ document.getElementById("backToRoomsBtn").onclick = ()=>{
 };
 
 /* =========================
-   BOTONES INICIALIZAR / LOGIN ROOT
+   LOGIN STALKERLESS
 ========================= */
-document.getElementById('initializeBtn').onclick = ()=>{
-  showScreen(roomsListScreen);
-  renderRooms();
-};
-
-document.getElementById('rootLoginBtn').onclick = ()=>{
-  const user = prompt("Usuario Root:");
-  const pass = prompt("Contraseña Root:");
-  if(user==='stalkerless' && pass==='stalkerless1234'){
-    isStalkerless = true;
-    alert("Acceso Root concedido");
-    rootBar.style.display='flex';
+document.getElementById("rootLoginBtn").onclick = ()=>{
+  const nick = prompt("Usuario Root:");
+  const pass = prompt("Clave Root:");
+  if(nick==='stalkerless' && pass==='stalkerless1234'){
+    isStalkerless=true;
+    alert("Bienvenido Stalkerless");
     showScreen(roomsListScreen);
     renderRooms();
-  } else {
-    alert("Acceso denegado");
-  }
+  } else alert("Credenciales incorrectas");
+};
+
+/* =========================
+   BOTÓN INICIALIZAR
+========================= */
+document.getElementById("initializeBtn").onclick = ()=>{
+  showScreen(roomsListScreen);
+  renderRooms();
 };
 
 /* =========================

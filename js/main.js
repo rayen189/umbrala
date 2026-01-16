@@ -1,100 +1,96 @@
-const screens = {
-  init: document.getElementById("screen-init"),
-  rooms: document.getElementById("screen-rooms"),
-  chat: document.getElementById("screen-chat")
-};
-
-let isRoot = false;
-let myNick = "anon-" + Math.floor(Math.random()*9999);
-let currentRoom = "";
+const boot = document.getElementById("boot");
+const rooms = document.getElementById("rooms");
+const chat = document.getElementById("chat");
+const messages = document.getElementById("messages");
+const roomName = document.getElementById("roomName");
 
 const channel = new BroadcastChannel("umbrala");
 
-function show(screen) {
-  Object.values(screens).forEach(s => s.classList.remove("active"));
-  screens[screen].classList.add("active");
-}
+let isRoot = false;
 
-/* INIT */
-document.getElementById("initBtn").onclick = () => show("rooms");
-
-document.getElementById("rootLoginBtn").onclick = () => {
-  const u = rootUser.value;
-  const p = rootPass.value;
-  if (u === "root" && p === "umbrala") {
-    isRoot = true;
-    document.getElementById("rootRoomBtn").classList.remove("hidden");
-    alert("Root activo");
-  }
+document.getElementById("initBtn").onclick = () => {
+  boot.classList.add("hidden");
+  rooms.classList.remove("hidden");
 };
 
-/* NAV */
-goHome.onclick = () => show("init");
-exitBtn.onclick = () => show("init");
+document.getElementById("exitBtn").onclick = () => {
+  rooms.classList.add("hidden");
+  boot.classList.remove("hidden");
+};
 
-function enterRoom(room) {
-  currentRoom = room;
-  roomName.textContent = "Sala: " + room;
-  show("chat");
+document.getElementById("logo").onclick = () => {
+  rooms.classList.add("hidden");
+  boot.classList.remove("hidden");
+};
+
+function enterRoom(name) {
+  roomName.textContent = name;
+  rooms.classList.add("hidden");
+  chat.classList.remove("hidden");
 }
 
-function backToRooms() {
-  show("rooms");
+function backRooms() {
+  chat.classList.add("hidden");
+  rooms.classList.remove("hidden");
 }
 
-/* CHAT */
-chatForm.onsubmit = e => {
+document.getElementById("chatForm").onsubmit = e => {
   e.preventDefault();
-  if (!messageInput.value) return;
-  send({ type:"text", text: messageInput.value });
-  messageInput.value = "";
+  const text = msgInput.value.trim();
+  if (!text) return;
+  sendMessage({ type: "text", content: text });
+  msgInput.value = "";
 };
 
-imageBtn.onclick = () => imageInput.click();
+document.getElementById("imgBtn").onclick = () => imgInput.click();
 
-imageInput.onchange = () => {
-  const file = imageInput.files[0];
-  if (!file) return;
+imgInput.onchange = () => {
+  const file = imgInput.files[0];
   const reader = new FileReader();
-  reader.onload = () => send({ type:"image", data: reader.result });
+  reader.onload = () => sendMessage({ type: "img", content: reader.result });
   reader.readAsDataURL(file);
 };
 
-function send(payload) {
-  payload.nick = myNick;
-  payload.room = currentRoom;
-  channel.postMessage(payload);
-  render(payload);
+function sendMessage(msg) {
+  channel.postMessage(msg);
+  renderMessage(msg);
 }
 
-channel.onmessage = e => {
-  if (e.data.room !== currentRoom) return;
-  if (e.data.nick === myNick) return;
-  render(e.data);
-};
+channel.onmessage = e => renderMessage(e.data);
 
-function render(data) {
-  const m = document.createElement("div");
-  m.className = "message";
+function renderMessage(msg) {
+  const div = document.createElement("div");
+  div.className = "message";
 
-  if (data.type === "text") {
-    m.textContent = `${data.nick}: ${data.text}`;
-  } else {
+  if (msg.type === "text") div.textContent = msg.content;
+  if (msg.type === "img") {
     const img = document.createElement("img");
-    img.src = data.data;
-    m.append(`${data.nick}:`, img);
+    img.src = msg.content;
+    div.appendChild(img);
   }
 
-  const t = document.createElement("span");
-  t.className = "timer";
-  let s = 8;
-  t.textContent = s+"s";
-  m.appendChild(t);
+  const timer = document.createElement("span");
+  timer.className = "timer";
+  let t = 10;
+  timer.textContent = ` ${t}`;
+  div.appendChild(timer);
 
-  messages.appendChild(m);
-  setInterval(()=>{ 
-    s--; 
-    t.textContent=s+"s"; 
-    if(s<=0) m.remove();
-  },1000);
+  messages.appendChild(div);
+
+  const interval = setInterval(() => {
+    t--;
+    timer.textContent = ` ${t}`;
+    if (t <= 0) {
+      div.remove();
+      clearInterval(interval);
+    }
+  }, 1000);
 }
+
+/* ROOT SECRETO */
+document.addEventListener("keydown", e => {
+  if (e.ctrlKey && e.key === "r") {
+    isRoot = true;
+    enterRoom("ROOT");
+  }
+});

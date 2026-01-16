@@ -4,58 +4,56 @@
   <meta charset="UTF-8">
   <title>Umbrala</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#7a7cff">
+  <meta name="theme-color" content="#00ffff">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="page">
 
+<body>
+
+  <!-- FONDO -->
   <canvas id="particles"></canvas>
+  <div class="overlay"></div>
 
-  <!-- PANTALLA PRINCIPAL -->
-  <div id="landingScreen" class="screen">
-    <h1 id="site-title" class="clickable-title">UMBRALA</h1>
-    <p>Comunicación efímera y anónima con estilo cyberpunk</p>
-    <button id="initializeBtn">Inicializar</button>
-    <button id="rootLoginBtn">Login Root</button>
-  </div>
+  <!-- HOME -->
+  <section id="home" class="screen">
+    <h1 class="clickable-title" id="rootTrigger">UMBRALA</h1>
 
-  <!-- SALAS -->
-  <div id="roomsScreen" class="screen" style="display:none;">
-    <h1 id="site-title-rooms" class="clickable-title">UMBRALA</h1>
-    <div id="roomsList"></div>
-    <div id="chatContainer">
-      <div id="chatMessages" class="chat-container"></div>
-      <input id="chatInput" type="text" placeholder="Escribe tu mensaje...">
-      <button id="sendBtn">Enviar</button>
-      <button id="exitRoomBtn">Salir</button>
-      <div id="emoji-picker"></div>
+    <select id="roomSelect">
+      <option value="">Selecciona una sala</option>
+      <option value="global">Global</option>
+      <option value="chile">Chile</option>
+      <option value="norte">Norte de Chile</option>
+      <option value="sur">Sur de Chile</option>
+      <option value="laserena">La Serena</option>
+    </select>
+
+    <button id="enterRoom">Entrar</button>
+  </section>
+
+  <!-- CHAT -->
+  <section id="chat" class="screen hidden">
+    <div class="chat-header">
+      <span id="roomName"></span>
+      <button id="exitRoom">Salir</button>
     </div>
-  </div>
 
-  <!-- DASHBOARD ROOT -->
-  <div id="rootScreen" class="screen" style="display:none;">
-    <h1>UMBRALA ROOT</h1>
-    <div id="rootDashboard">
-      <div class="root-section">
-        <h2>Usuarios</h2>
-        <ul id="rootUsers"></ul>
-      </div>
-      <div class="root-section">
-        <h2>Salas</h2>
-        <ul id="rootRooms"></ul>
-      </div>
-      <div class="root-section">
-        <h2>Sistema</h2>
-        <button id="freezeGlobalBtn">Freeze Global</button>
-        <button id="godViewBtn">God View</button>
-        <button id="shutdownBtn">Apagar Umbrala</button>
-      </div>
-      <div class="root-section">
-        <h2>Timeline</h2>
-        <div id="root-console" class="chat-container"></div>
-      </div>
-    </div>
-  </div>
+    <div id="messages" class="chat-container"></div>
+
+    <form id="chatForm">
+      <input id="messageInput" placeholder="Mensaje efímero..." autocomplete="off" required>
+      <button type="submit">Enviar</button>
+    </form>
+  </section>
+
+  <!-- ROOT PANEL -->
+  <section id="rootPanel" class="screen hidden">
+    <h2>ROOT MODE</h2>
+    <p id="rootInfo"></p>
+    <button id="clearMessages">Borrar mensajes</button>
+    <button id="forceExit">Forzar salida</button>
+    <button id="shutdown">Apagar Umbrala</button>
+    <button id="exitRoot">Salir Root</button>
+  </section>
 
   <script src="js/particles.js"></script>
   <script src="js/main.js"></script>

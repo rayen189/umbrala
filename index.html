@@ -7,52 +7,49 @@
   <meta name="theme-color" content="#7a7cff">
   <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-<canvas id="particles"></canvas>
 
-<!-- PROTECCIÓN -->
-<div id="antiOverlay">⚠ CONTENIDO PROTEGIDO</div>
-<div id="watermark"></div>
+<canvas id="particles"></canvas>
 
 <!-- BOOT -->
 <div id="boot" class="screen center">
   <div class="terminal">
     <p>UMBRALA v1.0</p>
     <p>Sistema latente…</p>
+    <p>Comunicación efímera preparada.</p>
     <button id="initBtn">INICIALIZAR</button>
   </div>
 </div>
 
-<!-- SALAS -->
+<!-- ROOMS -->
 <div id="rooms" class="screen hidden">
-  <header>
-    <h1 onclick="goHome()">UMBRALA</h1>
+  <header class="topbar">
+    <h1 id="logo">UMBRALA</h1>
   </header>
 
-  <div class="room-list">
-    <button onclick="enterRoom('Global')">🌍 Global</button>
+  <div class="room-list center">
     <button onclick="enterRoom('Norte')">🌵 Norte</button>
     <button onclick="enterRoom('Centro')">🏙️ Centro</button>
     <button onclick="enterRoom('Sur')">❄️ Sur</button>
+    <button onclick="enterRoom('Global')">🌍 Global</button>
     <button onclick="enterRoom('Curiosidades')">🧠 Curiosidades</button>
   </div>
 </div>
 
 <!-- CHAT -->
 <div id="chat" class="screen hidden">
-  <header>
+  <header class="topbar">
     <span id="roomName"></span>
-    <span id="typing"></span>
     <button onclick="backRooms()">←</button>
   </header>
 
-  <div id="users"></div>
-  <div id="messages"></div>
+  <div id="messages" class="messages center"></div>
 
-  <form id="chatForm">
+  <form id="chatForm" class="chat-input center">
+    <input type="file" id="mediaInput" accept="image/*,video/*" hidden>
+    <button type="button" id="mediaBtn">📎</button>
     <input id="msgInput" placeholder="Mensaje efímero…" autocomplete="off">
-    <button>➤</button>
+    <button type="submit">➤</button>
   </form>
 </div>
 

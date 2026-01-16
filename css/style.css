@@ -34,11 +34,13 @@ body {
   display: none;
 }
 
+/* TERMINAL */
 .terminal {
   border: 1px solid #7a7cff;
   padding: 20px;
   text-align: center;
   width: 280px;
+  backdrop-filter: blur(4px);
 }
 
 button {
@@ -50,6 +52,7 @@ button {
   cursor: pointer;
 }
 
+/* ROOMS */
 header {
   display: flex;
   justify-content: space-between;
@@ -62,6 +65,7 @@ header {
   align-items: center;
 }
 
+/* CHAT */
 #messages {
   flex: 1;
   padding: 10px;
@@ -69,12 +73,9 @@ header {
 }
 
 .message {
-  margin-bottom: 8px;
-}
-
-.timer {
-  font-size: 11px;
-  color: #7a7cff;
+  margin-bottom: 10px;
+  position: relative;
+  transition: filter 1s linear, opacity 1s linear;
 }
 
 .message img {
@@ -83,6 +84,31 @@ header {
   border-radius: 6px;
 }
 
+/* BLUR PROGRESIVO */
+.blur-1 { filter: blur(1px); }
+.blur-2 { filter: blur(2px); }
+.blur-3 { filter: blur(3px); }
+
+/* GLITCH */
+.glitch {
+  animation: glitch 0.25s steps(2) infinite;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); opacity: 1; }
+  25% { transform: translate(-2px, 2px); }
+  50% { transform: translate(2px, -2px); }
+  75% { transform: translate(-1px, 1px); }
+  100% { transform: translate(0); opacity: 0.3; }
+}
+
+.timer {
+  font-size: 11px;
+  color: #7a7cff;
+  margin-left: 6px;
+}
+
+/* FORM */
 #chatForm {
   display: flex;
   border-top: 1px solid #222;

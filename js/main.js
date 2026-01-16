@@ -5,7 +5,6 @@ let isStalkerless = false;
 let currentRoom = null;
 let activePrivateChat = null;
 
-let users = [];
 let rooms = [
   {name:"Norte de Chile 🌵", users:[]},
   {name:"Sur de Chile 🗻", users:[]},
@@ -29,7 +28,6 @@ const chatScreen = document.getElementById('chatScreen');
 const chatInput = document.getElementById('chatInput');
 const chatMessages = document.getElementById('chatMessages');
 const sendBtn = document.getElementById('sendBtn');
-const exitRoomBtn = document.getElementById('exitRoomBtn');
 const roomsList = document.getElementById('roomsList');
 
 const rootBar = document.getElementById('rootBar');
@@ -41,6 +39,10 @@ const vanishBtn = document.getElementById('vanishBtn');
 
 const connectedUsersList = document.getElementById('connectedUsers');
 const totalUsersCounter = document.getElementById('totalUsersCounter');
+
+const privateChatContainer = document.getElementById('privateChatContainer');
+const privateChatName = document.getElementById('privateChatName');
+const privateChatMessages = document.getElementById('privateChatMessages');
 
 /* =========================
    FUNCIONES PRINCIPALES
@@ -76,8 +78,12 @@ function enterRoom(i){
   const userName = isStalkerless ? 'Stalkerless' : 'User'+Math.floor(Math.random()*1000);
   rooms[i].users.push(userName);
   renderRooms();
-  showScreen(chatScreen);
   renderConnectedUsers();
+  showScreen(chatScreen);
+  document.getElementById('currentRoomName').textContent = rooms[i].name;
+
+  // Mostrar barra root si es Stalkerless
+  rootBar.style.display = isStalkerless ? 'flex' : 'none';
 }
 
 /* =========================
@@ -135,9 +141,8 @@ function appendPrivateMessage(data){
   const div = document.createElement('div');
   div.textContent = `${data.user}: ${data.msg}`;
   div.className='glow';
-  const privateContainer = document.getElementById('privateChatMessages');
-  privateContainer.appendChild(div);
-  privateContainer.scrollTop = privateContainer.scrollHeight;
+  privateChatMessages.appendChild(div);
+  privateChatMessages.scrollTop = privateChatMessages.scrollHeight;
 }
 
 function removeMessageFromDOM(data){
@@ -172,9 +177,10 @@ function renderConnectedUsers(){
 }
 
 function openPrivateChat(user){
-  if(user=== (isStalkerless ? 'Stalkerless' : null)) return;
+  if(user === (isStalkerless ? 'Stalkerless' : null)) return;
   activePrivateChat = user;
-  document.getElementById('privateChatContainer').style.display='flex';
+  privateChatContainer.style.display='flex';
+  privateChatName.textContent = user;
 }
 
 /* =========================
@@ -200,7 +206,22 @@ document.getElementById("backToStartBtn").onclick = ()=>{
 document.getElementById("backToRoomsBtn").onclick = ()=>{
   showScreen(roomsListScreen);
   activePrivateChat = null;
+  privateChatContainer.style.display = 'none';
   renderRooms();
+};
+
+/* =========================
+   LOGIN ROOT (Stalkerless)
+========================= */
+document.getElementById('rootLoginBtn').onclick = ()=>{
+  const nick = prompt("Usuario Stalkerless:");
+  const pass = prompt("Clave Stalkerless:");
+  if(nick==='stalkerless' && pass==='stalkerless1234'){
+    isStalkerless = true;
+    showScreen(roomsListScreen);
+    renderRooms();
+    alert("Acceso Stalkerless activado");
+  } else alert("Credenciales incorrectas");
 };
 
 /* =========================

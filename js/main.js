@@ -156,8 +156,13 @@ function sendMessage() {
   // ejemplo:
   addMessage("yo", text);
 
-  chatInput.value = "";
-}
+  chatInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    sendMessage();
+  }
+
+  }
 
 sendBtn.addEventListener("click", sendMessage);
 

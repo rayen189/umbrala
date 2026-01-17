@@ -4,64 +4,54 @@
   <meta charset="UTF-8">
   <title>Umbrala</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0b0f14">
-
+  <meta name="theme-color" content="#000000">
   <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
+<body class="page">
 
 <canvas id="particles"></canvas>
 
-<!-- PANTALLA INICIO -->
+<!-- INICIO -->
 <section id="landingScreen" class="screen active">
-  <div class="terminal">
-    <h1>UMBRALA</h1>
-    <p class="typing">
-
-    <div class="features">
-      <div>Anónimo</div>
-      <div>Efímero</div>
-      <div>Privado</div>
-      <div>Sin rastros</div>
-    </div>
-
-    <button id="initBtn">Inicializar</button>
+  <h1 class="glow">UMBRALA</h1>
+  <div class="terminal-text">
+    <p>Inicializando canal anónimo…</p>
+    <p>Sin registro.</p>
+    <p>Sin rastros.</p>
+    <p>Mensajes efímeros.</p>
   </div>
+  <button id="initializeBtn">Inicializar</button>
 </section>
 
-<!-- PANTALLA SALAS -->
+<!-- SALAS -->
 <section id="roomsScreen" class="screen">
-  <header class="topbar">
-    <span>SALAS ACTIVAS</span>
-    <span>Usuarios: <b id="globalUserCount">0</b></span>
-  </header>
-
-  <div id="roomsContainer" class="rooms"></div>
-
-  <button id="backToStartBtn" class="back">Volver a Umbrala</button>
+  <h2>Salas activas</h2>
+  <div id="roomsList"></div>
+  <div id="userCount">Usuarios conectados: 4</div>
+  <button id="backToStart">Volver</button>
 </section>
 
-<!-- PANTALLA CHAT -->
+<!-- CHAT -->
 <section id="chatScreen" class="screen">
-  <header class="topbar">
-    <button id="backToRoomsBtn">← Salas</button>
-    <h2 id="roomTitle"></h2>
+  <header>
+    <button id="backToRooms">← Salas</button>
+    <span id="roomTitle"></span>
   </header>
 
   <div class="chat-layout">
-    <div class="chat-area">
+    <div class="chat-panel">
       <div id="messages" class="messages"></div>
 
-      <div class="input-area">
-        <input id="messageInput" type="text" placeholder="Escribe algo que desaparecerá…">
+      <div class="input-bar">
+        <input id="messageInput" type="text" placeholder="Tu mensaje desaparecerá…">
         <input id="imageInput" type="file" accept="image/*">
         <button id="sendBtn">Enviar</button>
       </div>
     </div>
 
-    <aside class="users">
-      <h3>Presencias</h3>
+    <aside class="users-panel">
+      <h3>Usuarios</h3>
       <ul id="usersList"></ul>
     </aside>
   </div>
@@ -69,6 +59,5 @@
 
 <script src="js/particles.js"></script>
 <script src="js/main.js"></script>
-
 </body>
 </html>

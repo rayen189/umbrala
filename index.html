@@ -28,7 +28,6 @@
 <!-- SALAS -->
 <section id="roomsScreen" class="screen">
   <h2 class="title">SALAS ACTIVAS</h2>
-
   <button class="room">🌵 Norte de Chile</button>
   <button class="room">🌃 Centro - Santiago</button>
   <button class="room">🗻 Sur de Chile</button>
@@ -42,7 +41,6 @@
     <h3 id="joiningRoomTitle"></h3>
 
     <label>Tu identidad anónima</label>
-
     <div class="nick-row">
       <input id="nicknameInput" placeholder="Elige tu nickname">
       <button id="randomNick">🔀</button>
@@ -54,7 +52,7 @@
       <li>• Mensajes desaparecen</li>
     </ul>
 
-    <button id="enterChatBtn" class="enter-chat">
+    <button id="enterChatBtn" class="enter-chat umb-btn">
       ENTRAR AL CHAT →
     </button>
 
@@ -66,17 +64,33 @@
 
 <!-- CHAT -->
 <section id="chatScreen" class="screen">
+
   <header class="chat-header">
-    <button id="backRooms">← Salas</button>
-    <span id="roomTitle"></span>
+    <div id="chatTabs">
+      <span class="chat-tab active" data-chat="public">🌎 Sala</span>
+    </div>
+    <button id="backRooms" class="ghost-btn">←</button>
   </header>
 
   <div id="messages" class="messages"></div>
 
   <div class="chat-input">
+    <label class="img-btn">
+      📎
+      <input type="file" id="imgInput" accept="image/*" hidden>
+    </label>
     <input id="msgInput" placeholder="Escribe...">
-    <button id="sendBtn">➤</button>
+    <button id="sendBtn" class="umb-btn">➤</button>
   </div>
+
+  <!-- USERS -->
+  <div class="users" id="usersList">
+    <strong>USUARIOS</strong>
+    <div class="user-item">anon_1023</div>
+    <div class="user-item">anon_7844</div>
+    <div class="user-item">anon_5561</div>
+  </div>
+
 </section>
 
 <script src="js/particles.js"></script>

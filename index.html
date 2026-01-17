@@ -11,7 +11,7 @@
 
 <canvas id="particles"></canvas>
 
-<!-- PANTALLA TERMINAL -->
+<!-- BOOT -->
 <section id="bootScreen" class="screen active">
   <div class="terminal">
     <div class="terminal-header">
@@ -25,15 +25,20 @@
   </div>
 </section>
 
-<!-- PANTALLA SALAS -->
+<!-- SALAS -->
 <section id="roomsScreen" class="screen">
   <h2 class="title">SALAS ACTIVAS</h2>
+  <button class="room" data-room="norte">🌵 Norte de Chile</button>
+  <button class="room" data-room="centro">🌃 Centro - Santiago</button>
+  <button class="room" data-room="sur">🗻 Sur de Chile</button>
+  <button class="room" data-room="global">🌎 Global</button>
+</section>
 
-  <button class="room">🌵 Norte de Chile</button>
-  <button class="room">🌃 Centro - Santiago</button>
-  <button class="room">🗻 Sur de Chile</button>
-  <button class="room">🌎 Global</button>
-  <button class="room">🕳️ Directo al Vacío</button>
+<!-- CHAT -->
+<section id="chatScreen" class="screen">
+  <h2 class="title" id="chatTitle"></h2>
+  <div class="chat-box" id="chatBox"></div>
+  <input id="chatInput" placeholder="Escribe algo…" />
 </section>
 
 <script src="js/particles.js"></script>

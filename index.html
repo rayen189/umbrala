@@ -4,20 +4,14 @@
   <meta charset="UTF-8">
   <title>Umbrala</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#050b08">
-
-  <!-- ESTILOS -->
+  <meta name="theme-color" content="#0b1f14">
   <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
 
-<!-- PARTICLES -->
 <canvas id="particles"></canvas>
 
-<!-- =========================
-     PANTALLA BOOT / TERMINAL
-========================= -->
+<!-- BOOT -->
 <section id="bootScreen" class="screen active">
   <div class="terminal">
     <div class="terminal-header">
@@ -26,68 +20,55 @@
       <span class="dot green"></span>
       <span class="path">umbrala@secure:~</span>
     </div>
-
     <pre id="terminalOutput"></pre>
     <span class="cursor">█</span>
   </div>
 </section>
 
-<!-- =========================
-     PANTALLA SALAS
-========================= -->
+<!-- SALAS -->
 <section id="roomsScreen" class="screen">
-
   <h2 class="title">SALAS ACTIVAS</h2>
 
   <button class="room">🌵 Norte de Chile</button>
-  <button class="room">🌃 Centro · Santiago</button>
+  <button class="room">🌃 Centro - Santiago</button>
   <button class="room">🗻 Sur de Chile</button>
   <button class="room">🌎 Global</button>
   <button class="room">🕳️ Directo al Vacío</button>
-
 </section>
 
-<!-- =========================
-     PANTALLA CHAT
-========================= -->
+<!-- IDENTIDAD -->
+<section id="identityScreen" class="screen">
+  <h3 id="identityRoom"></h3>
+
+  <input id="nicknameInput" placeholder="Elige tu nickname">
+  <button id="randomNick">🔀 Aleatorio</button>
+
+  <ul class="info">
+    <li>Identidad efímera</li>
+    <li>Sin registros</li>
+    <li>Mensajes desaparecen</li>
+  </ul>
+
+  <button id="enterChat">ENTRAR AL CHAT →</button>
+</section>
+
+<!-- CHAT -->
 <section id="chatScreen" class="screen">
+  <header class="chat-header">
+    <button id="backRooms">← Salas</button>
+    <span id="roomTitle"></span>
+  </header>
 
-  <div class="chat">
+  <div id="messages"></div>
 
-    <!-- HEADER CHAT -->
-    <div class="chat-header">
-      <span id="roomTitle"></span>
-
-      <!-- PESTAÑA CHAT PRIVADO -->
-      <div id="privateTab" class="private-tab hidden">
-        <span id="privateUser"></span>
-        <button id="closePrivate">✕</button>
-      </div>
-    </div>
-
-    <!-- MENSAJES -->
-    <div id="messages" class="messages"></div>
-
-    <!-- INPUT -->
-    <div class="chat-input">
-      <input id="msgInput" type="text" placeholder="Escribe un mensaje…">
-      <button id="sendBtn">➤</button>
-    </div>
-
+  <div class="chat-input">
+    <input id="msgInput" placeholder="Escribe...">
+    <input type="file" id="imgInput" accept="image/*">
+    <button id="sendBtn">➤</button>
   </div>
-
-  <!-- USUARIOS CONECTADOS -->
-  <div class="users">
-    <div class="user-item" data-nick="User001">@User001</div>
-    <div class="user-item" data-nick="User002">@User002</div>
-    <div class="user-item" data-nick="User003">@User003</div>
-  </div>
-
 </section>
 
-<!-- SCRIPTS -->
 <script src="js/particles.js"></script>
 <script src="js/main.js"></script>
-
 </body>
 </html>

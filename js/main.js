@@ -131,3 +131,12 @@ document.getElementById("rootBtn").onclick = ()=>{
 function privateChat(user){
   alert("Chat privado con " + user + " (en desarrollo)");
 }
+
+const usersPanel = document.querySelector(".users-panel");
+const usersToggle = document.getElementById("usersToggle");
+
+if(usersToggle){
+  usersToggle.onclick = ()=>{
+    usersPanel.classList.toggle("active");
+  };
+}

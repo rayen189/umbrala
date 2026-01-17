@@ -149,3 +149,26 @@ document.addEventListener("DOMContentLoaded", () => {
   bootSequence();
 
 });
+
+// ===============================
+// BOTÓN TOGGLE USUARIOS (MÓVIL)
+// ===============================
+
+document.addEventListener("DOMContentLoaded", () => {
+  const usersList = document.getElementById("usersList");
+  const chatScreen = document.getElementById("chatScreen");
+
+  if (!usersList || !chatScreen) return;
+
+  // crear botón
+  const toggleBtn = document.createElement("button");
+  toggleBtn.className = "users-toggle";
+  toggleBtn.textContent = "☰";
+
+  chatScreen.appendChild(toggleBtn);
+
+  // toggle usuarios
+  toggleBtn.addEventListener("click", () => {
+    usersList.classList.toggle("active");
+  });
+});

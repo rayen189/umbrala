@@ -150,3 +150,14 @@ canvas{position:fixed;inset:0;z-index:-1}
   background:#3cff8f22;
   box-shadow:0 0 20px #3cff8f;
 }
+
+#usersToggle{
+  background:transparent;
+  border:1px solid #3cff8f;
+  color:#3cff8f;
+  padding:6px 10px;
+  border-radius:50%;
+  font-size:1.1em;
+  cursor:pointer;
+  box-shadow:0 0 10px #3cff8f55;
+}

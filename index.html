@@ -6,77 +6,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#050b08">
 
-  <link rel="stylesheet" href="./css/style.css">
+  <!-- ESTILOS -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
+<!-- PARTICLES -->
 <canvas id="particles"></canvas>
 
-<!-- INICIO / TERMINAL -->
+<!-- =========================
+     PANTALLA BOOT / TERMINAL
+========================= -->
 <section id="bootScreen" class="screen active">
   <div class="terminal">
     <div class="terminal-header">
       <span class="dot red"></span>
       <span class="dot yellow"></span>
       <span class="dot green"></span>
-      <span class="path">umbrala@root:~</span>
+      <span class="path">umbrala@secure:~</span>
     </div>
+
     <pre id="terminalOutput"></pre>
     <span class="cursor">█</span>
   </div>
 </section>
 
-<!-- SALAS -->
+<!-- =========================
+     PANTALLA SALAS
+========================= -->
 <section id="roomsScreen" class="screen">
-  <div class="rooms-header">
-    <h2>SALAS</h2>
-    <button id="rootBtn">◉ ROOT</button>
-  </div>
 
-  <button class="room" data-room="Global">🌐 Global</button>
-  <button class="room" data-room="Norte de Chile">🌵 Norte de Chile</button>
-  <button class="room" data-room="Centro - Santiago">🌃 Centro - Santiago</button>
-  <button class="room" data-room="Sur de Chile">🗻 Sur de Chile</button>
-  <button class="room" data-room="Directo al Vacío">🕳️ Directo al Vacío</button>
+  <h2 class="title">SALAS ACTIVAS</h2>
+
+  <button class="room">🌵 Norte de Chile</button>
+  <button class="room">🌃 Centro · Santiago</button>
+  <button class="room">🗻 Sur de Chile</button>
+  <button class="room">🌎 Global</button>
+  <button class="room">🕳️ Directo al Vacío</button>
+
 </section>
 
-<!-- JOIN -->
-<section id="joinScreen" class="screen">
-  <div class="join-box">
-    <h3 id="joinRoomName"></h3>
-    <input id="nickname" placeholder="Nickname anónimo">
-    <button id="enterChat">ENTRAR</button>
-  </div>
-</section>
-
-<!-- CHAT -->
+<!-- =========================
+     PANTALLA CHAT
+========================= -->
 <section id="chatScreen" class="screen">
-  <div class="chat-header">
-    <button id="backRooms">←</button>
-    <span id="roomTitle"></span>
-    <span id="userCount">👥 1</span>
+
+  <div class="chat">
+
+    <!-- HEADER CHAT -->
+    <div class="chat-header">
+      <span id="roomTitle"></span>
+
+      <!-- PESTAÑA CHAT PRIVADO -->
+      <div id="privateTab" class="private-tab hidden">
+        <span id="privateUser"></span>
+        <button id="closePrivate">✕</button>
+      </div>
+    </div>
+
+    <!-- MENSAJES -->
+    <div id="messages" class="messages"></div>
+
+    <!-- INPUT -->
+    <div class="chat-input">
+      <input id="msgInput" type="text" placeholder="Escribe un mensaje…">
+      <button id="sendBtn">➤</button>
+    </div>
+
   </div>
 
-  <div class="chat-body">
-    <div id="messages"></div>
-    <div id="usersPanel"></div>
+  <!-- USUARIOS CONECTADOS -->
+  <div class="users">
+    <div class="user-item" data-nick="User001">@User001</div>
+    <div class="user-item" data-nick="User002">@User002</div>
+    <div class="user-item" data-nick="User003">@User003</div>
   </div>
 
-  <div class="chat-input">
-    <input id="msgInput" placeholder="Escribe en el vacío…">
-    <input type="file" id="imgInput" accept="image/*">
-    <button id="sendMsg">➤</button>
-  </div>
-
-  <div id="rootPanel" class="hidden">
-    <button data-action="ban">Ban</button>
-    <button data-action="mute">Mute</button>
-    <button data-action="vanish">Vanish</button>
-  </div>
 </section>
 
-<script src="./js/particles.js"></script>
-<script src="./js/main.js"></script>
+<!-- SCRIPTS -->
+<script src="js/particles.js"></script>
+<script src="js/main.js"></script>
+
 </body>
 </html>

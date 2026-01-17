@@ -1,110 +1,85 @@
-// ===============================
-// UMBRALA MAIN.JS
-// ===============================
+const boot=document.getElementById("bootScreen");
+const rooms=document.getElementById("roomsScreen");
+const chat=document.getElementById("chatScreen");
+const out=document.getElementById("terminalOutput");
 
-// PANTALLAS
-const bootScreen  = document.getElementById("bootScreen");
-const roomsScreen = document.getElementById("roomsScreen");
-const chatScreen  = document.getElementById("chatScreen");
-
-// TERMINAL
-const output = document.getElementById("terminalOutput");
-
-// CHAT
-const chatTitle = document.getElementById("chatTitle");
-
-// ===============================
-// BOOT SEQUENCE (TERMINAL)
-// ===============================
-const bootLines = [
-  "> UMBRALA SYSTEM v2.4.1",
-  "> Initializing secure connection...",
-  "> [OK] Encryption module loaded",
-  "> [OK] Anonymous routing enabled",
-  "> [OK] No logs policy active",
-  "> Loading chat nodes...",
-  "",
-  "> System ready."
+const lines=[
+"> UMBRALA SYSTEM",
+"> Secure routing enabled",
+"> Anonymous mode active",
+"> No logs policy",
+"> Loading nodes...",
+"> Ready."
 ];
+let i=0;
 
-let lineIndex = 0;
+function type(){
+ if(i<lines.length){out.textContent+=lines[i++]+"\n";setTimeout(type,420)}
+ else setTimeout(()=>switchScreen(boot,rooms),800);
+}
+type();
 
-function typeTerminal() {
-  if (lineIndex < bootLines.length) {
-    output.textContent += bootLines[lineIndex] + "\n";
-    lineIndex++;
-    setTimeout(typeTerminal, 420);
-  } else {
-    setTimeout(showRooms, 1200);
-  }
+function switchScreen(from,to){
+ from.classList.add("exit");
+ setTimeout(()=>{
+  from.classList.remove("active","exit");
+  to.classList.add("active");
+ },600);
 }
 
-function showRooms() {
-  bootScreen.classList.remove("active");
-  roomsScreen.classList.add("active");
-}
+/* ROOMS */
+let nickname="User"+Math.floor(Math.random()*999);
+let users=new Set([nickname]);
+document.getElementById("userCounter").textContent="👥 "+users.size;
 
-// INICIAR BOOT
-typeTerminal();
-
-// ===============================
-// EVENTOS DE SALAS
-// ===============================
-const roomButtons = document.querySelectorAll(".room");
-
-roomButtons.forEach(button => {
-  button.addEventListener("click", () => {
-    enterRoom(button);
-  });
+document.querySelectorAll(".room").forEach(b=>{
+ b.onclick=()=>enterRoom(b.dataset.room);
 });
 
-function enterRoom(button) {
-  const roomName = button.textContent;
-
-  // Transición portal
-  roomsScreen.classList.remove("active");
-
-  setTimeout(() => {
-    chatTitle.textContent = roomName;
-    chatScreen.classList.add("active");
-  }, 400);
+function enterRoom(name){
+ document.getElementById("roomTitle").textContent=name;
+ document.getElementById("roomUsers").textContent="👥 "+users.size;
+ switchScreen(rooms,chat);
 }
 
-// ===============================
-// CHAT BÁSICO LOCAL (TEMPORAL)
-// ===============================
-const chatBox   = document.getElementById("chatBox");
-const chatInput = document.getElementById("chatInput");
+/* CHAT */
+const msgs=document.getElementById("messages");
+document.getElementById("sendBtn").onclick=send;
 
-if (chatInput) {
-  chatInput.addEventListener("keydown", e => {
-    if (e.key === "Enter" && chatInput.value.trim() !== "") {
-      addMessage(chatInput.value);
-      chatInput.value = "";
-    }
-  });
+function send(){
+ const txt=document.getElementById("msgInput").value;
+ if(!txt)return;
+ const m=document.createElement("div");
+ m.className="message";
+ m.textContent=nickname+": "+txt;
+ msgs.appendChild(m);
+ document.getElementById("msgInput").value="";
 }
 
-function addMessage(text) {
-  const msg = document.createElement("div");
-  msg.textContent = text;
-  msg.style.margin = "6px 0";
-  msg.style.opacity = "0";
-  msg.style.transform = "translateY(10px)";
-  msg.style.transition = "0.6s";
+/* IMAGE */
+document.getElementById("imgInput").onchange=e=>{
+ const f=e.target.files[0];
+ if(!f)return;
+ const r=new FileReader();
+ r.onload=()=> {
+  const img=document.createElement("img");
+  img.src=r.result;img.style.maxWidth="120px";
+  const d=document.createElement("div");
+  d.className="message";d.appendChild(img);
+  msgs.appendChild(d);
+ };
+ r.readAsDataURL(f);
+};
 
-  chatBox.appendChild(msg);
+/* BACK */
+document.getElementById("backRooms").onclick=()=>switchScreen(chat,rooms);
 
-  requestAnimationFrame(() => {
-    msg.style.opacity = "1";
-    msg.style.transform = "translateY(0)";
-  });
-
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-// ===============================
-// VOLVER A SALAS (FUTURO)
-// ===============================
-// Aquí puedes agregar un botón
-// para volver con portal inverso
+/* ROOT */
+document.getElementById("rootBtn").onclick=()=>{
+ const u=prompt("root user");
+ const p=prompt("password");
+ if(u==="stalkerless"&&p==="1234"){
+  document.getElementById("rootBar").classList.add("active");
+  alert("ROOT ACTIVADO");
+ }
+};

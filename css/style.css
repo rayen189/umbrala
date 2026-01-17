@@ -1,46 +1,61 @@
-*{margin:0;padding:0;box-sizing:border-box}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
 body{
   background:#050b08;
-  color:#3cff8f;
   font-family:monospace;
+  color:#3cff8f;
   overflow:hidden;
 }
 
+/* PARTICLES */
 canvas{
   position:fixed;
   inset:0;
   z-index:-1;
 }
 
+/* PANTALLAS */
 .screen{
   position:absolute;
   inset:0;
   display:none;
-  padding:14px;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
 }
 
 .screen.active{
   display:flex;
-  flex-direction:column;
-  animation:fade .6s ease;
+  animation:portalIn .6s ease;
 }
 
-@keyframes fade{
-  from{opacity:0;filter:blur(12px)}
-  to{opacity:1;filter:none}
+@keyframes portalIn{
+  from{
+    opacity:0;
+    transform:scale(1.1);
+    filter:blur(20px);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+    filter:blur(0);
+  }
 }
 
 /* TERMINAL */
 .terminal{
-  margin:auto;
-  width:95%;
+  width:92%;
   max-width:420px;
-  background:#000c;
+  background:rgba(0,0,0,.75);
   border:1px solid #3cff8f;
   border-radius:14px;
   padding:14px;
-  box-shadow:0 0 30px #3cff8f55;
+  box-shadow:0 0 40px #3cff8f55;
 }
 
 .terminal-header{
@@ -49,75 +64,132 @@ canvas{
   margin-bottom:10px;
 }
 
-.dot{width:10px;height:10px;border-radius:50%;margin-right:6px}
-.red{background:#ff5555}
-.yellow{background:#ffaa00}
-.green{background:#00ff66}
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  margin-right:6px;
+}
+.red{background:#ff5555;}
+.yellow{background:#ffcc00;}
+.green{background:#00ff66;}
 
-.cursor{animation:blink 1s infinite}
-@keyframes blink{50%{opacity:0}}
+.path{
+  margin-left:10px;
+  color:#3cff8f;
+}
 
-/* ROOMS */
-.rooms-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+pre{
+  min-height:170px;
+  white-space:pre-wrap;
+  font-size:.9em;
+}
+
+.cursor{
+  animation:blink 1s infinite;
+}
+@keyframes blink{
+  50%{opacity:0;}
+}
+
+/* SALAS */
+.title{
+  margin-bottom:14px;
+  letter-spacing:2px;
+  text-shadow:0 0 10px #3cff8f99;
 }
 
 .room{
-  margin:8px 0;
+  width:100%;
+  max-width:360px;
+  margin:7px 0;
   padding:14px;
+  background:rgba(0,0,0,.6);
   border:1px solid #3cff8f;
-  background:#0009;
   color:#3cff8f;
-  border-radius:10px;
+  border-radius:12px;
+  box-shadow:0 0 15px #3cff8f44;
   cursor:pointer;
+  transition:.25s;
 }
 
-#rootBtn{
-  background:#000;
-  border:1px solid #ff3c8f;
-  color:#ff3c8f;
-  padding:6px 12px;
-  border-radius:12px;
-  box-shadow:0 0 12px #ff3c8f66;
-}
-
-/* JOIN */
-.join-box{
-  margin:auto;
-  width:95%;
-  max-width:400px;
-  border:1px solid #3cff8f;
-  padding:16px;
-  border-radius:12px;
+.room:hover{
+  background:#3cff8f22;
+  transform:translateY(-2px);
 }
 
 /* CHAT */
+.chat{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+
 .chat-header{
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  gap:10px;
+  margin-bottom:6px;
 }
 
-.chat-body{
-  flex:1;
+#roomTitle{
+  font-weight:bold;
+  text-shadow:0 0 10px #3cff8f;
+}
+
+/* PRIVATE TAB */
+.private-tab{
   display:flex;
-  overflow:hidden;
+  align-items:center;
+  gap:6px;
+  padding:4px 10px;
+  border:1px solid #3cff8f;
+  border-radius:14px;
+  background:#000;
+  box-shadow:0 0 10px #3cff8f55;
+  font-size:.85em;
 }
 
-#messages{
+.private-tab button{
+  background:none;
+  border:none;
+  color:#3cff8f;
+  cursor:pointer;
+}
+
+.hidden{
+  display:none;
+}
+
+/* MENSAJES */
+.messages{
   flex:1;
-  padding:10px;
   overflow-y:auto;
+  border:1px solid #3cff8f;
+  border-radius:10px;
+  padding:8px;
+  margin-bottom:6px;
+  background:rgba(0,0,0,.4);
 }
 
-#usersPanel{
-  width:90px;
-  border-left:1px solid #3cff8f44;
-  padding:6px;
+.message{
+  margin-bottom:6px;
+  animation:fadeFloat 30s forwards;
 }
 
+.message.private{
+  border-left:3px solid #ff3c8f;
+  padding-left:6px;
+}
+
+@keyframes fadeFloat{
+  0%{opacity:1;transform:translateY(0);}
+  80%{opacity:1;}
+  100%{opacity:0;transform:translateY(-20px);}
+}
+
+/* INPUT */
 .chat-input{
   display:flex;
   gap:6px;
@@ -132,18 +204,23 @@ canvas{
   padding:6px;
 }
 
-#backRooms{
-  background:transparent;
+/* USERS */
+.users{
+  position:absolute;
+  right:8px;
+  top:60px;
+  width:120px;
   border:1px solid #3cff8f;
-  color:#3cff8f;
-  padding:6px 10px;
   border-radius:10px;
+  padding:6px;
+  background:rgba(0,0,0,.6);
 }
 
-#rootPanel{
-  display:flex;
-  gap:6px;
-  margin-top:6px;
+.user-item{
+  cursor:pointer;
+  padding:4px;
 }
 
-.hidden{display:none}
+.user-item:hover{
+  background:#3cff8f22;
+}

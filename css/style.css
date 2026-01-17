@@ -147,7 +147,9 @@ canvas {
   display: flex;
   gap: 6px;
   width: 100%;
-  max-width: 500px;
+  padding-bottom: env(safe-area-inset-bottom);
+  [type="text"];
+  flex: 1;
 }
 
 .chat-input input,

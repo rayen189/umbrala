@@ -10,15 +10,18 @@ body{
   overflow:hidden;
 }
 
+/* ===== PARTICLES ===== */
 canvas{
   position:fixed;
   inset:0;
   z-index:-1;
 }
 
+/* ===== GENERIC ===== */
 .screen{
   display:none;
   height:100vh;
+  width:100vw;
 }
 
 .screen.active{
@@ -26,115 +29,216 @@ canvas{
   flex-direction:column;
 }
 
-.hidden{ display:none; }
+.hidden{display:none}
 
-/* TERMINAL */
+/* ===== TERMINAL ===== */
 .terminal{
   margin:auto;
-  text-align:center;
-}
-.terminal button{
-  margin-top:20px;
-}
-
-/* SALAS */
-header{
-  display:flex;
-  justify-content:space-between;
-  padding:10px;
-}
-.rooms{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+  text-align:left;
   padding:20px;
 }
-.rooms button{
-  padding:14px;
-  border:1px solid #3cff8f;
+
+.terminal button{
+  margin-top:20px;
   background:#000;
+  border:1px solid #3cff8f;
   color:#3cff8f;
+  padding:10px 16px;
   border-radius:12px;
 }
 
-/* ROOT */
+/* ===== ROOMS ===== */
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 14px;
+}
+
+.rooms{
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.rooms button{
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #3cff8f;
+  background:#000;
+  color:#3cff8f;
+  font-size:16px;
+  box-shadow:0 0 12px #3cff8f33;
+}
+
+/* ===== ROOT BUTTON ===== */
 #rootBtn{
   background:#000;
   border:1px solid #7cffef;
   color:#7cffef;
-  border-radius:12px;
+  padding:8px 14px;
+  border-radius:14px;
+  box-shadow:0 0 12px #7cffef55;
 }
 
-/* JOIN */
+/* ===== JOIN SCREEN ===== */
 .join-screen{
   position:fixed;
   inset:0;
+  background:#020706;
   display:flex;
   justify-content:center;
   align-items:center;
-  background:#020706;
+  animation:portalIn .6s ease;
 }
+
+@keyframes portalIn{
+  from{transform:scale(.8);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
 .join-box{
   width:90%;
   max-width:420px;
-  border:1px solid #3cff8f44;
-  border-radius:16px;
+  border:1px solid #3cff8f55;
+  border-radius:18px;
   padding:20px;
+  box-shadow:0 0 30px #3cff8f22;
 }
 
-/* CHAT */
-.chat-header{
-  display:flex;
-  justify-content:space-between;
-  padding:8px;
-}
-.chat-body{
-  flex:1;
-  display:flex;
-  overflow:hidden;
-}
-#messages{
-  flex:1;
-  padding:10px;
-  overflow-y:auto;
-}
-.message{
-  animation:fade 5s forwards;
-}
-@keyframes fade{
-  to{opacity:.3;}
+.join-title{
+  font-size:14px;
+  opacity:.7;
 }
 
-/* INPUT */
-.chat-input{
-  display:flex;
-  gap:6px;
-  padding:8px;
+.join-room{
+  font-size:22px;
+  margin:6px 0 14px;
 }
-.chat-input input,
-.chat-input button{
+
+.join-input{
+  display:flex;
+  gap:8px;
+}
+
+.join-input input{
+  flex:1;
   background:#000;
   border:1px solid #3cff8f;
   color:#3cff8f;
-  border-radius:8px;
-  padding:6px;
+  padding:10px;
+  border-radius:10px;
 }
 
-/* BOTÓN VOLVER */
+.join-input button{
+  background:#000;
+  border:1px solid #3cff8f;
+  color:#3cff8f;
+  padding:10px;
+  border-radius:10px;
+}
+
+.join-info{
+  font-size:13px;
+  opacity:.7;
+  padding-left:16px;
+}
+
+.join-btn{
+  width:100%;
+  margin-top:16px;
+  padding:12px;
+  border-radius:14px;
+  background:#0b2416;
+  border:1px solid #3cff8f;
+  color:#3cff8f;
+}
+
+/* ===== CHAT ===== */
+.chat-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 10px;
+  border-bottom:1px solid #3cff8f33;
+}
+
 #backRooms{
   background:transparent;
   border:1px solid #3cff8f;
   color:#3cff8f;
   padding:6px 10px;
   border-radius:10px;
+  box-shadow:0 0 10px #3cff8f55;
 }
 
-/* ROOT PANEL */
+.chat-body{
+  flex:1;
+  display:flex;
+  overflow:hidden;
+}
+
+#messages{
+  flex:1;
+  padding:10px;
+  overflow-y:auto;
+}
+
+.message{
+  margin-bottom:6px;
+  animation:fadeFloat 6s forwards;
+}
+
+@keyframes fadeFloat{
+  0%{opacity:1}
+  100%{opacity:.35}
+}
+
+/* ===== USERS PANEL ===== */
+#usersPanel{
+  width:140px;
+  border-left:1px solid #3cff8f33;
+  padding:6px;
+  font-size:13px;
+}
+
+/* ===== INPUT ===== */
+.chat-input{
+  display:flex;
+  gap:6px;
+  padding:8px;
+  border-top:1px solid #3cff8f33;
+}
+
+.chat-input input,
+.chat-input button{
+  background:#000;
+  border:1px solid #3cff8f;
+  color:#3cff8f;
+  border-radius:8px;
+  padding:8px;
+}
+
+/* ===== ROOT PANEL ===== */
 .root-panel{
   position:fixed;
+  top:70px;
   right:10px;
-  top:60px;
+  background:#000;
   border:1px solid #7cffef;
   padding:10px;
+  border-radius:14px;
+  box-shadow:0 0 20px #7cffef55;
+}
+
+.root-panel button{
+  display:block;
+  width:100%;
+  margin-bottom:6px;
   background:#000;
+  border:1px solid #7cffef;
+  color:#7cffef;
+  border-radius:10px;
+  padding:6px;
 }

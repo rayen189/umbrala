@@ -3,12 +3,12 @@
   margin: 0;
   padding: 0;
 }
-
 body {
   background: #050b08;
   font-family: monospace;
   color: #3cff8f;
   overflow: hidden;
+  height: 100vh;
 }
 
 /* PARTICLES */

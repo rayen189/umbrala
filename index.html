@@ -20,7 +20,7 @@
       <span class="dot green"></span>
       <span class="path">umbrala@secure:~</span>
     </div>
-    <pre id="terminalOutput"></pre>
+    <pre id="terminalOutput">Inicializando Umbrala...</pre>
     <span class="cursor">█</span>
   </div>
 </section>
@@ -37,15 +37,14 @@
 </section>
 
 <!-- IDENTIDAD -->
-<!-- PANTALLA IDENTIDAD -->
 <section id="identityScreen" class="screen">
   <div class="identity-box">
-    <h3 id="joiningRoomTitle">JOINING ROOM</h3>
+    <h3 id="joiningRoomTitle"></h3>
 
     <label>Tu identidad anónima</label>
 
     <div class="nick-row">
-      <input id="nicknameInput" placeholder="Elige tu nickname" />
+      <input id="nicknameInput" placeholder="Elige tu nickname">
       <button id="randomNick">🔀</button>
     </div>
 
@@ -72,11 +71,10 @@
     <span id="roomTitle"></span>
   </header>
 
-  <div id="messages"></div>
+  <div id="messages" class="messages"></div>
 
   <div class="chat-input">
     <input id="msgInput" placeholder="Escribe...">
-    <input type="file" id="imgInput" accept="image/*">
     <button id="sendBtn">➤</button>
   </div>
 </section>

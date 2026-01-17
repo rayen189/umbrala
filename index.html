@@ -2,70 +2,68 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Umbrala</title>
+  <title>Umbrela</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#7a7cff">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="page">
+<body>
 
-  <canvas id="particles"></canvas>
+<canvas id="particles"></canvas>
 
-  <!-- PANTALLA INICIAL -->
-  <div id="landingScreen" class="screen">
-    <h1>UMBRALA</h1>
-    <div id="landingText">
-      <p>Chat efímero...</p>
-      <p>Conversaciones anónimas...</p>
-      <p>Sin registro, sin rastros...</p>
-      <p>Solo tú y tu mensaje...</p>
-    </div>
-    <button id="initializeBtn">Inicializar</button>
-    <button id="rootLoginBtn">Login Stalkerless</button>
+<!-- HEADER -->
+<header class="top-bar">
+  <div class="logo">❯_ UMBRELA</div>
+  <div class="status">[root]</div>
+</header>
+
+<!-- LANDING -->
+<section id="landing" class="screen active">
+  <h1>Comunica en las sombras</h1>
+  <p class="subtitle">
+    Chat anónimo y efímero.<br>
+    Sin registro. Sin rastros.<br>
+    Solo tú, tu mensaje, y el vacío.
+  </p>
+
+  <div class="features">
+    <div class="card">👻 <strong>Anónimo</strong><br>Sin identidad</div>
+    <div class="card">⚡ <strong>Efímero</strong><br>Desaparece</div>
+    <div class="card">🛡️ <strong>Seguro</strong><br>Cifrado</div>
+    <div class="card">👁️ <strong>Privado</strong><br>No logs</div>
   </div>
 
-  <!-- SALAS -->
-  <div id="roomsListScreen" class="screen" style="display:none;">
-    <h2>Salas <span id="totalUsersCounter">Usuarios conectados: 0</span></h2>
-    <div id="roomsList"></div>
-    <button id="backToStartBtn">Volver al inicio</button>
+  <button class="primary-btn" onclick="goRooms()">Inicializar</button>
+</section>
+
+<!-- SALAS -->
+<section id="rooms" class="screen">
+  <h2>● SALAS ACTIVAS</h2>
+
+  <div class="room-card" onclick="enterRoom('Norte')">
+    <span class="zone">ZONA NORTE</span>
+    <h3>Norte de Chile</h3>
+    <p>Arica, Iquique, Antofagasta</p>
+    <span class="live">🟢 12 LIVE</span>
   </div>
 
-  <!-- CHAT -->
-  <div id="chatScreen" class="screen" style="display:none;">
-    <!-- Barra Root -->
-    <div id="rootBar" style="display:none;">
-      <span>Stalkerless</span>
-      <button id="shadowBtn">ShadowBan</button>
-      <button id="viewMapBtn">ViewMap</button>
-      <button id="freezeBtn">Freeze</button>
-      <button id="godViewBtn">GodView</button>
-      <button id="vanishBtn">Vanish</button>
-    </div>
-
-    <!-- Sala / Chat -->
-    <div id="chatContainer">
-      <h3 id="currentRoomName"></h3>
-      <div id="chatMessages" class="chat-container"></div>
-
-      <!-- Chat privado -->
-      <div id="privateChatContainer" style="display:none; flex-direction: column;">
-        <h4>Chat privado con <span id="privateChatName"></span></h4>
-        <div id="privateChatMessages" class="chat-container"></div>
-      </div>
-
-      <input id="chatInput" type="text" placeholder="Escribe tu mensaje...">
-      <input id="imageInput" type="file" accept="image/*">
-      <button id="sendBtn">Enviar</button>
-      <button id="backToRoomsBtn">Volver a Salas</button>
-    </div>
-
-    <!-- Usuarios conectados -->
-    <ul id="connectedUsers"></ul>
+  <div class="room-card" onclick="enterRoom('Centro')">
+    <span class="zone">REGIÓN METROPOLITANA</span>
+    <h3>Centro - Santiago</h3>
+    <p>La capital y comunas</p>
+    <span class="live">🟢 45 LIVE</span>
   </div>
 
-  <!-- SCRIPTS -->
-  <script src="js/particles.js"></script>
-  <script src="js/main.js"></script>
+  <div class="room-card" onclick="enterRoom('Sur')">
+    <span class="zone">ZONA SUR</span>
+    <h3>Sur de Chile</h3>
+    <p>Temuco a Punta Arenas</p>
+    <span class="live">🟢 8 LIVE</span>
+  </div>
+
+  <button class="ghost-btn" onclick="goLanding()">← Volver a Umbrela</button>
+</section>
+
+<script src="js/particles.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

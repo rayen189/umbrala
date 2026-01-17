@@ -1,20 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  /* SCREENS */
   const bootScreen = document.getElementById("bootScreen");
   const roomsScreen = document.getElementById("roomsScreen");
   const identityScreen = document.getElementById("identityScreen");
   const chatScreen = document.getElementById("chatScreen");
 
+  const terminalOutput = document.getElementById("terminalOutput");
+
+  /* SALAS */
   const rooms = document.querySelectorAll(".room");
   const roomCounts = document.querySelectorAll(".room-count");
   const globalCount = document.getElementById("globalCount");
 
+  /* IDENTIDAD */
   const joiningRoomTitle = document.getElementById("joiningRoomTitle");
   const nicknameInput = document.getElementById("nicknameInput");
   const randomNickBtn = document.getElementById("randomNick");
   const enterChatBtn = document.getElementById("enterChatBtn");
   const backToRoomsBtn = document.getElementById("backToRooms");
 
+  /* CHAT */
   const messagesBox = document.getElementById("messages");
   const chatInput = document.getElementById("chatInput");
   const sendBtn = document.getElementById("sendBtn");
@@ -22,17 +28,50 @@ document.addEventListener("DOMContentLoaded", () => {
   let nickname = "";
   let selectedRoom = "";
 
+  /* ===============================
+     SCREEN HANDLER
+     =============================== */
   function show(screen) {
     [bootScreen, roomsScreen, identityScreen, chatScreen]
       .forEach(s => s.classList.remove("active"));
     screen.classList.add("active");
   }
 
-  function generateNick() {
-    return "anon_" + Math.floor(Math.random() * 9000 + 1000);
+  /* ===============================
+     BOOT SEQUENCE (UMBRALA)
+     =============================== */
+  const bootLines = [
+    "Inicializando UMBRALA...",
+    "Cargando núcleo efímero",
+    "Anónimo",
+    "Sin rastros",
+    "Sin identidad",
+    "Mensajes efímeros",
+    "Conexión encriptada",
+    "Privado",
+    "No log",
+    "No tracking",
+    "Sistema listo",
+    "Accediendo a salas..."
+  ];
+
+  let bootIndex = 0;
+
+  function bootSequence() {
+    if (bootIndex < bootLines.length) {
+      terminalOutput.textContent += bootLines[bootIndex] + "\n";
+      bootIndex++;
+      setTimeout(bootSequence, 420);
+    } else {
+      setTimeout(() => {
+        show(roomsScreen);
+      }, 600);
+    }
   }
 
-  /* CONTADORES */
+  /* ===============================
+     CONTADORES (SIMULADOS)
+     =============================== */
   let totalUsers = Math.floor(Math.random() * 12) + 3;
   globalCount.textContent = totalUsers;
 
@@ -40,7 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
     c.textContent = "👤 " + (Math.floor(Math.random() * 8) + 1);
   });
 
-  /* SALAS */
+  /* ===============================
+     SALAS
+     =============================== */
   rooms.forEach(room => {
     room.onclick = () => {
       const counter = room.querySelector(".room-count");
@@ -52,6 +93,13 @@ document.addEventListener("DOMContentLoaded", () => {
       show(identityScreen);
     };
   });
+
+  /* ===============================
+     IDENTIDAD
+     =============================== */
+  function generateNick() {
+    return "anon_" + Math.floor(Math.random() * 9000 + 1000);
+  }
 
   randomNickBtn.onclick = () => {
     nicknameInput.value = generateNick();
@@ -73,10 +121,14 @@ document.addEventListener("DOMContentLoaded", () => {
     show(chatScreen);
   };
 
+  /* ===============================
+     CHAT
+     =============================== */
   function systemMessage(text) {
     const div = document.createElement("div");
     div.textContent = text;
     messagesBox.appendChild(div);
+    messagesBox.scrollTop = messagesBox.scrollHeight;
   }
 
   sendBtn.onclick = () => {
@@ -85,5 +137,10 @@ document.addEventListener("DOMContentLoaded", () => {
     chatInput.value = "";
   };
 
-  show(roomsScreen);
+  /* ===============================
+     START
+     =============================== */
+  show(bootScreen);
+  bootSequence();
+
 });

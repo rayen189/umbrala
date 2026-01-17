@@ -1,44 +1,85 @@
-let currentRoom = null;
-let activePrivateChat = null;
-
-const ROOM_TTL = 30000;
-const PRIVATE_TTL = 60000;
-
-const landingScreen = document.getElementById("landingScreen");
-const roomsScreen = document.getElementById("roomsScreen");
-const chatScreen = document.getElementById("chatScreen");
-
-const roomsContainer = document.getElementById("roomsContainer");
-const messagesBox = document.getElementById("messages");
-const usersList = document.getElementById("usersList");
-const roomTitle = document.getElementById("roomTitle");
-
-const connectedUsers = ["Void", "Specter", "AnonX", "Umbra"];
+const screens = {
+  landing: document.getElementById("landingScreen"),
+  rooms: document.getElementById("roomsScreen"),
+  chat: document.getElementById("chatScreen")
+};
 
 const rooms = [
-  { id: "norte", name: "Norte de Chile 🌵" },
-  { id: "centro", name: "Centro 🌃" },
-  { id: "sur", name: "Sur de Chile 🗻" },
-  { id: "global", name: "Global 🌎" },
-  { id: "void", name: "Directo al Vacío 🕳️" }
+  "Norte de Chile 🌵",
+  "Centro 🌆",
+  "Sur de Chile 🗻",
+  "Global 🌍",
+  "Directo al Vacío 🕳️"
 ];
 
+const users = ["Anon1", "Anon2", "Anon3", "Anon4"];
+
+let currentRoom = null;
+
 function show(screen) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  Object.values(screens).forEach(s => s.classList.remove("active"));
   screen.classList.add("active");
 }
 
-document.getElementById("initBtn").onclick = () => {
-  show(roomsScreen);
+/* INICIO */
+document.getElementById("initializeBtn").onclick = () => {
+  show(screens.rooms);
   renderRooms();
 };
 
+/* SALAS */
 function renderRooms() {
-  roomsContainer.innerHTML = "";
-  document.getElementById("globalUserCount").innerText = connectedUsers.length;
+  const list = document.getElementById("roomsList");
+  list.innerHTML = "";
 
-  rooms.forEach(r => {
-    const div = document.createElement("div");
-    div.className = "room-card";
-    div.innerHTML = `<span>${r.name}</span><span>${connectedUsers.length}</span>`;
-    div.onclick = () =>
+  rooms.forEach(room => {
+    const btn = document.createElement("button");
+    btn.textContent = room;
+    btn.onclick = () => enterRoom(room);
+    list.appendChild(btn);
+  });
+}
+
+function enterRoom(room) {
+  currentRoom = room;
+  document.getElementById("roomTitle").textContent = room;
+  document.getElementById("messages").innerHTML = "";
+  renderUsers();
+  show(screens.chat);
+}
+
+document.getElementById("backToRooms").onclick = () => {
+  show(screens.rooms);
+};
+
+document.getElementById("backToStart").onclick = () => {
+  show(screens.landing);
+};
+
+/* USUARIOS */
+function renderUsers() {
+  const ul = document.getElementById("usersList");
+  ul.innerHTML = "";
+  users.forEach(u => {
+    const li = document.createElement("li");
+    li.textContent = u;
+    ul.appendChild(li);
+  });
+}
+
+/* MENSAJES */
+document.getElementById("sendBtn").onclick = () => {
+  const input = document.getElementById("messageInput");
+  if (!input.value) return;
+
+  const msg = document.createElement("div");
+  msg.className = "message";
+  msg.textContent = input.value;
+  document.getElementById("messages").appendChild(msg);
+  input.value = "";
+
+  setTimeout(() => {
+    msg.classList.add("fade");
+    setTimeout(() => msg.remove(), 1000);
+  }, 30000);
+};

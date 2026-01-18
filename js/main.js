@@ -1,192 +1,144 @@
-/* ===============================
-   REFERENCIAS
-================================ */
-const terminal = document.getElementById("terminal");
-const terminalScreen = document.getElementById("terminalScreen");
+const boot = document.getElementById("bootScreen");
 const roomsScreen = document.getElementById("roomsScreen");
 const chatScreen = document.getElementById("chatScreen");
+const terminal = document.getElementById("terminal");
 
-const chatHeader = document.getElementById("chatHeader");
-const backBtn = document.getElementById("backBtn");
-
-const messages = document.getElementById("messages");
-const input = document.getElementById("messageInput");
-const fileInput = document.getElementById("fileInput");
-const sendBtn = document.getElementById("sendBtn");
-
-const usersList = document.getElementById("usersList");
-const roomCount = document.getElementById("roomCount");
+const modal = document.getElementById("nickModal");
+const modalTitle = document.getElementById("modalTitle");
+const nickInput = document.getElementById("nickInput");
+const nickError = document.getElementById("nickError");
 
 const tabs = document.getElementById("privateTabs");
+const usersList = document.getElementById("usersList");
+const messages = document.getElementById("messages");
 
-/* ===============================
-   BOOT TERMINAL
-================================ */
-const bootLines = [
-  "cargando núcleo...",
-  "montando salas...",
-  "sincronizando vacío...",
-  "estado: estable",
-  "iniciando UMBRALA"
-];
+const globalCount = document.getElementById("globalCount");
+const roomCount = document.getElementById("roomCount");
 
-let bootIndex = 0;
-
-function boot() {
-  if (bootIndex < bootLines.length) {
-    terminal.innerHTML += "> " + bootLines[bootIndex] + "<br>";
-    bootIndex++;
-    setTimeout(boot, 700);
-  } else {
-    setTimeout(() => {
-      terminalScreen.classList.remove("active");
-      roomsScreen.classList.add("active");
-    }, 1000);
-  }
-}
-
-boot();
-
-/* ===============================
-   ESTADO GLOBAL
-================================ */
-let activeTab = "";
 let currentRoom = "";
+let currentUser = "";
+let activeTab = "";
+let usedNicknames = [];
+let users = [];
 
-const users = ["neo", "void", "umbra", "cypher"];
+const badWords = ["puta", "mierda", "weon"];
 
-/* ===============================
-   ENTRAR A SALA
-================================ */
+function bootSequence() {
+  const lines = [
+    "Iniciando Umbrala...",
+    "Cargando módulos...",
+    "Conectando salas...",
+    "Sistema listo."
+  ];
+  let i = 0;
+  const int = setInterval(() => {
+    terminal.innerHTML += lines[i] + "<br>";
+    i++;
+    if (i === lines.length) {
+      clearInterval(int);
+      setTimeout(() => {
+        boot.classList.remove("active");
+        roomsScreen.classList.add("active");
+      }, 800);
+    }
+  }, 600);
+}
+bootSequence();
+
+/* SALAS */
 document.querySelectorAll(".room").forEach(room => {
-  room.addEventListener("click", () => {
+  room.onclick = () => {
     currentRoom = room.textContent;
-
-    roomsScreen.classList.remove("active");
-    chatScreen.classList.add("active");
-
-    chatHeader.textContent = currentRoom;
-
-    initRoom(currentRoom);
-  });
+    modalTitle.textContent = "Entrar a " + currentRoom;
+    nickInput.value = "";
+    nickError.textContent = "";
+    modal.classList.add("active");
+  };
 });
 
-/* ===============================
-   VOLVER A SALAS
-================================ */
-backBtn.addEventListener("click", () => {
-  chatScreen.classList.remove("active");
-  roomsScreen.classList.add("active");
+/* MODAL */
+document.getElementById("randomNick").onclick = () => {
+  const names = ["neo", "umbra", "void", "ghost", "green"];
+  nickInput.value =
+    names[Math.floor(Math.random() * names.length)] +
+    "_" +
+    Math.floor(Math.random() * 999);
+};
 
-  messages.innerHTML = "";
-  tabs.innerHTML = "";
-});
+document.getElementById("enterRoom").onclick = () => {
+  const nick = nickInput.value.trim();
 
-/* ===============================
-   INICIALIZAR SALA
-================================ */
-function initRoom(roomName) {
+  if (!nick) {
+    nickError.textContent = "Ingresa un nickname";
+    return;
+  }
+
+  if (badWords.some(w => nick.toLowerCase().includes(w))) {
+    nickError.textContent = "Nickname no permitido";
+    return;
+  }
+
+  if (usedNicknames.includes(nick)) {
+    nickError.textContent = "Nickname en uso";
+    return;
+  }
+
+  currentUser = nick;
+  usedNicknames.push(nick);
+
+  modal.classList.remove("active");
+  roomsScreen.classList.remove("active");
+  chatScreen.classList.add("active");
+
+  initRoom();
+};
+
+/* CHAT */
+function initRoom() {
+  users = [currentUser, "neo", "void"];
   usersList.innerHTML = "";
   tabs.innerHTML = "";
   messages.innerHTML = "";
 
-  /* TAB DE SALA */
   const roomTab = document.createElement("div");
   roomTab.className = "tab active";
-  roomTab.textContent = roomName;
-  roomTab.addEventListener("click", () => setTab(roomTab));
+  roomTab.textContent = currentRoom;
+  roomTab.onclick = () => setTab(roomTab);
   tabs.appendChild(roomTab);
 
-  activeTab = roomName;
+  activeTab = currentRoom;
 
-  /* USUARIOS */
-  users.forEach(user => {
+  users.forEach(u => {
     const div = document.createElement("div");
+    div.textContent = u;
     div.className = "user";
-    div.textContent = user;
-    div.addEventListener("click", () => openPrivateTab(user));
+    div.onclick = () => openTab(u);
     usersList.appendChild(div);
   });
 
   roomCount.textContent = users.length;
+  globalCount.textContent = usedNicknames.length;
 }
 
-/* ===============================
-   TABS PRIVADOS
-================================ */
-function openPrivateTab(username) {
-  if ([...tabs.children].some(t => t.textContent === username)) return;
+function openTab(name) {
+  if ([...tabs.children].some(t => t.textContent === name)) return;
 
   const tab = document.createElement("div");
   tab.className = "tab";
-  tab.textContent = username;
-  tab.addEventListener("click", () => setTab(tab));
-
+  tab.textContent = name;
+  tab.onclick = () => setTab(tab);
   tabs.appendChild(tab);
 }
 
 function setTab(tab) {
   [...tabs.children].forEach(t => t.classList.remove("active"));
   tab.classList.add("active");
-
   activeTab = tab.textContent;
+  messages.innerHTML = "";
 }
 
-/* ===============================
-   ENVÍO DE MENSAJES
-================================ */
-sendBtn.addEventListener("click", sendMessage);
-
-function sendMessage() {
-  if (input.value.trim() !== "") {
-    addTextMessage(`[${activeTab}] ${input.value}`);
-    input.value = "";
-  }
-
-  if (fileInput.files[0]) {
-    const file = fileInput.files[0];
-    let element;
-
-    if (file.type.startsWith("image")) {
-      element = document.createElement("img");
-      element.src = URL.createObjectURL(file);
-      element.style.maxWidth = "180px";
-    } else if (file.type.startsWith("audio")) {
-      element = document.createElement("audio");
-      element.src = URL.createObjectURL(file);
-      element.controls = true;
-    }
-
-    if (element) addEphemeral(element);
-    fileInput.value = "";
-  }
-}
-
-/* ===============================
-   MENSAJES EFÍMEROS
-================================ */
-function addTextMessage(text) {
-  const div = document.createElement("div");
-  div.className = "message";
-  div.textContent = text;
-  addEphemeral(div);
-}
-
-function addEphemeral(element) {
-  messages.appendChild(element);
-
-  let time = 30;
-  const timer = document.createElement("div");
-  timer.className = "timer";
-  element.appendChild(timer);
-
-  const interval = setInterval(() => {
-    time--;
-    timer.textContent = time <= 5 ? time : "";
-
-    if (time <= 0) {
-      clearInterval(interval);
-      element.remove();
-    }
-  }, 1000);
-}
+/* VOLVER */
+document.getElementById("backBtn").onclick = () => {
+  chatScreen.classList.remove("active");
+  roomsScreen.classList.add("active");
+};

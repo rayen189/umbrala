@@ -142,3 +142,38 @@ body {
   margin-left: 8px;
   opacity: 0.85;
 }
+/* ===== SALAS ===== */
+
+.rooms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;              /* 👈 separación entre salas */
+  padding: 20px;
+  max-width: 420px;
+}
+
+/* BOTÓN DE SALA */
+.room-btn {
+  background: transparent;
+  color: #3cff8f;
+  border: 1px solid #3cff8f;
+  border-radius: 10px;
+
+  padding: 10px 14px;
+  text-align: left;
+
+  font-family: monospace;
+  font-size: 0.95rem;
+
+  transition: all 0.2s ease;
+}
+
+/* HOVER */
+.room-btn:hover {
+  background: rgba(60, 255, 143, 0.08);
+}
+
+/* ACTIVO */
+.room-btn:active {
+  transform: scale(0.98);
+}

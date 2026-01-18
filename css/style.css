@@ -105,8 +105,9 @@ body {
 
 /* CHAT */
 #chatScreen {
+  display: flex;
   flex-direction: column;
-  padding: 10px;
+  height: 100vh;
 }
 
 .chat-top {

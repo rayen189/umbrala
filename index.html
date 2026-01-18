@@ -9,11 +9,20 @@
 
 <body>
 
+<!-- ================= BOOT / TERMINAL ================= -->
+<section id="bootScreen" class="screen active">
+  <div class="terminal">
+    <pre id="terminalOutput"></pre>
+    <span class="cursor">█</span>
+  </div>
+</section>
+
 <!-- ================= SALAS ================= -->
-<section id="roomsScreen" class="screen active">
-  <h1 class="title">Umbrala<span class="counter">
-    👥 <span id="roomUserCount">0</span>
-  </span></h1>
+<section id="roomsScreen" class="screen">
+  <h1 class="title">
+    Umbrala
+    <span class="counter">👥 <span id="roomUserCount">0</span></span>
+  </h1>
 
   <div class="rooms">
     <button class="room-btn" data-room="🌐 Global">🌐 Global</button>
@@ -27,13 +36,9 @@
 
 <!-- ================= CHAT ================= -->
 <section id="chatScreen" class="screen">
-
   <header class="chat-header">
     <button id="backRooms">← Salas</button>
     <span id="roomTitle"></span>
-    <span class="counter">
-    👥 <span id="roomUserCount">0</span>
-  </span>
     <button id="toggleUsers">👥</button>
   </header>
 
@@ -49,9 +54,8 @@
   <div class="chat-input">
     <input id="chatInput" type="text" placeholder="Escribe un mensaje…">
     <input type="file" id="imgInput" accept="image/*">
-    <button id="sendBtn">▶️</button>
+    <button id="sendBtn">▶</button>
   </div>
-
 </section>
 
 <script src="js/main.js"></script>

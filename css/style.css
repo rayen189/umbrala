@@ -1,8 +1,8 @@
 :root {
-  --bg: #0b0614;
-  --violet: #2a0a4a;
-  --neon: #7f3cff;
-  --text: #e6d9ff;
+  --bg: #050b08;          /* negro verdoso */
+  --neon: #00ff88;        /* verde neon principal */
+  --neon-soft: #00ff8855; /* glow suave */
+  --text: #d7ffe9;        /* texto verde claro */
 }
 
 * {
@@ -151,4 +151,83 @@ input, button {
   border: 1px solid var(--neon);
   color: var(--text);
   padding: 8px;
+}
+
+/* ===============================
+   CHAT LAYOUT AVANZADO
+================================ */
+.chat-body {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+
+/* PANEL USUARIOS */
+#usersPanel {
+  width: 160px;
+  border-left: 1px solid var(--neon);
+  padding: 6px;
+}
+
+.users-title {
+  text-align: center;
+  margin-bottom: 6px;
+  color: var(--neon);
+  text-shadow: 0 0 8px var(--neon);
+}
+
+#usersList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.user {
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.user:hover {
+  background: rgba(0,255,136,0.15);
+}
+
+/* CONTADOR USUARIOS */
+.user-count {
+  margin-left: auto;
+  color: var(--neon);
+  text-shadow: 0 0 8px var(--neon);
+}
+
+/* TABS PRIVADOS */
+#privateTabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.tab {
+  padding: 4px 10px;
+  border: 1px solid var(--neon);
+  border-radius: 20px;
+  cursor: pointer;
+  background: rgba(0,0,0,0.4);
+}
+
+.tab.active {
+  background: rgba(0,255,136,0.2);
+}
+
+/* MENSAJES + TIMER */
+.message {
+  position: relative;
+}
+
+.timer {
+  position: absolute;
+  right: -28px;
+  top: 0;
+  font-size: 10px;
+  color: var(--neon);
 }

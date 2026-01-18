@@ -186,3 +186,9 @@ input, button {
   color: #ff8080;
   margin-top: 6px;
 }
+
+#fileInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}

@@ -34,7 +34,11 @@ function bootSequence() {
   }
 }
 
-bootSequence();
+const terminalText = document.getElementById("terminalText");
+
+if (terminalText) {
+  bootSequence();
+}
 
 // ---------- SALAS ----------
 document.querySelectorAll(".room").forEach(btn => {

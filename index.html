@@ -4,44 +4,56 @@
   <meta charset="UTF-8">
   <title>Umbrala</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- Fondo partículas -->
-  <canvas id="particles"></canvas>
+<canvas id="particles"></canvas>
 
-  <!-- TERMINAL -->
-  <div id="terminalScreen" class="screen active">
+<!-- TERMINAL -->
+<div id="terminalScreen" class="screen active center">
+  <div class="terminal-window">
+    <div class="terminal-bar">
+      <div class="buttons">
+        <span class="btn red"></span>
+        <span class="btn yellow"></span>
+        <span class="btn green"></span>
+      </div>
+      <div class="title">UMBRALA</div>
+    </div>
     <div id="terminal"></div>
   </div>
+</div>
 
-  <!-- SALAS -->
-  <div id="roomsScreen" class="screen">
-    <h1>UMBRALA</h1>
-    <div class="rooms">
-      <div class="room" data-room="norte">🌵 Norte de Chile</div>
-      <div class="room" data-room="centro">🏙️ Centro</div>
-      <div class="room" data-room="sur">🏔️ Sur</div>
-      <div class="room" data-room="global">🌍 Global</div>
-      <div class="room" data-room="void">🕳️ Directa al Vacío</div>
-    </div>
+<!-- SALAS -->
+<div id="roomsScreen" class="screen center">
+  <h1>UMBRALA</h1>
+  <div class="rooms">
+    <div class="room" data-room="norte">🌵 Norte de Chile</div>
+    <div class="room" data-room="centro">🏙️ Centro</div>
+    <div class="room" data-room="sur">🏔️ Sur</div>
+    <div class="room" data-room="global">🌍 Global</div>
+    <div class="room" data-room="void">🕳️ Directa al Vacío</div>
   </div>
+</div>
 
-  <!-- CHAT -->
-  <div id="chatScreen" class="screen">
+<!-- CHAT -->
+<div id="chatScreen" class="screen">
+  <div class="chat-top">
+    <button id="backBtn">⟵ Volver</button>
     <div id="chatHeader"></div>
-    <div id="messages"></div>
-
-    <div class="inputBar">
-      <input type="text" id="messageInput" placeholder="Escribe algo…">
-      <input type="file" id="fileInput" accept="image/*,audio/*">
-      <button id="sendBtn">➤</button>
-    </div>
   </div>
 
-  <script src="js/particles.js"></script>
-  <script src="js/main.js"></script>
+  <div id="messages"></div>
+
+  <div class="inputBar">
+    <input type="text" id="messageInput" placeholder="Escribe algo…">
+    <input type="file" id="fileInput" accept="image/*,audio/*">
+    <button id="sendBtn">➤</button>
+  </div>
+</div>
+
+<script src="js/particles.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

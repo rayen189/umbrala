@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Umbrala</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
 
 <canvas id="particles"></canvas>
 
-<!-- TERMINAL -->
-<div id="terminalScreen" class="screen active center">
+<!-- INICIO / TERMINAL -->
+<div id="terminalScreen" class="screen center active">
   <div class="terminal-window">
     <div class="terminal-bar">
       <div class="buttons">
-        <span class="btn red"></span>
-        <span class="btn yellow"></span>
-        <span class="btn green"></span>
+        <div class="btn red"></div>
+        <div class="btn yellow"></div>
+        <div class="btn green"></div>
       </div>
       <div class="title">UMBRALA</div>
     </div>
@@ -26,46 +27,50 @@
 </div>
 
 <!-- SALAS -->
-<div id="roomsScreen" class="screen center">
-  <h1>UMBRALA</h1>
+<div id="roomsScreen" class="screen">
+  <div class="terminal-window">
+    <div class="terminal-bar">
+      <div class="title">UMBRALA</div>
+    </div>
+  </div>
+
+  <div class="global-counter">
+    👥 Usuarios conectados: <span id="globalCount">18</span>
+  </div>
+
   <div class="rooms">
-    <div class="room" data-room="norte">🌵 Norte de Chile</div>
-    <div class="room" data-room="centro">🏙️ Centro</div>
-    <div class="room" data-room="sur">🏔️ Sur</div>
-    <div class="room" data-room="global">🌍 Global</div>
-    <div class="room" data-room="void">🕳️ Directa al Vacío</div>
+    <div class="room">🌵 Norte de Chile</div>
+    <div class="room">🏙 Centro</div>
+    <div class="room">🌊 Sur</div>
+    <div class="room">🌍 Global</div>
+    <div class="room">🕳 Vacío</div>
   </div>
 </div>
 
 <!-- CHAT -->
 <div id="chatScreen" class="screen">
-
   <div class="chat-top">
     <button id="backBtn">⟵ Volver</button>
     <div id="chatHeader"></div>
-    <div class="user-count">👥 <span id="roomCount">1</span></div>
+    <div class="user-count">👥 <span id="roomCount">0</span></div>
   </div>
 
+  <div id="privateTabs"></div>
+
   <div class="chat-body">
-    <!-- MENSAJES -->
     <div id="messages"></div>
 
-    <!-- PANEL USUARIOS -->
     <div id="usersPanel">
       <div class="users-title">Usuarios</div>
       <div id="usersList"></div>
     </div>
   </div>
 
-  <!-- TABS PRIVADOS -->
-  <div id="privateTabs"></div>
-
   <div class="inputBar">
-    <input type="text" id="messageInput" placeholder="Escribe algo…">
-    <input type="file" id="fileInput" accept="image/*,audio/*">
+    <input id="messageInput" placeholder="Escribe algo…" />
+    <input type="file" id="fileInput" accept="image/*,audio/*" />
     <button id="sendBtn">➤</button>
   </div>
-
 </div>
 
 <script src="js/particles.js"></script>

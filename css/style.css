@@ -1,8 +1,8 @@
 :root {
-  --bg: #050b08;          /* negro verdoso */
-  --neon: #00ff88;        /* verde neon principal */
-  --neon-soft: #00ff8855; /* glow suave */
-  --text: #d7ffe9;        /* texto verde claro */
+  --bg: #050b08;          /* fondo negro verdoso */
+  --neon: #3dffb0;        /* verde neón suave */
+  --neon-soft: #3dffb055; /* glow controlado */
+  --text: #c9fce3;        /* texto legible */
 }
 
 * {
@@ -18,13 +18,16 @@ body {
   overflow: hidden;
 }
 
+/* FONDO */
 #particles {
   position: fixed;
   inset: 0;
   z-index: -1;
 }
 
-/* SCREENS */
+/* ===============================
+   SCREENS
+================================ */
 .screen {
   display: none;
   height: 100vh;
@@ -40,20 +43,22 @@ body {
   justify-content: center;
 }
 
-/* TERMINAL WINDOW */
+/* ===============================
+   TERMINAL (INICIO)
+================================ */
 .terminal-window {
   width: 90%;
   max-width: 600px;
   border: 1px solid var(--neon);
-  box-shadow: 0 0 30px #7f3cff55;
-  background: #12071f;
+  background: rgba(5, 15, 10, 0.85);
+  box-shadow: 0 0 20px var(--neon-soft);
 }
 
 .terminal-bar {
   display: flex;
   align-items: center;
   padding: 8px;
-  background: #1a082e;
+  background: rgba(10, 25, 18, 0.9);
   border-bottom: 1px solid var(--neon);
 }
 
@@ -76,103 +81,127 @@ body {
   margin: 0 auto;
   font-weight: bold;
   color: var(--neon);
+  text-shadow: 0 0 8px var(--neon);
 }
 
 #terminal {
   padding: 20px;
   font-size: 14px;
   line-height: 1.6;
-  text-shadow: 0 0 10px var(--neon);
+  text-shadow: 0 0 6px var(--neon);
 }
 
-/* SALAS */
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  text-shadow: 0 0 15px var(--neon);
+/* ===============================
+   SALAS
+================================ */
+#roomsScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 40px;
+  gap: 18px;
 }
 
-/* CONTENEDOR DE SALAS */
+.global-counter {
+  color: var(--neon);
+  font-size: 14px;
+  text-shadow: 0 0 6px var(--neon);
+}
+
+/* LISTA DE SALAS */
 .rooms {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   gap: 14px;
-  max-width: 520px;
-  margin: 0 auto;
 }
 
+/* BOTÓN SALA */
 .room {
-  padding: 14px 22px;
-  min-width: 140px;
+  width: 260px;
+  padding: 14px 0;
   text-align: center;
 
   border: 1px solid var(--neon);
-  border-radius: 999px; /* 👈 OVALADO */
-  background: rgba(0,0,0,0.45);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
   color: var(--neon);
 
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 0 12px rgba(0,255,136,0.15);
+  box-shadow: 0 0 10px var(--neon-soft);
 }
 
 .room:hover {
-  background: rgba(0,255,136,0.15);
-  box-shadow: 0 0 18px rgba(0,255,136,0.35);
+  background: rgba(61, 255, 176, 0.15);
+  box-shadow: 0 0 16px var(--neon);
   transform: translateY(-2px);
 }
 
-/* CHAT */
+/* ===============================
+   CHAT
+================================ */
 #chatScreen {
   flex-direction: column;
   padding: 10px;
 }
 
+/* TOP BAR */
 .chat-top {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+}
+
+#chatHeader {
+  color: var(--neon);
+  text-shadow: 0 0 6px var(--neon);
+}
+
+.user-count {
+  margin-left: auto;
+  color: var(--neon);
+  font-size: 13px;
+  text-shadow: 0 0 6px var(--neon);
 }
 
 #backBtn {
   background: transparent;
   border: 1px solid var(--neon);
   color: var(--text);
-  padding: 5px 10px;
+  padding: 6px 12px;
+  border-radius: 20px;
   cursor: pointer;
 }
 
-#messages {
-  flex: 1;
-  overflow-y: auto;
-  margin-bottom: 10px;
-}
-
-.message {
-  margin-bottom: 8px;
-}
-
-.inputBar {
-  display: flex;
-  gap: 5px;
-}
-
-input, button {
-  background: #1a082e;
-  border: 1px solid var(--neon);
-  color: var(--text);
-  padding: 8px;
-}
-
-/* ===============================
-   CHAT LAYOUT AVANZADO
-================================ */
+/* CUERPO CHAT */
 .chat-body {
   display: flex;
   gap: 10px;
   flex: 1;
+}
+
+/* MENSAJES */
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.message {
+  margin-bottom: 8px;
+  position: relative;
+}
+
+/* TIMER */
+.timer {
+  position: absolute;
+  right: -26px;
+  top: 0;
+  font-size: 10px;
+  color: var(--neon);
 }
 
 /* PANEL USUARIOS */
@@ -186,7 +215,7 @@ input, button {
   text-align: center;
   margin-bottom: 6px;
   color: var(--neon);
-  text-shadow: 0 0 8px var(--neon);
+  text-shadow: 0 0 6px var(--neon);
 }
 
 #usersList {
@@ -199,18 +228,10 @@ input, button {
   cursor: pointer;
   padding: 4px 6px;
   border-radius: 10px;
-  transition: background 0.2s;
 }
 
 .user:hover {
-  background: rgba(0,255,136,0.15);
-}
-
-/* CONTADOR USUARIOS */
-.user-count {
-  margin-left: auto;
-  color: var(--neon);
-  text-shadow: 0 0 8px var(--neon);
+  background: rgba(61, 255, 176, 0.15);
 }
 
 /* TABS PRIVADOS */
@@ -225,41 +246,22 @@ input, button {
   border: 1px solid var(--neon);
   border-radius: 20px;
   cursor: pointer;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .tab.active {
-  background: rgba(0,255,136,0.2);
+  background: rgba(61, 255, 176, 0.2);
 }
 
-/* MENSAJES + TIMER */
-.message {
-  position: relative;
-}
-
-.timer {
-  position: absolute;
-  right: -28px;
-  top: 0;
-  font-size: 10px;
-  color: var(--neon);
-}
-
-/* ===============================
-   PANTALLA SALAS – LAYOUT
-================================ */
-#roomsScreen {
+/* INPUT */
+.inputBar {
   display: flex;
-  flex-direction: column; /* CLAVE */
-  align-items: center;
-  justify-content: flex-start;
-  padding-top: 40px;
-  gap: 24px;
+  gap: 5px;
 }
 
-.room .count {
-  display: block;
-  margin-top: 4px;
-  font-size: 12px;
-  opacity: 0.85;
+input, button {
+  background: rgba(10, 25, 18, 0.9);
+  border: 1px solid var(--neon);
+  color: var(--text);
+  padding: 8px;
 }

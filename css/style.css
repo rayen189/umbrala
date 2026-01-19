@@ -2,6 +2,7 @@
   --bg: #050b08;
   --neon: #00ff88;
   --text: #d7ffe9;
+  --system: #6fffd2;
 }
 
 * {
@@ -36,7 +37,7 @@ body {
 }
 
 /* =====================
-   TERMINAL
+   TERMINAL BOOT
 ===================== */
 .terminal-window {
   width: 90%;
@@ -68,6 +69,8 @@ body {
 #terminal {
   padding: 1rem;
   min-height: 200px;
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 /* =====================
@@ -109,6 +112,21 @@ body {
   height: 100%;
   padding: 1rem;
   overflow-y: auto;
+}
+
+.message {
+  margin-bottom: 0.6rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.message.user strong {
+  color: var(--neon);
+}
+
+.message.system {
+  color: var(--system);
+  font-style: italic;
+  opacity: 0.8;
 }
 
 .inputBar {
@@ -164,4 +182,9 @@ body {
 .hint {
   font-size: .8rem;
   opacity: .7;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }

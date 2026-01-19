@@ -14,7 +14,12 @@ const messages = document.getElementById("messages");
 const sendBtn = document.getElementById("sendBtn");
 const fileBtn = document.getElementById("fileBtn");
 const fileInput = document.getElementById("fileInput");
+const backBtn = document.getElementById("backToRooms");
 
+backBtn?.addEventListener("click", () => {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("roomsScreen").classList.add("active");
+});
 let currentRoom = "";
 let nick = "";
 

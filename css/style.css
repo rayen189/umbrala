@@ -12,7 +12,11 @@ body {
   color:var(--text);
   overflow:hidden;
 }
-
+#particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
 .screen { display:none; width:100vw; height:100vh; }
 .screen.active { display:flex; }
 .center { justify-content:center; align-items:center; }

@@ -1,57 +1,45 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Umbrala</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
 
 <canvas id="particles"></canvas>
 
-<!-- PANTALLA 1: TERMINAL -->
+<!-- ================= TERMINAL INICIO ================= -->
 <section id="bootScreen" class="screen active center">
   <div class="terminal-window">
     <div class="terminal-bar">
       <div class="buttons">
-        <span class="btn red"></span>
-        <span class="btn yellow"></span>
-        <span class="btn green"></span>
+        <div class="btn red"></div>
+        <div class="btn yellow"></div>
+        <div class="btn green"></div>
       </div>
       <div class="title">UMBRALA</div>
     </div>
     <div id="terminal"></div>
-    <button id="enterBtn">Entrar</button>
   </div>
 </section>
 
-<!-- PANTALLA 2: SALAS -->
+<!-- ================= SALAS ================= -->
 <section id="roomsScreen" class="screen center">
   <div class="rooms-box">
-    <h2>🟢 Salas activas</h2>
+    <h2>Salas activas</h2>
     <div class="rooms" id="roomsList"></div>
   </div>
 </section>
 
-<!-- MODAL NICK -->
-<div id="nickModal" class="modal">
-  <div class="modal-box">
-    <h3>> Ingresa tu nick</h3>
-    <input id="nickInput" placeholder="ghost_123">
-    <button id="randomNick">Aleatorio</button>
-    <button id="joinRoom">Entrar</button>
-    <div id="nickError"></div>
-  </div>
-</div>
-
-<!-- PANTALLA 3: CHAT -->
+<!-- ================= CHAT ================= -->
 <section id="chatScreen" class="screen">
   <div class="chat-top">
-    <button id="backRooms">← Volver</button>
-    <span id="roomTitle"></span>
-    <span id="userCount">👥 0</span>
+    <button id="backBtn">← Volver</button>
+    <strong id="roomTitle"></strong>
+    <span id="roomCount">👥 0</span>
   </div>
 
   <div id="privateTabs"></div>
@@ -66,14 +54,24 @@
   </div>
 
   <div class="inputBar">
-    <input id="msgInput" placeholder="Escribe..." autocomplete="off">
-    <button id="fileBtn">📎</button>
+    <input id="msgInput" placeholder="Escribe..." />
     <button id="sendBtn">Enviar</button>
-    <input type="file" id="fileInput" accept="image/*,audio/*">
+    <button id="fileBtn">📎</button>
+    <input type="file" id="fileInput" accept="image/*,audio/*" />
   </div>
 </section>
 
-<script src="js/particles.js"></script>
+<!-- ================= MODAL NICK ================= -->
+<div id="nickModal" class="modal">
+  <div class="modal-box">
+    <h3>Ingresa tu nick</h3>
+    <input id="nickInput" placeholder="nickname" />
+    <button id="randomNick">Aleatorio</button>
+    <button id="enterChat">Entrar</button>
+    <div id="nickError"></div>
+  </div>
+</div>
+
 <script src="js/main.js"></script>
 </body>
 </html>

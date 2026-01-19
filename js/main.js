@@ -1,3 +1,5 @@
+/* ================= ELEMENTS ================= */
+
 const screens = {
   boot: document.getElementById("bootScreen"),
   rooms: document.getElementById("roomsScreen"),
@@ -6,6 +8,7 @@ const screens = {
 
 const terminal = document.getElementById("terminal");
 const roomsList = document.getElementById("roomsList");
+
 const nickModal = document.getElementById("nickModal");
 const nickInput = document.getElementById("nickInput");
 
@@ -14,6 +17,7 @@ const messages = document.getElementById("messages");
 const sendBtn = document.getElementById("sendBtn");
 const fileBtn = document.getElementById("fileBtn");
 const fileInput = document.getElementById("fileInput");
+
 const backBtn = document.getElementById("backToRooms");
 const roomTitle = document.getElementById("roomTitle");
 const roomCount = document.getElementById("roomCount");
@@ -32,13 +36,14 @@ const bootLines = [
   "Sistema activo ✔"
 ];
 
-let i = 0;
+let bootIndex = 0;
 
-const boot = setInterval(() => {
-  terminal.innerHTML += bootLines[i] + "<br>";
-  i++;
-  if (i === bootLines.length) {
-    clearInterval(boot);
+const bootInterval = setInterval(() => {
+  terminal.innerHTML += bootLines[bootIndex] + "<br>";
+  bootIndex++;
+
+  if (bootIndex === bootLines.length) {
+    clearInterval(bootInterval);
     setTimeout(() => switchScreen("rooms"), 700);
   }
 }, 450);
@@ -46,33 +51,33 @@ const boot = setInterval(() => {
 /* ================= ROOMS ================= */
 
 const rooms = [
-  { name:"🌍 Global", users:3 },
-  { name:"🌵 Norte", users:2 },
-  { name:"🏙 Centro", users:1 },
-  { name:"🌊 Sur", users:0 },
-  { name:"🧠 Curiosidades", users:0 },
-  { name:"🕳️ Vacío", users:0 }
+  { name: "🌍 Global", users: 3, particles: "normal" },
+  { name: "🌵 Norte", users: 2, particles: "normal" },
+  { name: "🏙 Centro", users: 1, particles: "normal" },
+  { name: "🌊 Sur", users: 0, particles: "normal" },
+  { name: "🧠 Curiosidades", users: 0, particles: "normal" },
+  { name: "🕳️ Vacío", users: 0, particles: "vacio" }
 ];
 
 roomsList.innerHTML = "";
 
-rooms.forEach(r => {
+rooms.forEach(room => {
   const div = document.createElement("div");
   div.className = "room";
-  div.innerHTML = `${r.name} <span>👥 ${r.users}</span>`;
+  div.innerHTML = `${room.name} <span>👥 ${room.users}</span>`;
+
   div.onclick = () => {
-  roomTitle.textContent = r.name;
-  roomCount.textContent = `👥 ${r.users + 1}`;
+    roomTitle.textContent = room.name;
+    roomCount.textContent = `👥 ${room.users + 1}`;
 
-  // 🎨 CAMBIO VISUAL POR SALA
-  if (r.name.includes("Vacío")) {
-    setParticleMode("vacio");
-  } else {
-    setParticleMode("normal");
-  }
+    // 🔒 Cambio seguro de partículas
+    if (window.setParticleMode) {
+      setParticleMode(room.particles || "normal");
+    }
 
-  nickModal.classList.add("active");
-};
+    nickModal.classList.add("active");
+  };
+
   roomsList.appendChild(div);
 });
 
@@ -84,16 +89,26 @@ document.getElementById("randomNick").onclick = () => {
 
 document.getElementById("enterChat").onclick = () => {
   if (!nickInput.value.trim()) return;
+
   nick = nickInput.value.trim();
   nickModal.classList.remove("active");
+
   usersList.innerHTML = `<div>${nick}</div>`;
   messages.innerHTML = "";
+
   switchScreen("chat");
 };
 
 /* ================= CHAT ================= */
 
-backBtn.onclick = () => switchScreen("rooms");
+backBtn.onclick = () => {
+  switchScreen("rooms");
+
+  // volver a partículas normales al salir
+  if (window.setParticleMode) {
+    setParticleMode("normal");
+  }
+};
 
 sendBtn.onclick = sendMessage;
 
@@ -107,30 +122,44 @@ msgInput.addEventListener("keydown", e => {
 fileBtn.onclick = () => fileInput.click();
 
 fileInput.onchange = () => {
-  const f = fileInput.files[0];
-  if (!f) return;
+  const file = fileInput.files[0];
+  if (!file) return;
 
-  const url = URL.createObjectURL(f);
-  if (f.type.startsWith("image")) addMessage("image", url);
-  if (f.type.startsWith("audio")) addMessage("audio", url);
+  const url = URL.createObjectURL(file);
+
+  if (file.type.startsWith("image")) {
+    addMessage("image", url);
+  } else if (file.type.startsWith("audio")) {
+    addMessage("audio", url);
+  }
+
   fileInput.value = "";
 };
 
+/* ================= MESSAGES ================= */
+
 function sendMessage() {
   if (!msgInput.value.trim()) return;
+
   addMessage("text", `${nick}: ${msgInput.value}`);
   msgInput.value = "";
 }
-
-/* ================= MESSAGES ================= */
 
 function addMessage(type, content) {
   const div = document.createElement("div");
   div.className = "message";
 
-  if (type === "text") div.textContent = content;
-  if (type === "image") div.innerHTML = `<img src="${content}" width="140">`;
-  if (type === "audio") div.innerHTML = `<audio src="${content}" controls></audio>`;
+  if (type === "text") {
+    div.textContent = content;
+  }
+
+  if (type === "image") {
+    div.innerHTML = `<img src="${content}" width="140">`;
+  }
+
+  if (type === "audio") {
+    div.innerHTML = `<audio src="${content}" controls></audio>`;
+  }
 
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
@@ -139,6 +168,8 @@ function addMessage(type, content) {
 /* ================= UTILS ================= */
 
 function switchScreen(name) {
-  Object.values(screens).forEach(s => s.classList.remove("active"));
+  Object.values(screens).forEach(screen =>
+    screen.classList.remove("active")
+  );
   screens[name].classList.add("active");
 }

@@ -1,3 +1,6 @@
+/* =========================
+   REFERENCIAS DOM
+========================= */
 const boot = document.getElementById("bootScreen");
 const roomsScreen = document.getElementById("roomsScreen");
 const chatScreen = document.getElementById("chatScreen");
@@ -22,6 +25,9 @@ const backBtn = document.getElementById("backBtn");
 const fileInput = document.getElementById("fileInput");
 const fileBtn = document.getElementById("fileBtn");
 
+/* =========================
+   ESTADO
+========================= */
 let currentRoom = "";
 let currentUser = "";
 let activeTab = "";
@@ -30,41 +36,62 @@ let users = [];
 
 const badWords = ["puta", "mierda", "weon"];
 
-/* BOOT */
+/* =========================
+   NAVEGACIÓN DE PANTALLAS
+========================= */
+function showScreen(screen) {
+  [boot, roomsScreen, chatScreen].forEach(s =>
+    s.classList.remove("active")
+  );
+  screen.classList.add("active");
+  window.scrollTo(0, 0);
+}
+
+/* =========================
+   BOOT / SUPERMAN
+========================= */
 function bootSequence() {
+  terminal.innerHTML = "";
   const lines = [
     "Iniciando Umbrala...",
     "Cargando módulos...",
     "Inicializando salas...",
     "Sistema listo."
   ];
+
   let i = 0;
-  const int = setInterval(() => {
+  const interval = setInterval(() => {
     terminal.innerHTML += lines[i] + "<br>";
     i++;
+
     if (i === lines.length) {
-      clearInterval(int);
+      clearInterval(interval);
       setTimeout(() => {
-        boot.classList.remove("active");
-        roomsScreen.classList.add("active");
+        showScreen(roomsScreen);
       }, 800);
     }
   }, 600);
 }
+
 bootSequence();
 
-/* SALAS */
+/* =========================
+   SALAS
+========================= */
 document.querySelectorAll(".room").forEach(room => {
   room.onclick = () => {
     currentRoom = room.textContent;
     modalTitle.textContent = "Entrar a " + currentRoom;
     nickInput.value = "";
     nickError.textContent = "";
+    modal.classList.remove("hidden");
     modal.classList.add("active");
   };
 });
 
-/* MODAL */
+/* =========================
+   MODAL NICK
+========================= */
 document.getElementById("randomNick").onclick = () => {
   const base = ["neo", "umbra", "void", "ghost", "green"];
   nickInput.value =
@@ -95,15 +122,18 @@ document.getElementById("enterRoom").onclick = () => {
   usedNicknames.push(nick);
 
   modal.classList.remove("active");
-  roomsScreen.classList.remove("active");
-  chatScreen.classList.add("active");
+  modal.classList.add("hidden");
 
+  showScreen(chatScreen);
   initRoom();
 };
 
-/* CHAT INIT */
+/* =========================
+   INIT CHAT
+========================= */
 function initRoom() {
   users = [currentUser, "neo", "void"];
+
   usersList.innerHTML = "";
   tabs.innerHTML = "";
   messages.innerHTML = "";
@@ -128,7 +158,9 @@ function initRoom() {
   globalCount.textContent = usedNicknames.length;
 }
 
-/* TABS */
+/* =========================
+   TABS
+========================= */
 function openTab(name) {
   if ([...tabs.children].some(t => t.textContent === name)) return;
 
@@ -146,18 +178,19 @@ function setTab(tab) {
   messages.innerHTML = "";
 }
 
-/* MENSAJES */
+/* =========================
+   MENSAJES
+========================= */
 sendBtn.onclick = () => {
   if (!msgInput.value.trim()) return;
   addMessage("text", msgInput.value.trim());
   msgInput.value = "";
 };
 
-// Enviar mensaje con ENTER (PC y móvil)
-msgInput.addEventListener("keydown", (e) => {
+msgInput.addEventListener("keydown", e => {
   if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault(); // evita salto de línea
-    sendBtn.click();    // reutiliza la lógica existente
+    e.preventDefault();
+    sendBtn.click();
   }
 });
 
@@ -180,9 +213,8 @@ function addMessage(type, content) {
   const div = document.createElement("div");
   div.className = "message";
 
-  // 👉 Determinar si es sala o privado
   const isRoom = activeTab === currentRoom;
-  const lifetime = isRoom ? 60 : 30; // segundos
+  const lifetime = isRoom ? 60 : 30;
 
   if (type === "text") {
     div.textContent = `${currentUser}: ${content}`;
@@ -208,22 +240,23 @@ function addMessage(type, content) {
   startFade(div, lifetime);
 }
 
-/* VOLVER */
+/* =========================
+   VOLVER A SALAS
+========================= */
 backBtn.onclick = () => {
-  chatScreen.classList.remove("active");
-  roomsScreen.classList.add("active");
+  showScreen(roomsScreen);
 };
 
+/* =========================
+   EFECTO EFÍMERO
+========================= */
 function startFade(element, seconds) {
   let remaining = seconds;
   const total = seconds;
 
   const interval = setInterval(() => {
     remaining--;
-
-    // degradado progresivo
-    const opacity = remaining / total;
-    element.style.opacity = opacity;
+    element.style.opacity = remaining / total;
 
     if (remaining <= 0) {
       clearInterval(interval);

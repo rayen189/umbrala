@@ -14,27 +14,25 @@
 ===================== */
 body {
   margin: 0;
-  color: var(--text);
   min-height: 100vh;
   overflow: hidden;
-  background: #050b08; /* IMPORTANTE */
+  background: var(--bg);
+  color: var(--text);
 }
 
 /* =====================
-   FONDO PARTICULAS
+   PARTICLES
 ===================== */
 #particles {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
+  background: transparent;
 }
 
 /* =====================
-   PANTALLAS
+   SCREENS
 ===================== */
 .screen {
   display: none;
@@ -51,14 +49,14 @@ body {
 }
 
 /* =====================
-   TERMINAL BOOT
+   BOOT TERMINAL
 ===================== */
 .terminal-window {
   width: 90%;
   max-width: 620px;
   border: 1px solid var(--neon);
   box-shadow: 0 0 14px var(--neon);
-  background: rgba(6, 15, 10, 0.95);
+  background: rgba(6, 15, 10, 0.75);
 }
 
 .terminal-bar {
@@ -94,7 +92,7 @@ body {
 }
 
 /* =====================
-   SALAS
+   ROOMS
 ===================== */
 .rooms-box {
   text-align: center;
@@ -112,14 +110,14 @@ body {
   padding: 14px;
   border-radius: 28px;
   border: 1px solid var(--neon);
+  background: rgba(5, 11, 8, 0.65);
   cursor: pointer;
-  background: rgba(5, 11, 8, 0.7);
-  transition: transform 0.1s, box-shadow 0.2s;
+  transition: transform 0.15s, box-shadow 0.2s;
 }
 
 .room:hover {
   transform: scale(1.03);
-  box-shadow: 0 0 10px rgba(0,255,136,0.3);
+  box-shadow: 0 0 10px rgba(0,255,136,0.35);
 }
 
 /* =====================
@@ -128,10 +126,11 @@ body {
 .chat-container {
   width: 100%;
   max-width: 1100px;
-  height: 100dvh; /* FIX MÓVIL */
+  height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: rgba(5, 11, 8, 0.92);
+  background: rgba(5, 11, 8, 0.65);
+  backdrop-filter: blur(2px);
 }
 
 @supports not (height: 100dvh) {
@@ -166,13 +165,13 @@ body {
 }
 
 /* =====================
-   USUARIOS
+   USERS
 ===================== */
 #usersPanel {
   width: 180px;
-  border-left: 1px solid rgba(0,255,136,0.35);
   padding: 8px;
-  background: rgba(6, 15, 10, 0.85);
+  background: rgba(6, 15, 10, 0.6);
+  border-left: 1px solid rgba(0,255,136,0.3);
   overflow-y: auto;
 }
 
@@ -183,7 +182,7 @@ body {
 }
 
 /* =====================
-   INPUT
+   INPUT BAR
 ===================== */
 .inputBar {
   display: flex;
@@ -208,7 +207,7 @@ button {
 }
 
 /* =====================
-   MODAL NICK
+   MODAL
 ===================== */
 .modal {
   display: none;
@@ -227,7 +226,7 @@ button {
 .modal-box {
   border: 1px solid var(--neon);
   padding: 20px;
-  background: rgba(6, 18, 12, 0.95);
+  background: rgba(6, 18, 12, 0.9);
   width: 260px;
   text-align: center;
 }
@@ -240,7 +239,7 @@ button {
 }
 
 /* =====================
-   📱 MÓVIL
+   MOBILE
 ===================== */
 @media (max-width: 768px) {
   .chat-body {

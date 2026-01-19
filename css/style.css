@@ -17,9 +17,17 @@ body {
   inset: 0;
   z-index: -1;
 }
-.screen { display:none; width:100vw; height:100vh; }
-.screen.active { display:flex; }
-.center { justify-content:center; align-items:center; }
+.screen {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+}
+
+.screen.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /* TERMINAL */
 .terminal-window {

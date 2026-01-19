@@ -22,67 +22,83 @@ const usersList = document.getElementById("usersList");
 let currentRoom = "";
 let nick = "";
 
-/* BOOT */
+/* ================= BOOT ================= */
+
 const bootLines = [
   "Inicializando Umbrala...",
   "Comunica en las sombras",
   "Anónimo. Sin rastro, sin identidad",
-  "Efímero.Los mensajes desaparecen",
+  "Efímero. Los mensajes desaparecen",
   "Privado. No logs, no tracking",
   "Seguro. Conexión encriptada",
   "Cargando módulos...",
   "Sistema activo ✔"
 ];
 
-let i = 0;
-const boot = setInterval(() => {
-  terminal.innerHTML += bootLines[i] + "<br>";
-  i++;
-  if (i === bootLines.length) {
-    clearInterval(boot);
+let bootIndex = 0;
+
+const bootInterval = setInterval(() => {
+  terminal.innerHTML += bootLines[bootIndex] + "<br>";
+  bootIndex++;
+
+  if (bootIndex === bootLines.length) {
+    clearInterval(bootInterval);
     setTimeout(() => switchScreen("rooms"), 800);
   }
-}, 600);
+}, 500);
 
-/* SALAS */
+/* ================= SALAS ================= */
+
 const rooms = [
   { name:"🌍 Global", users:3 },
   { name:"🌵 Norte", users:2 },
   { name:"🏙 Centro", users:1 },
   { name:"🌊 Sur", users:0 },
-  { name:"🧠 Curiosidades", users:0 }
+  { name:"🧠 Curiosidades", users:0 },
   { name:"🕳️ Vacío", users:0 }
 ];
 
-rooms.forEach(r => {
+roomsList.innerHTML = "";
+
+rooms.forEach(room => {
   const div = document.createElement("div");
   div.className = "room";
-  div.textContent = `${r.name}  👥 ${r.users}`;
+  div.innerHTML = `${room.name} <span>👥 ${room.users}</span>`;
+
   div.onclick = () => {
-    currentRoom = r.name;
-    roomTitle.textContent = r.name;
-    roomCount.textContent = `👥 ${r.users + 1}`;
+    currentRoom = room.name;
+    roomTitle.textContent = room.name;
+    roomCount.textContent = `👥 ${room.users + 1}`;
     nickModal.classList.add("active");
   };
+
   roomsList.appendChild(div);
 });
 
-/* NICK */
+/* ================= NICK ================= */
+
 document.getElementById("randomNick").onclick = () => {
-  nickInput.value = "ghost_" + Math.floor(Math.random() * 999);
+  nickInput.value = "ghost_" + Math.floor(Math.random() * 9999);
 };
 
 document.getElementById("enterChat").onclick = () => {
-  nick = nickInput.value || "ghost";
+  if (!nickInput.value.trim()) return;
+
+  nick = nickInput.value.trim();
   nickModal.classList.remove("active");
+
   usersList.innerHTML = `<div>${nick}</div>`;
+  messages.innerHTML = "";
+
   switchScreen("chat");
 };
 
-/* CHAT */
+/* ================= CHAT ================= */
+
 backBtn.onclick = () => switchScreen("rooms");
 
 sendBtn.onclick = sendMessage;
+
 msgInput.addEventListener("keydown", e => {
   if (e.key === "Enter") sendMessage();
 });
@@ -92,22 +108,25 @@ fileBtn.onclick = () => fileInput.click();
 fileInput.onchange = () => {
   const f = fileInput.files[0];
   if (!f) return;
+
   const url = URL.createObjectURL(f);
 
-  if (f.type.startsWith("image")) addMessage("image", url, 60000);
-  if (f.type.startsWith("audio")) addMessage("audio", url, 60000);
+  if (f.type.startsWith("image")) addMessage("image", url);
+  if (f.type.startsWith("audio")) addMessage("audio", url);
 
   fileInput.value = "";
 };
 
 function sendMessage() {
   if (!msgInput.value.trim()) return;
-  addMessage("text", `${nick}: ${msgInput.value}`, 60000);
+
+  addMessage("text", `${nick}: ${msgInput.value}`);
   msgInput.value = "";
 }
 
-/* MENSAJES */
-function addMessage(type, content, duration) {
+/* ================= MENSAJES ================= */
+
+function addMessage(type, content) {
   const div = document.createElement("div");
   div.className = "message";
 
@@ -118,13 +137,14 @@ function addMessage(type, content, duration) {
   messages.appendChild(div);
 
   div.style.opacity = 1;
-  div.style.transition = `opacity ${duration}ms linear`;
+  div.style.transition = "opacity 60s linear";
 
   setTimeout(() => div.style.opacity = 0, 50);
-  setTimeout(() => div.remove(), duration);
+  setTimeout(() => div.remove(), 60000);
 }
 
-/* UTILS */
+/* ================= UTILS ================= */
+
 function switchScreen(name) {
   Object.values(screens).forEach(s => s.classList.remove("active"));
   screens[name].classList.add("active");

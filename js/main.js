@@ -61,10 +61,18 @@ rooms.forEach(r => {
   div.className = "room";
   div.innerHTML = `${r.name} <span>👥 ${r.users}</span>`;
   div.onclick = () => {
-    roomTitle.textContent = r.name;
-    roomCount.textContent = `👥 ${r.users + 1}`;
-    nickModal.classList.add("active");
-  };
+  roomTitle.textContent = r.name;
+  roomCount.textContent = `👥 ${r.users + 1}`;
+
+  // 🎨 CAMBIO VISUAL POR SALA
+  if (r.name.includes("Vacío")) {
+    setParticleMode("vacio");
+  } else {
+    setParticleMode("normal");
+  }
+
+  nickModal.classList.add("active");
+};
   roomsList.appendChild(div);
 });
 

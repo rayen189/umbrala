@@ -1,10 +1,15 @@
+/* =====================
+   VARIABLES
+===================== */
 :root {
   --bg: #050b08;
   --neon: #00ff88;
   --text: #d7ffe9;
-  --system: #6fffd2;
 }
 
+/* =====================
+   RESET
+===================== */
 * {
   box-sizing: border-box;
   font-family: "Courier New", monospace;
@@ -14,21 +19,35 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  overflow-x: hidden;
+  overflow: hidden;
+}
+
+/* =====================
+   PARTICLES (FONDO)
+===================== */
+#particles {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
 }
 
 /* =====================
    SCREENS
 ===================== */
 .screen {
-  display: none;
+  position: fixed;
+  inset: 0;
   width: 100vw;
-  min-height: 100svh;
+  height: 100vh;
+  display: none;
+  z-index: 2;
 }
 
 .screen.active {
   display: flex;
-  flex-direction: column;
 }
 
 .center {
@@ -37,7 +56,7 @@ body {
 }
 
 /* =====================
-   TERMINAL BOOT
+   TERMINAL / BOOT
 ===================== */
 .terminal-window {
   width: 90%;
@@ -66,11 +85,16 @@ body {
 .yellow { background: #ffbd2e; }
 .green { background: #27c93f; }
 
+.title {
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
 #terminal {
   padding: 1rem;
   min-height: 200px;
-  font-size: 0.9rem;
-  line-height: 1.4;
 }
 
 /* =====================
@@ -80,17 +104,28 @@ body {
   text-align: center;
 }
 
+.rooms-box h1 {
+  margin-bottom: 1rem;
+  letter-spacing: 2px;
+}
+
 .rooms {
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(120px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 1rem;
-  margin-top: 1rem;
 }
 
 .room {
   padding: 1rem;
   border: 1px solid var(--neon);
   cursor: pointer;
+  transition: background .2s, box-shadow .2s, transform .2s;
+}
+
+.room:hover {
+  background: rgba(0,255,136,0.08);
+  box-shadow: 0 0 15px var(--neon);
+  transform: translateY(-2px);
 }
 
 /* =====================
@@ -98,40 +133,26 @@ body {
 ===================== */
 .chat-top {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 0.5rem;
+  padding: .5rem;
   border-bottom: 1px solid var(--neon);
 }
 
 .chat-body {
-  flex: 1;
-  min-height: 0;
+  display: flex;
+  height: calc(100vh - 110px);
 }
 
 #messages {
-  height: 100%;
+  flex: 1;
   padding: 1rem;
   overflow-y: auto;
 }
 
-.message {
-  margin-bottom: 0.6rem;
-  animation: fadeIn 0.2s ease;
-}
-
-.message.user strong {
-  color: var(--neon);
-}
-
-.message.system {
-  color: var(--system);
-  font-style: italic;
-  opacity: 0.8;
-}
-
 .inputBar {
   display: flex;
-  padding: 0.5rem;
+  padding: .5rem;
   border-top: 1px solid var(--neon);
 }
 
@@ -140,7 +161,15 @@ body {
   background: #000;
   border: 1px solid var(--neon);
   color: var(--text);
-  padding: 0.5rem;
+  padding: .5rem;
+}
+
+.inputBar button {
+  margin-left: .5rem;
+  background: #001a0d;
+  border: 1px solid var(--neon);
+  color: var(--text);
+  cursor: pointer;
 }
 
 /* =====================
@@ -182,9 +211,4 @@ body {
 .hint {
   font-size: .8rem;
   opacity: .7;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
 }

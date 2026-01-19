@@ -23,23 +23,22 @@ body {
 }
 
 /* =====================
-   SCREENS
+   SCREENS (FIX MOBILE)
 ===================== */
+
 .screen {
+  position: fixed;
+  inset: 0;
   display: none;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100svh;
+  align-items: center;
+  justify-content: center;
 }
 
 .screen.active {
   display: flex;
 }
-
-.center {
-  align-items: center;
-  justify-content: center;
-}
-
 /* =====================
    TERMINAL
 ===================== */

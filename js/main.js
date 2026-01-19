@@ -27,11 +27,9 @@ let nick = "";
 const bootLines = [
   "Inicializando Umbrala...",
   "Comunica en las sombras",
-  "Anónimo. Sin rastro, sin identidad",
-  "Efímero. Los mensajes desaparecen",
-  "Privado. No logs, no tracking",
-  "Seguro. Conexión encriptada",
-  "Cargando módulos...",
+  "Anónimo. Sin rastro",
+  "Efímero. Sin logs",
+  "Seguro. Encriptado",
   "Sistema activo ✔"
 ];
 
@@ -40,12 +38,11 @@ let bootIndex = 0;
 const bootInterval = setInterval(() => {
   terminal.innerHTML += bootLines[bootIndex] + "<br>";
   bootIndex++;
-
   if (bootIndex === bootLines.length) {
     clearInterval(bootInterval);
-    setTimeout(() => switchScreen("rooms"), 800);
+    setTimeout(() => switchScreen("rooms"), 700);
   }
-}, 500);
+}, 450);
 
 /* ================= SALAS ================= */
 
@@ -83,13 +80,10 @@ document.getElementById("randomNick").onclick = () => {
 
 document.getElementById("enterChat").onclick = () => {
   if (!nickInput.value.trim()) return;
-
   nick = nickInput.value.trim();
   nickModal.classList.remove("active");
-
   usersList.innerHTML = `<div>${nick}</div>`;
   messages.innerHTML = "";
-
   switchScreen("chat");
 };
 
@@ -100,7 +94,10 @@ backBtn.onclick = () => switchScreen("rooms");
 sendBtn.onclick = sendMessage;
 
 msgInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") sendMessage();
+  if (e.key === "Enter") {
+    e.preventDefault();
+    sendMessage();
+  }
 });
 
 fileBtn.onclick = () => fileInput.click();
@@ -119,7 +116,6 @@ fileInput.onchange = () => {
 
 function sendMessage() {
   if (!msgInput.value.trim()) return;
-
   addMessage("text", `${nick}: ${msgInput.value}`);
   msgInput.value = "";
 }
@@ -135,12 +131,6 @@ function addMessage(type, content) {
   if (type === "audio") div.innerHTML = `<audio src="${content}" controls></audio>`;
 
   messages.appendChild(div);
-
-  div.style.opacity = 1;
-  div.style.transition = "opacity 60s linear";
-
-  setTimeout(() => div.style.opacity = 0, 50);
-  setTimeout(() => div.remove(), 60000);
 }
 
 /* ================= UTILS ================= */

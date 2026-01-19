@@ -13,7 +13,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 /* =====================
@@ -22,20 +22,17 @@ body {
 .screen {
   display: none;
   width: 100vw;
-  height: 100vh;
+  min-height: 100svh;
 }
 
 .screen.active {
   display: flex;
+  flex-direction: column;
 }
 
 .center {
   align-items: center;
   justify-content: center;
-}
-
-.hidden {
-  display: none !important;
 }
 
 /* =====================
@@ -104,12 +101,12 @@ body {
 }
 
 .chat-body {
-  display: flex;
-  height: calc(100vh - 120px);
+  flex: 1;
+  min-height: 0;
 }
 
 #messages {
-  flex: 1;
+  height: 100%;
   padding: 1rem;
   overflow-y: auto;
 }

@@ -4,39 +4,32 @@
   --text: #d7ffe9;
 }
 
-/* RESET */
 * {
   box-sizing: border-box;
   font-family: "Courier New", monospace;
 }
 
-html, body {
+body {
   margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
   background: var(--bg);
   color: var(--text);
+  height: 100vh;
   overflow: hidden;
 }
 
-/* =====================
-   PARTICLES
-===================== */
+/* PARTICLES */
 #particles {
   position: fixed;
   inset: 0;
   z-index: 0;
 }
 
-/* =====================
-   SCREENS BASE
-===================== */
+/* SCREENS */
 .screen {
   position: absolute;
   inset: 0;
+  z-index: 2;
   display: none;
-  z-index: 1;
 }
 
 .screen.active {
@@ -44,34 +37,40 @@ html, body {
 }
 
 .center {
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
-/* =====================
-   BOOT / TERMINAL
-===================== */
+.hidden {
+  display: none;
+}
+
+/* ===== BOOT ===== */
 .terminal-window {
   width: 90%;
-  max-width: 520px;
-  background: #000;
-  border: 1px solid var(--neon);
-  box-shadow: 0 0 25px var(--neon);
+  max-width: 420px;
+  background: rgba(0,0,0,.75);
+  border: 1px solid rgba(0,255,136,.35);
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0,255,136,.15);
 }
 
 .terminal-bar {
   display: flex;
   align-items: center;
-  padding: 6px;
-  background: #001a0d;
+  padding: .4rem .6rem;
+  border-bottom: 1px solid rgba(0,255,136,.25);
 }
 
-.buttons span {
+.buttons {
+  display: flex;
+  gap: .3rem;
+}
+
+.btn {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  display: inline-block;
-  margin-right: 4px;
 }
 
 .red { background: #ff5f56; }
@@ -80,167 +79,171 @@ html, body {
 
 .title {
   margin-left: auto;
-  font-size: .8rem;
+  margin-right: auto;
+  font-size: .75rem;
   opacity: .8;
 }
 
 #terminal {
   padding: 1rem;
-  min-height: 180px;
+  font-size: .85rem;
 }
 
-/* =====================
-   SALAS
-===================== */
+/* ===== SALAS ===== */
 .rooms-box {
   text-align: center;
 }
 
-.rooms-box h1 {
-  margin-bottom: 1rem;
-}
-
 .rooms {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1rem;
+  gap: .8rem;
+  margin-top: 1rem;
 }
 
 .room {
-  padding: .9rem;
-  border: 1px solid var(--neon);
+  padding: .7rem 1.2rem;
+  border: 1px solid rgba(0,255,136,.35);
+  border-radius: 10px;
   cursor: pointer;
-  background: rgba(0,0,0,.5);
-  transition: background .2s, box-shadow .2s;
+  background: rgba(0,0,0,.6);
 }
 
 .room:hover {
-  background: rgba(0,255,136,.1);
-  box-shadow: 0 0 10px var(--neon);
+  background: rgba(0,255,136,.15);
 }
 
-/* =====================
-   CHAT
-===================== */
+/* ===== CHAT ===== */
 #chatScreen {
+  display: flex;
   flex-direction: column;
 }
 
-/* HEADER */
 .chat-top {
+  padding: .6rem;
+  border-bottom: 1px solid rgba(0,255,136,.25);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: .6rem .8rem;
-  border-bottom: 1px solid var(--neon);
-  background: rgba(0,0,0,.7);
+  gap: .6rem;
 }
 
-#chatHeader {
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-
-/* BODY */
 .chat-body {
   flex: 1;
-  display: flex;
-  overflow: hidden;
-}
-
-/* MENSAJES */
-#messages {
-  flex: 1;
-  padding: 1rem;
+  padding: .8rem;
   overflow-y: auto;
 }
 
-/* MENSAJE */
-.message {
-  margin-bottom: .6rem;
-  opacity: .9;
-}
-
-/* USUARIOS (DESKTOP) */
-#usersPanel {
-  width: 180px;
-  border-left: 1px solid var(--neon);
-  padding: .5rem;
-  display: none;
-}
-
-/* INPUT */
 .inputBar {
   display: flex;
-  align-items: center;
   gap: .4rem;
-  padding: .5rem;
-  border-top: 1px solid var(--neon);
-  background: rgba(0,0,0,.75);
+  padding: .6rem;
+  border-top: 1px solid rgba(0,255,136,.25);
 }
 
 .inputBar input {
   flex: 1;
-  background: #000;
-  border: 1px solid var(--neon);
+  background: rgba(0,0,0,.8);
+  border: 1px solid rgba(0,255,136,.35);
+  border-radius: 8px;
   color: var(--text);
   padding: .5rem;
 }
 
 .inputBar button {
-  background: #001a0d;
-  border: 1px solid var(--neon);
-  color: var(--text);
-  padding: .45rem .6rem;
-  cursor: pointer;
+  background: rgba(0,255,136,.15);
+  border: 1px solid rgba(0,255,136,.45);
+  border-radius: 8px;
+  color: var(--neon);
+  padding: .5rem .8rem;
 }
 
-/* =====================
-   MODAL NICK
-===================== */
+/* ===== MODAL ===== */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.8);
-  display: none;
+  background: rgba(0,0,0,.7);
+  z-index: 10;
+  display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 3;
-}
-
-.modal.active {
-  display: flex;
 }
 
 .modal-box {
   width: 90%;
   max-width: 420px;
-  background: #001a0d;
-  border: 1px solid var(--neon);
-  padding: 1.5rem;
-  box-shadow: 0 0 20px var(--neon);
+  background: rgba(0,20,10,.65);
+  border: 1px solid rgba(0,255,136,.35);
+  border-radius: 14px;
+  padding: 1.2rem;
+  box-shadow: 0 0 40px rgba(0,255,136,.15);
 }
 
-.modal-box input,
-.modal-box button {
-  width: 100%;
-  margin-top: .6rem;
-  padding: .6rem;
-  background: #000;
-  color: var(--text);
-  border: 1px solid var(--neon);
-}
-
-.hint {
-  font-size: .8rem;
+/* HEADER JOIN */
+.join-header span {
+  font-size: .7rem;
   opacity: .7;
 }
 
-/* =====================
-   DESKTOP
-===================== */
-@media (min-width: 768px) {
-  #usersPanel {
-    display: block;
-  }
+.join-header h2 {
+  margin: .3rem 0 1rem;
+  color: var(--neon);
+}
+
+/* IDENTITY BOX */
+.identity-box {
+  padding: 1rem;
+  border: 1px solid rgba(0,255,136,.35);
+  border-radius: 12px;
+  background: rgba(0,0,0,.6);
+}
+
+.identity-box h3 {
+  font-size: .75rem;
+  letter-spacing: 2px;
+  margin-bottom: .6rem;
+  opacity: .8;
+}
+
+.nick-input {
+  display: flex;
+  gap: .5rem;
+}
+
+.nick-input input {
+  flex: 1;
+  padding: .6rem;
+  background: rgba(0,0,0,.8);
+  border: 1px solid rgba(0,255,136,.35);
+  border-radius: 10px;
+  color: var(--text);
+}
+
+.nick-input button {
+  width: 42px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,255,136,.45);
+  background: rgba(0,255,136,.15);
+  color: var(--neon);
+}
+
+.identity-info {
+  margin-top: .7rem;
+  font-size: .7rem;
+  opacity: .7;
+}
+
+/* ENTER BUTTON */
+.enter-btn {
+  width: 100%;
+  margin-top: 1rem;
+  padding: .8rem;
+  background: rgba(0,255,136,.2);
+  border: 1px solid rgba(0,255,136,.5);
+  border-radius: 10px;
+  color: var(--neon);
+  font-size: .9rem;
+  cursor: pointer;
+}
+
+.enter-btn:hover {
+  background: rgba(0,255,136,.3);
 }

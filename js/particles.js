@@ -1,44 +1,86 @@
 const canvas = document.getElementById("particles");
+if (!canvas) return;
 
-if (!canvas) {
-  console.warn("Canvas de partículas no encontrado");
-} else {
-  const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
+let mode = "normal"; // normal | vacio | calm | chaos
 
-  resize();
-  window.addEventListener("resize", resize);
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
 
-  const particles = Array.from({ length: 90 }, () => ({
+const CENTER = () => ({
+  x: canvas.width / 2,
+  y: canvas.height / 2
+});
+
+const particles = Array.from({ length: 90 }, () => createParticle());
+
+function createParticle() {
+  return {
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
-    r: Math.random() * 2 + 0.5,
-    v: Math.random() * 0.6 + 0.2
-  }));
+    r: Math.random() * 2 + 1,
+    vx: (Math.random() - 0.5) * 0.4,
+    vy: Math.random() * 0.6 + 0.2
+  };
+}
 
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "rgba(0,255,136,0.55)";
+/* 👉 API pública */
+window.setParticleMode = function (newMode) {
+  mode = newMode;
+};
 
-    for (const p of particles) {
-      p.y += p.v;
+function update(p) {
+  if (mode === "vacio") {
+    const c = CENTER();
+    const dx = c.x - p.x;
+    const dy = c.y - p.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
 
-      if (p.y > canvas.height) {
-        p.y = -5;
-        p.x = Math.random() * canvas.width;
-      }
+    p.vx += dx / dist * 0.03;
+    p.vy += dy / dist * 0.03;
 
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fill();
+    p.x += p.vx;
+    p.y += p.vy;
+
+    if (dist < 12) {
+      p.x = Math.random() * canvas.width;
+      p.y = Math.random() * canvas.height;
+      p.vx = 0;
+      p.vy = 0;
     }
-
-    requestAnimationFrame(draw);
+    return;
   }
 
-  draw();
+  // NORMAL / RESTO
+  p.y += p.vy;
+  p.x += p.vx;
+
+  if (p.y > canvas.height) p.y = 0;
+  if (p.x > canvas.width) p.x = 0;
+  if (p.x < 0) p.x = canvas.width;
 }
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle =
+    mode === "vacio"
+      ? "rgba(0,255,136,0.4)"
+      : "rgba(0,255,136,0.6)";
+
+  particles.forEach(p => {
+    update(p);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  requestAnimationFrame(draw);
+}
+
+draw();

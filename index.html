@@ -1,66 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Umbrala</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#00ff88">
+
+  <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
 
-<!-- PANTALLA INICIO -->
-<section id="boot" class="screen active">
-  <div class="terminal">
-    <p>> Iniciando Umbrala...</p>
-    <p>> Cargando módulos</p>
-    <p>> Conectando salas</p>
-    <button onclick="enterRooms()">INICIALIZAR</button>
-  </div>
-</section>
+<canvas id="particles"></canvas>
 
-<!-- PANTALLA SALAS -->
-<section id="rooms" class="screen">
-  <h1>Umbrala</h1>
-  <div class="room-list">
-    <div class="room" onclick="enterChat('Norte')">🌵 Norte de Chile <span>12</span></div>
-    <div class="room" onclick="enterChat('Centro')">🏙️ Centro <span>34</span></div>
-    <div class="room" onclick="enterChat('Sur')">🌊 Sur <span>18</span></div>
-    <div class="room" onclick="enterChat('Global')">🌍 Global <span>102</span></div>
-    <div class="room" onclick="enterChat('Vacío')">🕳️ Vacío <span>3</span></div>
+<!-- MODAL NICK -->
+<div class="modal active" id="nickModal">
+  <div class="modal-box">
+    <h3>Ingresa tu nick</h3>
+    <input id="nickInput" placeholder="nickname" />
+    <button onclick="saveNick()">Entrar</button>
+    <div id="nickError"></div>
   </div>
-</section>
+</div>
 
 <!-- CHAT -->
-<section id="chat" class="screen chat-layout">
+<section id="chatScreen">
 
-  <!-- TABS -->
-  <div class="tabs">
-    <div class="tab active">Sala</div>
+  <div class="chat-top">
+    <button onclick="leaveRoom()">← Volver</button>
+    <div id="roomName">Sala</div>
   </div>
 
-  <!-- CHAT AREA -->
-  <div class="chat-area">
-    <div class="messages">
-      <div class="msg"><b>Rayen:</b> Bienvenida a Umbrala</div>
-    </div>
+  <div id="privateTabs"></div>
 
-    <div class="input-bar">
-      <input type="text" placeholder="Escribe un mensaje…">
-      <input type="file" accept="image/*">
-      <button>➤</button>
-    </div>
+  <div class="chat-body">
+    <div id="messages"></div>
+
+    <aside id="usersPanel">
+      <div class="users-title">Usuarios</div>
+      <div id="usersList"></div>
+    </aside>
   </div>
 
-  <!-- USUARIOS -->
-  <aside class="users">
-    <h3>Usuarios (5)</h3>
-    <div class="user" onclick="openPrivate('Juan')">Juan</div>
-    <div class="user" onclick="openPrivate('Ana')">Ana</div>
-    <div class="user" onclick="openPrivate('Leo')">Leo</div>
-  </aside>
+  <div class="inputBar">
+    <input id="messageInput" placeholder="Escribe..." />
+    <button onclick="sendMessage()">Enviar</button>
+    <button onclick="openFile()">📎</button>
+    <input type="file" id="fileInput" accept="image/*,audio/*">
+  </div>
 
 </section>
 
-<script src="js/ui.js"></script>
+<audio id="sendSound" src="assets/send.mp3"></audio>
+<audio id="notifySound" src="assets/notify.mp3"></audio>
+
+<script src="js/particles.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

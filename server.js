@@ -12,9 +12,15 @@ app.use(express.static("public"));
 
 /* ================= STATE ================= */
 
-// users = {
-//   socketId: { nick, room, socketId }
-// }
+/*
+users = {
+  socketId: {
+    nick,
+    room,
+    socketId
+  }
+}
+*/
 const users = {};
 
 // roomsCount = { roomId: number }
@@ -29,7 +35,6 @@ io.on("connection", socket => {
   socket.on("joinRoom", ({ nick, room }) => {
     if (!nick || !room) return;
 
-    // Guardar usuario
     users[socket.id] = {
       nick,
       room,
@@ -38,10 +43,8 @@ io.on("connection", socket => {
 
     socket.join(room);
 
-    // Contador sala
+    // Contador de sala
     roomsCount[room] = (roomsCount[room] || 0) + 1;
-
-    // Enviar contadores a todos
     io.emit("roomsUpdate", roomsCount);
 
     // Mensaje sistema
@@ -73,10 +76,17 @@ io.on("connection", socket => {
     const user = users[socket.id];
     if (!user || !toSocketId || !text) return;
 
-    io.to(toSocketId).emit("privateMessage", {
+    const payload = {
       from: user.nick,
+      fromSocketId: socket.id,
       text
-    });
+    };
+
+    // Enviar al receptor
+    io.to(toSocketId).emit("privateMessage", payload);
+
+    // Enviar copia al emisor (MUY IMPORTANTE)
+    socket.emit("privateMessage", payload);
   });
 
   /* ===== DISCONNECT ===== */
@@ -86,13 +96,11 @@ io.on("connection", socket => {
 
     const { room, nick } = user;
 
-    // Reducir contador
+    // Reducir contador sala
     roomsCount[room] = Math.max((roomsCount[room] || 1) - 1, 0);
-
-    // Actualizar contadores
     io.emit("roomsUpdate", roomsCount);
 
-    // Avisar salida
+    // Aviso salida
     io.to(room).emit("message", {
       user: "Umbrala",
       text: `${nick} salió`
@@ -101,7 +109,7 @@ io.on("connection", socket => {
     // Eliminar usuario
     delete users[socket.id];
 
-    // Actualizar lista usuarios sala
+    // Actualizar lista usuarios
     io.to(room).emit(
       "users",
       Object.values(users).filter(u => u.room === room)

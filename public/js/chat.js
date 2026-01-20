@@ -8,12 +8,8 @@ let currentRoom = null;
 
 /* ================= JOIN ROOM ================= */
 
-/*
-  Esta función es llamada desde main.js
-  cuando el usuario elige sala y confirma nick
-*/
 function joinRoom(roomName) {
-  if (!nick) return;
+  if (!nick || !roomName) return;
 
   currentRoom = roomName;
 
@@ -36,29 +32,18 @@ function sendMessageSocket(text) {
 
 /* ================= SOCKET LISTENERS ================= */
 
-// Mensajes públicos
 socket.on("message", data => {
-  /*
-    data = {
-      user: "nick",
-      text: "mensaje"
-    }
-  */
   addMessage("text", `${data.user}: ${data.text}`);
 });
 
-// Lista de usuarios de la sala
 socket.on("users", users => {
-  /*
-    users = [ { nick: "..." }, ... ]
-  */
   usersList.innerHTML = "";
+
   users.forEach(u => {
     const div = document.createElement("div");
     div.className = "user";
     div.textContent = u.nick;
 
-    // click futuro para privados
     div.onclick = () => {
       openPrivate(u.nick);
     };
@@ -69,45 +54,31 @@ socket.on("users", users => {
   roomCount.textContent = `👥 ${users.length}`;
 });
 
-// Mensaje privado
 socket.on("privateMessage", data => {
-  /*
-    data = {
-      from: "nick",
-      text: "mensaje"
-    }
-  */
   addMessage("text", `(Privado) ${data.from}: ${data.text}`);
 });
 
-/* ================= HOOKS A MAIN.JS ================= */
+/* ================= OVERRIDE SEND ================= */
 
-/*
-  Reemplazamos SOLO el envío local
-  main.js sigue mostrando el mensaje,
-  pero ahora también se envía al servidor
-*/
-
-// Guardamos referencia original
-const _sendMessageLocal = sendMessage;
-
-// Sobrescribimos
-sendMessage = function () {
+sendBtn.onclick = () => {
   if (!msgInput.value.trim()) return;
 
   sendMessageSocket(msgInput.value);
   msgInput.value = "";
 };
 
-/*
-  Cuando el usuario entra al chat,
-  main.js debe llamar a joinRoom(roomName)
-  EJEMPLO (en main.js):
-  joinRoom(roomTitle.textContent);
-*/
+msgInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    if (!msgInput.value.trim()) return;
 
-/* ================= PRIVATE (PLACEHOLDER) ================= */
+    sendMessageSocket(msgInput.value);
+    msgInput.value = "";
+  }
+});
+
+/* ================= PRIVATE PLACEHOLDER ================= */
 
 function openPrivate(targetNick) {
-  addMessage("text", `(Sistema) Chat privado con ${targetNick} (en desarrollo)`);
+  addMessage("text", `(Sistema) Chat privado con ${targetNick} (próximamente)`);
 }

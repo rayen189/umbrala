@@ -54,16 +54,24 @@ io.on("connection", socket => {
   });
 
   /* ===== PRIVATE MESSAGE (BASE) ===== */
-  socket.on("privateMessage", ({ to, text }) => {
-    const user = users[socket.id];
-    if (!user || !to || !text) return;
+  socket.on("privateMessage", ({ toSocketId, text }) => {
+  const fromUser = users[socket.id];
+  const toUser = users[toSocketId];
 
-    io.to(to).emit("privateMessage", {
-      from: user.nick,
-      text
-    });
+  if (!fromUser || !toUser || !text) return;
+
+  // ID estable del privado
+  const privateRoom = [socket.id, toSocketId].sort().join("_");
+
+  socket.join(privateRoom);
+  io.to(toSocketId).socketsJoin(privateRoom);
+
+  io.to(privateRoom).emit("privateMessage", {
+    room: privateRoom,
+    from: fromUser.nick,
+    text
   });
-
+});
   /* ===== DISCONNECT ===== */
   socket.on("disconnect", () => {
     const user = users[socket.id];

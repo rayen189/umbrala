@@ -1,48 +1,56 @@
-let currentChat = {
-  type: "room", // "room" | "private"
-  id: null      // roomId o privateRoomId
-};
-
-const privateTabs = {};
-
 console.log("🟢 chat.js cargado");
-
-/* ================= SOCKET ================= */
 
 const socket = io();
 
 /* ================= STATE ================= */
 
 let currentRoom = null;
+let currentChat = {
+  type: "room", // room | private
+  id: null
+};
+
+const privateTabs = {};
 
 /* ================= JOIN ROOM ================= */
 
-function joinRoom(roomName) {
-  if (!nick || !roomName) return;
-
-  currentRoom = roomName;
+function joinRoom(roomId) {
+  currentRoom = roomId;
+  currentChat = { type: "room", id: roomId };
 
   socket.emit("joinRoom", {
     nick,
-    room: roomName
+    room: roomId
   });
 }
 
 /* ================= SEND MESSAGE ================= */
 
 function sendMessageSocket(text) {
-  if (!text.trim() || !currentRoom) return;
+  if (!text.trim()) return;
 
-  socket.emit("chatMessage", {
-    room: currentRoom,
-    text
-  });
+  if (currentChat.type === "room") {
+    socket.emit("chatMessage", {
+      room: currentRoom,
+      text
+    });
+  }
+
+  if (currentChat.type === "private") {
+    const targetSocketId = currentChat.id
+      .split("_")
+      .find(id => id !== socket.id);
+
+    socket.emit("privateMessage", {
+      toSocketId: targetSocketId,
+      text
+    });
+  }
 }
 
 /* ================= SOCKET LISTENERS ================= */
 
 socket.on("message", data => {
-  console.log("📩 MENSAJE RECIBIDO:", data);
   addMessage("text", `${data.user}: ${data.text}`);
 });
 
@@ -50,11 +58,13 @@ socket.on("users", users => {
   usersList.innerHTML = "";
 
   users.forEach(u => {
+    if (u.nick === nick) return;
+
     const div = document.createElement("div");
     div.className = "user";
     div.textContent = u.nick;
 
-    div.onclick = () => openPrivate(u.nick);
+    div.onclick = () => openPrivate(u);
 
     usersList.appendChild(div);
   });
@@ -63,10 +73,16 @@ socket.on("users", users => {
 });
 
 socket.on("privateMessage", data => {
+  if (!privateTabs[data.room]) {
+    privateTabs[data.room] = { id: data.room, nick: data.from };
+    createPrivateTab(data.room, data.from);
+  }
+
+  currentChat = { type: "private", id: data.room };
   addMessage("text", `(Privado) ${data.from}: ${data.text}`);
 });
 
-/* ================= SEND HANDLERS ================= */
+/* ================= UI ================= */
 
 sendBtn.onclick = () => {
   if (!msgInput.value.trim()) return;
@@ -83,37 +99,39 @@ msgInput.addEventListener("keydown", e => {
   }
 });
 
-/* ================= ADD MESSAGE ================= */
+/* ================= PRIVATE ================= */
 
-function addMessage(type, content) {
-  const div = document.createElement("div");
-  div.className = "message";
+function openPrivate(user) {
+  const privateId = [socket.id, user.socketId].sort().join("_");
 
-  if (type === "text") {
-    div.textContent = content;
+  if (!privateTabs[privateId]) {
+    privateTabs[privateId] = { id: privateId, nick: user.nick };
+    createPrivateTab(privateId, user.nick);
   }
 
-  if (type === "image") {
-    div.innerHTML = `<img src="${content}" width="140">`;
-  }
-
-  if (type === "audio") {
-    div.innerHTML = `<audio src="${content}" controls></audio>`;
-  }
-
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
-
-  // ⏳ mensaje efímero
-  const LIFE_TIME = 18000;
-  const FADE_TIME = 2000;
-
-  setTimeout(() => div.classList.add("fade"), LIFE_TIME - FADE_TIME);
-  setTimeout(() => div.remove(), LIFE_TIME);
+  currentChat = { type: "private", id: privateId };
+  messages.innerHTML = "";
 }
 
-/* ================= PRIVATE PLACEHOLDER ================= */
+function createPrivateTab(id, nick) {
+  const tab = document.createElement("button");
+  tab.className = "chat-tab";
+  tab.textContent = `🔒 ${nick}`;
 
-function openPrivate(targetNick) {
-  addMessage("text", `(Sistema) Chat privado con ${targetNick} (próximamente)`);
+  tab.onclick = () => {
+    currentChat = { type: "private", id };
+    messages.innerHTML = "";
+  };
+
+  document.getElementById("chatTabs").appendChild(tab);
+}
+
+/* ================= MESSAGE UI ================= */
+
+function addMessage(type, text) {
+  const div = document.createElement("div");
+  div.className = "message";
+  div.textContent = text;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
 }

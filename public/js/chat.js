@@ -87,3 +87,36 @@ msgInput.addEventListener("keydown", e => {
 function openPrivate(targetNick) {
   addMessage("text", `(Sistema) Chat privado con ${targetNick} (próximamente)`);
 }
+
+/* ================= ADD MESSAGE ================= */
+
+function addMessage(type, content) {
+  const div = document.createElement("div");
+  div.className = "message";
+
+  if (type === "text") {
+    div.textContent = content;
+  }
+
+  if (type === "image") {
+    div.innerHTML = `<img src="${content}" width="140">`;
+  }
+
+  if (type === "audio") {
+    div.innerHTML = `<audio src="${content}" controls></audio>`;
+  }
+
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+
+  const LIFE_TIME = 18000;
+  const FADE_TIME = 2000;
+
+  setTimeout(() => {
+    div.classList.add("fade");
+  }, LIFE_TIME - FADE_TIME);
+
+  setTimeout(() => {
+    div.remove();
+  }, LIFE_TIME);
+}

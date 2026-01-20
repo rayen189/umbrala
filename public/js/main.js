@@ -24,6 +24,7 @@ const roomCount = document.getElementById("roomCount");
 const usersList = document.getElementById("usersList");
 
 let nick = "";
+let selectedRoom = "";
 
 /* ================= BOOT ================= */
 
@@ -51,12 +52,12 @@ const bootInterval = setInterval(() => {
 /* ================= ROOMS ================= */
 
 const rooms = [
-  { name: "🌍 Global", users: 3, particles: "normal" },
-  { name: "🌵 Norte", users: 2, particles: "normal" },
-  { name: "🏙 Centro", users: 1, particles: "normal" },
-  { name: "🌊 Sur", users: 0, particles: "normal" },
-  { name: "🧠 Curiosidades", users: 0, particles: "normal" },
-  { name: "🕳️ Vacío", users: 0, particles: "vacio" }
+  { name: "🌍 Global", particles: "normal" },
+  { name: "🌵 Norte", particles: "normal" },
+  { name: "🏙 Centro", particles: "normal" },
+  { name: "🌊 Sur", particles: "normal" },
+  { name: "🧠 Curiosidades", particles: "normal" },
+  { name: "🕳️ Vacío", particles: "vacio" }
 ];
 
 roomsList.innerHTML = "";
@@ -64,11 +65,11 @@ roomsList.innerHTML = "";
 rooms.forEach(room => {
   const div = document.createElement("div");
   div.className = "room";
-  div.innerHTML = `${room.name} <span>👥 ${room.users}</span>`;
+  div.innerHTML = `${room.name} <span>👥</span>`;
 
   div.onclick = () => {
+    selectedRoom = room.name;
     roomTitle.textContent = room.name;
-    roomCount.textContent = `👥 ${room.users + 1}`;
 
     if (window.setParticleMode) {
       setParticleMode(room.particles || "normal");
@@ -87,92 +88,31 @@ document.getElementById("randomNick").onclick = () => {
 };
 
 document.getElementById("enterChat").onclick = () => {
-  if (!nickInput.value.trim()) return;
+  if (!nickInput.value.trim() || !selectedRoom) return;
 
   nick = nickInput.value.trim();
   nickModal.classList.remove("active");
 
-  usersList.innerHTML = `<div>${nick}</div>`;
+  usersList.innerHTML = "";
   messages.innerHTML = "";
 
   switchScreen("chat");
+
+  /* 🔌 ENTRAR A SALA SOCKET */
+  if (typeof joinRoom === "function") {
+    joinRoom(selectedRoom);
+  }
 };
 
 /* ================= CHAT ================= */
 
 backBtn.onclick = () => {
   switchScreen("rooms");
+
   if (window.setParticleMode) {
     setParticleMode("normal");
   }
 };
-
-sendBtn.onclick = sendMessage;
-
-msgInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    sendMessage();
-  }
-});
-
-fileBtn.onclick = () => fileInput.click();
-
-fileInput.onchange = () => {
-  const file = fileInput.files[0];
-  if (!file) return;
-
-  const url = URL.createObjectURL(file);
-
-  if (file.type.startsWith("image")) {
-    addMessage("image", url);
-  } else if (file.type.startsWith("audio")) {
-    addMessage("audio", url);
-  }
-
-  fileInput.value = "";
-};
-
-/* ================= MESSAGES ================= */
-
-function sendMessage() {
-  if (!msgInput.value.trim()) return;
-
-  addMessage("text", `${nick}: ${msgInput.value}`);
-  msgInput.value = "";
-}
-
-function addMessage(type, content) {
-  const div = document.createElement("div");
-  div.className = "message";
-
-  if (type === "text") {
-    div.textContent = content;
-  }
-
-  if (type === "image") {
-    div.innerHTML = `<img src="${content}" width="140">`;
-  }
-
-  if (type === "audio") {
-    div.innerHTML = `<audio src="${content}" controls></audio>`;
-  }
-
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
-
-  /* ⏳ MENSAJE EFÍMERO */
-  const LIFE_TIME = 18000; // 18s total
-  const FADE_TIME = 2000;  // 2s fade
-
-  setTimeout(() => {
-    div.classList.add("fade");
-  }, LIFE_TIME - FADE_TIME);
-
-  setTimeout(() => {
-    div.remove();
-  }, LIFE_TIME);
-}
 
 /* ================= UTILS ================= */
 

@@ -2,7 +2,9 @@ const socket = io();
 
 let currentRoom = null;
 let activeChat = { type: "public" };
-const privateChats = {}; // socketId -> { nick, messages }
+
+// privados por nick
+const privateChats = {}; // nick -> { nick, socketId, messages }
 
 const tabs = document.getElementById("chatTabs");
 
@@ -16,7 +18,9 @@ function joinRoom(room) {
 /* ================= TABS ================= */
 
 function setActiveTab(tab) {
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t =>
+    t.classList.remove("active")
+  );
   tab.classList.add("active");
 }
 
@@ -25,10 +29,13 @@ function openPublicTab() {
   messages.innerHTML = "";
 }
 
+/* ===== PRIVATE TAB ===== */
+
 function openPrivateTab(user) {
-  if (!privateChats[user.socketId]) {
-    privateChats[user.socketId] = {
+  if (!privateChats[user.nick]) {
+    privateChats[user.nick] = {
       nick: user.nick,
+      socketId: user.socketId,
       messages: []
     };
 
@@ -36,7 +43,11 @@ function openPrivateTab(user) {
     tab.className = "tab";
     tab.textContent = `🔒 ${user.nick}`;
     tab.onclick = () => {
-      activeChat = { type: "private", socketId: user.socketId };
+      activeChat = {
+        type: "private",
+        nick: user.nick,
+        socketId: user.socketId
+      };
       renderMessages();
       setActiveTab(tab);
     };
@@ -44,24 +55,37 @@ function openPrivateTab(user) {
     tabs.appendChild(tab);
   }
 
-  activeChat = { type: "private", socketId: user.socketId };
+  activeChat = {
+    type: "private",
+    nick: user.nick,
+    socketId: user.socketId
+  };
+
   renderMessages();
-  setActiveTab([...tabs.children].find(t => t.textContent.includes(user.nick)));
+
+  const tab = [...tabs.children].find(t =>
+    t.textContent.includes(user.nick)
+  );
+  if (tab) setActiveTab(tab);
 }
+
+/* ================= RENDER ================= */
 
 function renderMessages() {
   messages.innerHTML = "";
 
   if (activeChat.type === "public") return;
 
-  privateChats[activeChat.socketId].messages.forEach(m => {
-    addMessage("text", m);
-  });
+  const chat = privateChats[activeChat.nick];
+  if (!chat) return;
+
+  chat.messages.forEach(m => addMessage("text", m));
 }
 
 /* ================= SEND ================= */
 
 sendBtn.onclick = sendMessage;
+
 msgInput.addEventListener("keydown", e => {
   if (e.key === "Enter") {
     e.preventDefault();
@@ -70,30 +94,28 @@ msgInput.addEventListener("keydown", e => {
 });
 
 function sendMessage() {
-  if (!msgInput.value.trim()) return;
+  const text = msgInput.value.trim();
+  if (!text) return;
 
   if (activeChat.type === "private") {
     socket.emit("privateMessage", {
       toSocketId: activeChat.socketId,
-      text: msgInput.value
+      text
     });
 
-    privateChats[activeChat.socketId].messages.push(
-      `Tú: ${msgInput.value}`
-    );
-
+    privateChats[activeChat.nick].messages.push(`Tú: ${text}`);
     renderMessages();
   } else {
     socket.emit("chatMessage", {
       room: currentRoom,
-      text: msgInput.value
+      text
     });
   }
 
   msgInput.value = "";
 }
 
-/* ================= SOCKET LISTENERS ================= */
+/* ================= SOCKET ================= */
 
 socket.on("message", data => {
   if (activeChat.type === "public") {
@@ -101,15 +123,32 @@ socket.on("message", data => {
   }
 });
 
+/* 🔥 FIX PRINCIPAL */
 socket.on("privateMessage", data => {
-  const entry = Object.values(privateChats).find(
-    c => c.nick === data.from
+  if (!privateChats[data.from]) {
+    privateChats[data.from] = {
+      nick: data.from,
+      socketId: null,
+      messages: []
+    };
+
+    const tab = document.createElement("div");
+    tab.className = "tab";
+    tab.textContent = `🔒 ${data.from}`;
+    tab.onclick = () => {
+      activeChat = { type: "private", nick: data.from };
+      renderMessages();
+      setActiveTab(tab);
+    };
+
+    tabs.appendChild(tab);
+  }
+
+  privateChats[data.from].messages.push(
+    `${data.from}: ${data.text}`
   );
 
-  if (entry) {
-    entry.messages.push(`${data.from}: ${data.text}`);
-    renderMessages();
-  }
+  renderMessages();
 });
 
 /* ================= USERS ================= */
@@ -118,6 +157,8 @@ socket.on("users", users => {
   usersList.innerHTML = "";
 
   users.forEach(u => {
+    if (u.nick === nick) return;
+
     const div = document.createElement("div");
     div.className = "user";
     div.textContent = u.nick;

@@ -1,3 +1,10 @@
+let currentChat = {
+  type: "room", // "room" | "private"
+  id: null      // roomId o privateRoomId
+};
+
+const privateTabs = {};
+
 console.log("🟢 chat.js cargado");
 
 /* ================= SOCKET ================= */

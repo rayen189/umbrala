@@ -307,3 +307,33 @@ button:hover {
     border-top: 1px solid var(--neon-soft);
   }
 }
+
+/* =====================
+   MENSAJES TECNOLÓGICOS
+===================== */
+
+.message {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: msgIn 0.35s ease-out forwards;
+}
+
+/* aparición */
+@keyframes msgIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* desvanecimiento efímero */
+.message.fade {
+  animation: msgOut 2s linear forwards;
+}
+
+@keyframes msgOut {
+  to {
+    opacity: 0;
+    filter: blur(1px);
+  }
+}

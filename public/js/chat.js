@@ -1,7 +1,10 @@
 const socket = io();
 
 let currentRoom = null;
-let privateTarget = null;
+let activeChat = { type: "public" };
+const privateChats = {}; // socketId -> { nick, messages }
+
+const tabs = document.getElementById("chatTabs");
 
 /* ================= JOIN ROOM ================= */
 
@@ -10,31 +13,77 @@ function joinRoom(room) {
   socket.emit("joinRoom", { nick, room });
 }
 
+/* ================= TABS ================= */
+
+function setActiveTab(tab) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  tab.classList.add("active");
+}
+
+function openPublicTab() {
+  activeChat = { type: "public" };
+  messages.innerHTML = "";
+}
+
+function openPrivateTab(user) {
+  if (!privateChats[user.socketId]) {
+    privateChats[user.socketId] = {
+      nick: user.nick,
+      messages: []
+    };
+
+    const tab = document.createElement("div");
+    tab.className = "tab";
+    tab.textContent = `🔒 ${user.nick}`;
+    tab.onclick = () => {
+      activeChat = { type: "private", socketId: user.socketId };
+      renderMessages();
+      setActiveTab(tab);
+    };
+
+    tabs.appendChild(tab);
+  }
+
+  activeChat = { type: "private", socketId: user.socketId };
+  renderMessages();
+  setActiveTab([...tabs.children].find(t => t.textContent.includes(user.nick)));
+}
+
+function renderMessages() {
+  messages.innerHTML = "";
+
+  if (activeChat.type === "public") return;
+
+  privateChats[activeChat.socketId].messages.forEach(m => {
+    addMessage("text", m);
+  });
+}
+
 /* ================= SEND ================= */
 
-sendBtn.onclick = sendCurrentMessage;
-
+sendBtn.onclick = sendMessage;
 msgInput.addEventListener("keydown", e => {
   if (e.key === "Enter") {
     e.preventDefault();
-    sendCurrentMessage();
+    sendMessage();
   }
 });
 
-function sendCurrentMessage() {
+function sendMessage() {
   if (!msgInput.value.trim()) return;
 
-  // 🔐 PRIVADO
-  if (privateTarget) {
+  if (activeChat.type === "private") {
     socket.emit("privateMessage", {
-      toSocketId: privateTarget.socketId,
+      toSocketId: activeChat.socketId,
       text: msgInput.value
     });
 
-    addMessage("text", `(Privado a ${privateTarget.nick}) ${msgInput.value}`);
-  } 
-  // 🌍 PUBLICO
-  else {
+    privateChats[activeChat.socketId].messages.push(
+      `Tú: ${msgInput.value}`
+    );
+
+    renderMessages();
+  } else {
     socket.emit("chatMessage", {
       room: currentRoom,
       text: msgInput.value
@@ -47,11 +96,20 @@ function sendCurrentMessage() {
 /* ================= SOCKET LISTENERS ================= */
 
 socket.on("message", data => {
-  addMessage("text", `${data.user}: ${data.text}`);
+  if (activeChat.type === "public") {
+    addMessage("text", `${data.user}: ${data.text}`);
+  }
 });
 
 socket.on("privateMessage", data => {
-  addMessage("text", `🔒 ${data.from}: ${data.text}`);
+  const entry = Object.values(privateChats).find(
+    c => c.nick === data.from
+  );
+
+  if (entry) {
+    entry.messages.push(`${data.from}: ${data.text}`);
+    renderMessages();
+  }
 });
 
 /* ================= USERS ================= */
@@ -63,26 +121,9 @@ socket.on("users", users => {
     const div = document.createElement("div");
     div.className = "user";
     div.textContent = u.nick;
-
-    div.onclick = () => {
-      openPrivate(u);
-    };
-
+    div.onclick = () => openPrivateTab(u);
     usersList.appendChild(div);
   });
 
   roomCount.textContent = `👥 ${users.length}`;
 });
-
-/* ================= PRIVATE ================= */
-
-function openPrivate(user) {
-  privateTarget = user;
-  addMessage("text", `🔒 Chat privado con ${user.nick}`);
-}
-
-/* ================= SALIR PRIVADO ================= */
-
-backBtn.onclick = () => {
-  privateTarget = null;
-};

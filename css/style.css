@@ -1,6 +1,7 @@
 :root {
   --bg: #050b08;
-  --neon: #00ff88b3;
+  --neon: #00ff88;
+  --neon-soft: rgba(0,255,136,0.35);
   --text: #d7ffe9;
 }
 
@@ -16,7 +17,7 @@ body {
   margin: 0;
   min-height: 100vh;
   overflow: hidden;
-  background: var(--bg);
+  background: radial-gradient(circle at top, #08140e, #020604);
   color: var(--text);
 }
 
@@ -28,7 +29,6 @@ body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: transparent;
 }
 
 /* =====================
@@ -52,17 +52,17 @@ body {
    BOOT TERMINAL
 ===================== */
 .terminal-window {
-  width: 90%;
+  width: 92%;
   max-width: 620px;
   border: 1px solid var(--neon);
-  box-shadow: 0 0 14px var(--neon);
-  background: rgba(6, 15, 10, 0.75);
+  box-shadow: 0 0 18px var(--neon-soft);
+  background: rgba(6, 15, 10, 0.82);
 }
 
 .terminal-bar {
   display: flex;
   align-items: center;
-  padding: 6px;
+  padding: 6px 10px;
   background: #0c1a12;
 }
 
@@ -84,40 +84,62 @@ body {
 .title {
   margin: auto;
   color: var(--neon);
+  letter-spacing: 2px;
 }
 
 #terminal {
   padding: 20px;
-  line-height: 1.4;
+  line-height: 1.45;
+  font-size: 14px;
 }
 
 /* =====================
    ROOMS
 ===================== */
 .rooms-box {
-  text-align: center;
   width: 100%;
   max-width: 420px;
+  padding: 10px;
+}
+
+.rooms-box h2 {
+  text-align: center;
+  margin-bottom: 18px;
+  color: var(--neon);
+  letter-spacing: 1px;
 }
 
 .rooms {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .room {
-  padding: 14px;
-  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px;
+  border-radius: 40px;
   border: 1px solid var(--neon);
-  background: rgba(5, 11, 8, 0.65);
+  background: linear-gradient(
+    145deg,
+    rgba(10, 30, 20, 0.85),
+    rgba(5, 14, 10, 0.85)
+  );
+  box-shadow: 0 0 10px var(--neon-soft);
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.2s;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
 .room:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 10px rgba(0,255,136,0.35);
+  transform: scale(1.035);
+  box-shadow: 0 0 18px rgba(0,255,136,0.55);
+}
+
+.room span {
+  opacity: 0.8;
+  font-size: 13px;
 }
 
 /* =====================
@@ -129,22 +151,20 @@ body {
   height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: rgba(5, 11, 8, 0.65);
-  backdrop-filter: blur(2px);
-}
-
-@supports not (height: 100dvh) {
-  .chat-container {
-    height: 100vh;
-  }
+  background: rgba(5, 11, 8, 0.75);
+  backdrop-filter: blur(3px);
 }
 
 .chat-top {
-  padding: 10px;
-  border-bottom: 1px solid rgba(0,255,136,0.25);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--neon-soft);
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.chat-top strong {
+  color: var(--neon);
 }
 
 .chat-body {
@@ -155,13 +175,14 @@ body {
 
 #messages {
   flex: 1;
-  padding: 10px;
+  padding: 14px;
   overflow-y: auto;
   font-size: 14px;
 }
 
 .message {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  opacity: 0.95;
 }
 
 /* =====================
@@ -169,14 +190,13 @@ body {
 ===================== */
 #usersPanel {
   width: 180px;
-  padding: 8px;
-  background: rgba(6, 15, 10, 0.6);
-  border-left: 1px solid rgba(0,255,136,0.3);
-  overflow-y: auto;
+  padding: 10px;
+  background: rgba(6, 15, 10, 0.65);
+  border-left: 1px solid var(--neon-soft);
 }
 
 .users-title {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-weight: bold;
   color: var(--neon);
 }
@@ -186,16 +206,18 @@ body {
 ===================== */
 .inputBar {
   display: flex;
-  gap: 6px;
-  padding: 8px;
-  border-top: 1px solid rgba(0,255,136,0.25);
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid var(--neon-soft);
 }
 
-input, button {
-  background: #0c1a12;
+input,
+button {
+  background: rgba(10, 26, 18, 0.9);
   border: 1px solid var(--neon);
   color: var(--text);
-  padding: 8px;
+  padding: 10px;
+  outline: none;
 }
 
 input {
@@ -204,19 +226,25 @@ input {
 
 button {
   cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+button:hover {
+  background: rgba(0,255,136,0.15);
+  box-shadow: 0 0 8px var(--neon-soft);
 }
 
 /* =====================
-   MODAL
+   MODAL NICK
 ===================== */
 .modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0,0,0,0.82);
   align-items: center;
   justify-content: center;
-  z-index: 5;
+  z-index: 10;
 }
 
 .modal.active {
@@ -224,11 +252,37 @@ button {
 }
 
 .modal-box {
+  width: 92%;
+  max-width: 360px;
   border: 1px solid var(--neon);
-  padding: 20px;
-  background: rgba(6, 18, 12, 0.9);
-  width: 260px;
+  padding: 24px 22px;
+  background: linear-gradient(
+    160deg,
+    rgba(10, 30, 20, 0.95),
+    rgba(4, 12, 8, 0.95)
+  );
+  box-shadow: 0 0 22px var(--neon-soft);
   text-align: center;
+  border-radius: 14px;
+}
+
+.modal-box h3 {
+  margin-bottom: 14px;
+  color: var(--neon);
+  letter-spacing: 1px;
+}
+
+.modal-box input {
+  width: 100%;
+  margin-bottom: 12px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.modal-box button {
+  width: 100%;
+  margin-top: 8px;
+  font-weight: bold;
 }
 
 /* =====================
@@ -250,6 +304,6 @@ button {
     width: 100%;
     max-height: 120px;
     border-left: none;
-    border-top: 1px solid rgba(0,255,136,0.3);
+    border-top: 1px solid var(--neon-soft);
   }
 }

@@ -303,18 +303,27 @@ body {
 }
 
 /* BOTÓN IMAGEN */
-#imgBtn {
-  background: #000;
-  border: 1px solid #00ff9c;
-  color: #00ff9c;
-  padding: 8px 10px;
+.iconBtn {
+  background: rgba(0, 255, 153, 0.08);
+  border: 1px solid #00ff99;
+  color: #00ff99;
+  font-size: 20px;
+  width: 42px;
+  height: 42px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
-  box-shadow: 0 0 6px rgba(0,255,156,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
-#imgBtn:active {
+.iconBtn:hover {
+  background: rgba(0, 255, 153, 0.18);
+  box-shadow: 0 0 8px #00ff99;
+}
+
+.iconBtn:active {
   transform: scale(0.95);
 }
 

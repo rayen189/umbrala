@@ -152,3 +152,23 @@ app.post("/upload", upload.single("file"), (req, res) => {
     url: `/uploads/${req.file.mimetype.startsWith("image") ? "images" : "audios"}/${req.file.filename}`
   });
 });
+
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: "public/audios",
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + ".webm");
+  }
+});
+
+const upload = multer({ storage });
+
+app.use("/audios", express.static("public/audios"));
+
+app.post("/upload-audio", upload.single("audio"), (req, res) => {
+  res.json({
+    url: "/audios/" + req.file.filename
+  });
+});

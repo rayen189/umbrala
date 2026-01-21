@@ -11,7 +11,7 @@
 
 <canvas id="particles"></canvas>
 
-<!-- ================= BOOT ================= -->
+<!-- BOOT -->
 <section id="bootScreen" class="screen active center">
   <div class="terminal-window">
     <div class="terminal-bar">
@@ -26,7 +26,7 @@
   </div>
 </section>
 
-<!-- ================= SALAS ================= -->
+<!-- ROOMS -->
 <section id="roomsScreen" class="screen center">
   <div class="rooms-box">
     <h2>Salas activas</h2>
@@ -34,23 +34,20 @@
   </div>
 </section>
 
-<!-- ================= CHAT ================= -->
+<!-- CHAT -->
 <section id="chatScreen" class="screen">
   <div class="chat-container">
 
-    <!-- TOP -->
     <div class="chat-top">
       <button id="backToRooms">← Salas</button>
       <strong id="roomTitle">Sala</strong>
       <span id="roomCount">👥 0</span>
     </div>
 
-    <!-- TABS -->
     <div id="chatTabs" class="chat-tabs">
       <div class="tab active" data-type="public">🌍 Sala</div>
     </div>
 
-    <!-- BODY -->
     <div class="chat-body">
       <div id="messages"></div>
 
@@ -60,19 +57,18 @@
       </aside>
     </div>
 
-    <!-- INPUT -->
     <div class="inputBar">
       <input type="file" id="fileInput" accept="image/*" hidden>
-<button id="imgBtn" class="iconBtn" title="Enviar imagen">📷</button>
-<button id="recordBtn" class="iconBtn" title="Nota de voz">🎙️</button>      
+      <button id="imgBtn" class="iconBtn">📷</button>
+      <button id="recordBtn" class="iconBtn">🎙️</button>
       <input id="msgInput" placeholder="Escribe un mensaje..." autocomplete="off" />
-      <button id="sendBtn">Enviar</button>
+      <button id="sendBtn">➤</button>
     </div>
 
   </div>
 </section>
 
-<!-- ================= MODAL NICK ================= -->
+<!-- MODAL NICK -->
 <div id="nickModal" class="modal">
   <div class="modal-box">
     <h3>Ingresa tu nick</h3>
@@ -82,7 +78,6 @@
   </div>
 </div>
 
-<!-- ================= SCRIPTS ================= -->
 <script src="/socket.io/socket.io.js"></script>
 <script src="js/main.js"></script>
 <script src="js/chat.js"></script>

@@ -239,3 +239,124 @@ body {
     border-top: 1px solid #222;
   }
 }
+
+/* ================= CIBERPUNK THEME ================= */
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.terminal-window,
+.rooms-box,
+.chat-top,
+.chat-tabs,
+#usersPanel,
+.modal-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: var(--glow);
+}
+
+/* ===== TERMINAL ===== */
+#terminal {
+  color: var(--green);
+}
+
+.title {
+  color: var(--green);
+  text-shadow: var(--glow);
+}
+
+/* ===== ROOMS ===== */
+.room {
+  background: var(--panel-2);
+  color: var(--green);
+  border: 1px solid transparent;
+}
+
+.room:hover {
+  border-color: var(--green);
+  box-shadow: var(--glow);
+}
+
+/* ===== CHAT TOP ===== */
+.chat-top {
+  color: var(--green);
+}
+
+/* ===== TABS ===== */
+.tab {
+  color: #7fffd4;
+}
+
+.tab.active {
+  background: #02140c;
+  color: var(--green);
+  text-shadow: var(--glow);
+}
+
+/* ===== MESSAGES ===== */
+.message {
+  color: var(--text);
+}
+
+.message::before {
+  content: "> ";
+  color: var(--green-soft);
+}
+
+/* ===== USERS ===== */
+.user {
+  color: #8fffd0;
+}
+
+.user:hover {
+  color: var(--green);
+  background: #02140c;
+}
+
+/* ===== INPUT ===== */
+#msgInput {
+  color: var(--green);
+  caret-color: var(--green);
+}
+
+#sendBtn {
+  background: var(--green);
+  color: #000;
+  font-weight: bold;
+}
+
+#sendBtn:hover {
+  box-shadow: 0 0 10px rgba(0,255,156,.8);
+}
+
+/* ===== MODAL ===== */
+.modal-box h3 {
+  color: var(--green);
+  text-align: center;
+}
+
+.modal-box input {
+  background: #020b07;
+  border: 1px solid var(--green-soft);
+  color: var(--green);
+}
+
+.modal-box button {
+  background: transparent;
+  border: 1px solid var(--green);
+  color: var(--green);
+}
+
+.modal-box button:hover {
+  background: var(--green);
+  color: #000;
+  box-shadow: var(--glow);
+}
+
+/* ===== BUTTONS ===== */
+#backToRooms {
+  color: var(--green);
+}

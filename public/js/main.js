@@ -1,19 +1,12 @@
-/* =====================================================
-   ESTADO GLOBAL (NO volver a declarar en otros JS)
-===================================================== */
+console.log("🟢 main.js cargado");
 
-window.nick = "";
-window.currentRoom = "";
+/* ================= ELEMENTOS ================= */
 
 const screens = {
   boot: document.getElementById("bootScreen"),
   rooms: document.getElementById("roomsScreen"),
   chat: document.getElementById("chatScreen")
 };
-
-/* =====================================================
-   ELEMENTOS DOM
-===================================================== */
 
 const terminal = document.getElementById("terminal");
 const roomsList = document.getElementById("roomsList");
@@ -26,9 +19,12 @@ const enterChat = document.getElementById("enterChat");
 const backBtn = document.getElementById("backToRooms");
 const roomTitle = document.getElementById("roomTitle");
 
-/* =====================================================
-   BOOT (terminal inicial)
-===================================================== */
+/* ================= ESTADO GLOBAL ================= */
+
+window.nick = "";
+window.currentRoom = "";
+
+/* ================= BOOT ================= */
 
 const bootLines = [
   "Inicializando Umbrala...",
@@ -38,21 +34,16 @@ const bootLines = [
   "Sistema activo ✔"
 ];
 
-let bootIndex = 0;
-
+let i = 0;
 const bootInterval = setInterval(() => {
-  terminal.innerHTML += bootLines[bootIndex] + "<br>";
-  bootIndex++;
-
-  if (bootIndex >= bootLines.length) {
+  terminal.innerHTML += bootLines[i++] + "<br>";
+  if (i === bootLines.length) {
     clearInterval(bootInterval);
-    setTimeout(() => switchScreen("rooms"), 800);
+    setTimeout(() => switchScreen("rooms"), 700);
   }
 }, 450);
 
-/* =====================================================
-   SALAS
-===================================================== */
+/* ================= SALAS ================= */
 
 const rooms = [
   { id: "global", name: "🌍 Global" },
@@ -60,7 +51,7 @@ const rooms = [
   { id: "centro", name: "🏙 Centro" },
   { id: "sur", name: "🌊 Sur" },
   { id: "curiosidades", name: "🧠 Curiosidades" },
-  { id: "vacio", name: "🕳️ Vacío" }
+  { id: "vacio", name: "🕳 Vacío" }
 ];
 
 roomsList.innerHTML = "";
@@ -68,57 +59,57 @@ roomsList.innerHTML = "";
 rooms.forEach(room => {
   const div = document.createElement("div");
   div.className = "room";
-  div.innerHTML = `${room.name} <span>👥</span>`;
+  div.innerHTML = room.name;
 
-  div.addEventListener("click", () => {
-    console.log("CLICK SALA:", room.id);
+  div.onclick = () => {
+    console.log("👉 CLICK SALA:", room.id);
     window.currentRoom = room.id;
     roomTitle.textContent = room.name;
     nickModal.classList.add("active");
-  });
+  };
 
   roomsList.appendChild(div);
 });
 
-/* =====================================================
-   NICK
-===================================================== */
+/* ================= NICK ================= */
 
-randomNick.addEventListener("click", () => {
+randomNick.onclick = () => {
   nickInput.value = "ghost_" + Math.floor(Math.random() * 9999);
-});
+};
 
-enterChat.addEventListener("click", () => {
-  const value = nickInput.value.trim();
-  if (!value || !window.currentRoom) return;
+enterChat.onclick = () => {
+  if (!nickInput.value.trim() || !window.currentRoom) return;
 
-  window.nick = value;
+  window.nick = nickInput.value.trim();
   nickModal.classList.remove("active");
 
   switchScreen("chat");
 
-  // 👉 chat.js escucha esto
-  if (window.joinRoom) {
-    window.joinRoom(window.nick, window.currentRoom);
+  // 🔥 ESTA LÍNEA ES CLAVE
+  if (typeof window.joinRoom === "function") {
+    window.joinRoom(window.currentRoom);
+  } else {
+    console.error("❌ joinRoom no existe");
   }
-});
+};
 
-/* =====================================================
-   BOTÓN VOLVER
-===================================================== */
+/* ================= BOTÓN VOLVER ================= */
 
-backBtn.addEventListener("click", () => {
+backBtn.onclick = () => {
   switchScreen("rooms");
-});
+};
 
-/* =====================================================
-   UTILIDADES
-===================================================== */
+/* ================= UTIL ================= */
 
 function switchScreen(name) {
-  Object.values(screens).forEach(screen => {
-    screen.classList.remove("active");
-  });
+  Object.values(screens).forEach(s =>
+    s.classList.remove("active")
+  );
+
+  if (!screens[name]) {
+    console.error("❌ Screen no existe:", name);
+    return;
+  }
 
   screens[name].classList.add("active");
 }

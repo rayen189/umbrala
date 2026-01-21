@@ -1,10 +1,19 @@
-/* ================= ELEMENTS ================= */
+/* =====================================================
+   ESTADO GLOBAL (NO volver a declarar en otros JS)
+===================================================== */
+
+window.nick = "";
+window.currentRoom = "";
 
 const screens = {
   boot: document.getElementById("bootScreen"),
   rooms: document.getElementById("roomsScreen"),
   chat: document.getElementById("chatScreen")
 };
+
+/* =====================================================
+   ELEMENTOS DOM
+===================================================== */
 
 const terminal = document.getElementById("terminal");
 const roomsList = document.getElementById("roomsList");
@@ -14,19 +23,12 @@ const nickInput = document.getElementById("nickInput");
 const randomNick = document.getElementById("randomNick");
 const enterChat = document.getElementById("enterChat");
 
-const msgInput = document.getElementById("msgInput");
-const messages = document.getElementById("messages");
-const sendBtn = document.getElementById("sendBtn");
-
 const backBtn = document.getElementById("backToRooms");
 const roomTitle = document.getElementById("roomTitle");
-const roomCount = document.getElementById("roomCount");
-const usersList = document.getElementById("usersList");
 
-let nick = "";
-let selectedRoom = "";
-
-/* ================= BOOT ================= */
+/* =====================================================
+   BOOT (terminal inicial)
+===================================================== */
 
 const bootLines = [
   "Inicializando Umbrala...",
@@ -36,16 +38,21 @@ const bootLines = [
   "Sistema activo ✔"
 ];
 
-let i = 0;
+let bootIndex = 0;
+
 const bootInterval = setInterval(() => {
-  terminal.innerHTML += bootLines[i++] + "<br>";
-  if (i === bootLines.length) {
+  terminal.innerHTML += bootLines[bootIndex] + "<br>";
+  bootIndex++;
+
+  if (bootIndex >= bootLines.length) {
     clearInterval(bootInterval);
-    setTimeout(() => switchScreen("rooms"), 700);
+    setTimeout(() => switchScreen("rooms"), 800);
   }
 }, 450);
 
-/* ================= ROOMS ================= */
+/* =====================================================
+   SALAS
+===================================================== */
 
 const rooms = [
   { id: "global", name: "🌍 Global" },
@@ -61,63 +68,57 @@ roomsList.innerHTML = "";
 rooms.forEach(room => {
   const div = document.createElement("div");
   div.className = "room";
-  div.style.pointerEvents = "auto";
   div.innerHTML = `${room.name} <span>👥</span>`;
 
-  div.onclick = () => {
-  console.log("👉 CLICK SALA:", room.id);
-
-  selectedRoom = room.id;
-  roomTitle.textContent = room.name;
-  nickModal.classList.add("active");
-};
+  div.addEventListener("click", () => {
+    console.log("CLICK SALA:", room.id);
+    window.currentRoom = room.id;
+    roomTitle.textContent = room.name;
+    nickModal.classList.add("active");
+  });
 
   roomsList.appendChild(div);
 });
 
-/* ================= NICK ================= */
+/* =====================================================
+   NICK
+===================================================== */
 
-randomNick.onclick = () => {
+randomNick.addEventListener("click", () => {
   nickInput.value = "ghost_" + Math.floor(Math.random() * 9999);
-};
+});
 
-enterChat.onclick = () => {
-  if (!nickInput.value.trim() || !selectedRoom) return;
+enterChat.addEventListener("click", () => {
+  const value = nickInput.value.trim();
+  if (!value || !window.currentRoom) return;
 
-  nick = nickInput.value.trim();
+  window.nick = value;
   nickModal.classList.remove("active");
-
-  usersList.innerHTML = "";
-  messages.innerHTML = "";
 
   switchScreen("chat");
 
-  if (typeof joinRoom === "function") {
-    joinRoom(selectedRoom);
-  } else {
-    console.error("❌ joinRoom no está disponible");
+  // 👉 chat.js escucha esto
+  if (window.joinRoom) {
+    window.joinRoom(window.nick, window.currentRoom);
   }
-};
+});
 
-/* ================= CHAT ================= */
+/* =====================================================
+   BOTÓN VOLVER
+===================================================== */
 
-backBtn.onclick = () => {
+backBtn.addEventListener("click", () => {
   switchScreen("rooms");
-};
+});
 
-/* ================= UTILS ================= */
+/* =====================================================
+   UTILIDADES
+===================================================== */
 
 function switchScreen(name) {
-  Object.values(screens).forEach(s =>
-    s.classList.remove("active")
-  );
-  screens[name].classList.add("active");
-}
+  Object.values(screens).forEach(screen => {
+    screen.classList.remove("active");
+  });
 
-function addMessage(type, text) {
-  const div = document.createElement("div");
-  div.className = "message";
-  div.textContent = text;
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
+  screens[name].classList.add("active");
 }

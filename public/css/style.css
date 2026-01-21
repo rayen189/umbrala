@@ -367,3 +367,15 @@ body {
     border-top: 1px solid var(--border);
   }
 }
+
+
+.chat-image {
+  max-width: 200px;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+
+audio {
+  width: 200px;
+  margin-top: 4px;
+}

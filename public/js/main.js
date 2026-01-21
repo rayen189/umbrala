@@ -64,10 +64,12 @@ rooms.forEach(room => {
   div.innerHTML = `${room.name} <span>👥</span>`;
 
   div.onclick = () => {
-    selectedRoom = room.id;
-    roomTitle.textContent = room.name;
-    nickModal.classList.add("active");
-  };
+  console.log("👉 CLICK SALA:", room.id);
+
+  selectedRoom = room.id;
+  roomTitle.textContent = room.name;
+  nickModal.classList.add("active");
+};
 
   roomsList.appendChild(div);
 });

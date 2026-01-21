@@ -258,33 +258,64 @@ body {
 /* ===== INPUT ===== */
 .inputBar {
   display: flex;
-  border-top: 1px solid var(--border);
-  background: var(--panel);
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(0, 15, 10, 0.95);
+  border-top: 1px solid #00ff9c;
   position: sticky;
   bottom: 0;
   z-index: 10;
 }
 
+/* INPUT TEXTO */
 #msgInput {
   flex: 1;
-  padding: 12px;
-  background: transparent;
-  border: none;
-  color: var(--green);
+  background: #000;
+  border: 1px solid #00ff9c;
+  color: #00ff9c;
+  padding: 10px 12px;
+  font-family: monospace;
+  font-size: 14px;
+  border-radius: 6px;
   outline: none;
 }
 
-#sendBtn {
-  background: var(--green);
-  border: none;
-  padding: 0 18px;
-  color: #000;
-  font-weight: bold;
-  cursor: pointer;
+#msgInput::placeholder {
+  color: rgba(0, 255, 156, 0.5);
 }
 
-#sendBtn:hover {
-  box-shadow: var(--glow);
+/* BOTÓN ENVIAR */
+#sendBtn {
+  background: linear-gradient(135deg, #00ff9c, #00cc7a);
+  color: #000;
+  border: none;
+  padding: 10px 14px;
+  font-weight: bold;
+  font-family: monospace;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(0,255,156,0.6);
+}
+
+#sendBtn:active {
+  transform: scale(0.95);
+}
+
+/* BOTÓN IMAGEN */
+#imgBtn {
+  background: #000;
+  border: 1px solid #00ff9c;
+  color: #00ff9c;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 0 6px rgba(0,255,156,0.4);
+}
+
+#imgBtn:active {
+  transform: scale(0.95);
 }
 
 /* ==================================================

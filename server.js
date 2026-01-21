@@ -125,3 +125,30 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`🚀 Umbrala activo en puerto ${PORT}`);
 });
+
+const multer = require("multer");
+const path = require("path");
+
+/* ================= UPLOAD ================= */
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    if (file.mimetype.startsWith("image")) {
+      cb(null, "public/uploads/images");
+    } else {
+      cb(null, "public/uploads/audios");
+    }
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, Date.now() + ext);
+  }
+});
+
+const upload = multer({ storage });
+
+app.post("/upload", upload.single("file"), (req, res) => {
+  res.json({
+    url: `/uploads/${req.file.mimetype.startsWith("image") ? "images" : "audios"}/${req.file.filename}`
+  });
+});

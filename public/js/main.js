@@ -1,3 +1,5 @@
+/* ================= ELEMENTS ================= */
+
 const screens = {
   boot: document.getElementById("bootScreen"),
   rooms: document.getElementById("roomsScreen"),
@@ -86,12 +88,19 @@ enterChat.onclick = () => {
   messages.innerHTML = "";
 
   switchScreen("chat");
-  joinRoom(selectedRoom);
+
+  if (typeof joinRoom === "function") {
+    joinRoom(selectedRoom);
+  } else {
+    console.error("❌ joinRoom no está disponible");
+  }
 };
 
 /* ================= CHAT ================= */
 
-backBtn.onclick = () => switchScreen("rooms");
+backBtn.onclick = () => {
+  switchScreen("rooms");
+};
 
 /* ================= UTILS ================= */
 

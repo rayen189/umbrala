@@ -7,11 +7,14 @@
   font-family: monospace;
 }
 
+/* ================= BODY ================= */
+
 body {
   background: #0b0b12;
   color: #e0e0ff;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-y: auto;     /* ✅ scroll permitido */
+  overflow-x: hidden;
 }
 
 /* ================= SCREENS ================= */
@@ -19,7 +22,7 @@ body {
 .screen {
   display: none;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .screen.active {
@@ -127,7 +130,7 @@ body {
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;   /* ✅ no height fija */
   width: 100%;
 }
 
@@ -198,6 +201,7 @@ body {
   flex: 1;
   padding: 10px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* ✅ scroll suave móvil */
 }
 
 .message {
@@ -237,6 +241,10 @@ body {
 .inputBar {
   display: flex;
   border-top: 1px solid #222;
+  position: sticky;     /* ✅ siempre visible */
+  bottom: 0;
+  background: #0e0e16;
+  z-index: 10;
 }
 
 #msgInput {
@@ -267,10 +275,6 @@ body {
     width: 200px;
     display: block;
   }
-
-  #messages {
-    width: calc(100% - 200px);
-  }
 }
 
 /* ================= MOBILE ================= */
@@ -281,65 +285,9 @@ body {
   }
 
   #usersPanel {
-    display: block;
     width: 100%;
     max-height: 120px;
     overflow-y: auto;
     border-top: 1px solid #222;
-    background: #0e0e16;
   }
-
-  #messages {
-    width: 100%;
-  }
-}
-
-/* ================= MODAL ================= */
-
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-}
-
-.modal.active {
-  display: flex;
-}
-
-.modal-box {
-  background: #0e0e16;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 320px;
-  text-align: center;
-  box-shadow: 0 0 20px rgba(122,124,255,0.4);
-}
-
-.modal-box h3 {
-  margin-bottom: 12px;
-  color: #7a7cff;
-}
-
-.modal-box input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  background: #15152a;
-  border: none;
-  color: #fff;
-}
-
-.modal-box button {
-  width: 100%;
-  padding: 8px;
-  margin-top: 6px;
-  background: #7a7cff;
-  border: none;
-  color: #fff;
-  cursor: pointer;
 }

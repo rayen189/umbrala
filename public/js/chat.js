@@ -3,14 +3,7 @@ console.log("🟢 chat.js cargado");
 const socket = io();
 
 /* ================= ELEMENTOS ================= */
-const usersPanel = document.getElementById("usersPanel");
-const usersToggle = document.getElementById("usersToggle");
 
-if (usersToggle) {
-  usersToggle.onclick = () => {
-    usersPanel.classList.toggle("active");
-  };
-}
 const messages = document.getElementById("messages");
 const msgInput = document.getElementById("msgInput");
 const sendBtn = document.getElementById("sendBtn");
@@ -18,15 +11,6 @@ const sendBtn = document.getElementById("sendBtn");
 const fileInput = document.getElementById("fileInput");
 const imgBtn = document.getElementById("imgBtn");
 const recordBtn = document.getElementById("recordBtn");
-
-const usersList = document.getElementById("usersList");
-const roomCount = document.getElementById("roomCount");
-const chatTabs = document.getElementById("chatTabs");
-
-/* ================= ESTADO ================= */
-
-const privateChats = {}; // socketId => true
-let activeChat = { type: "public", id: null };
 
 /* ================= JOIN DESDE main.js ================= */
 
@@ -38,103 +22,51 @@ window.joinRoom = function (room) {
 
   console.log("🔌 Uniéndose a sala:", room);
 
-  activeChat = { type: "public", id: null };
-  chatTabs.innerHTML = `<div class="tab active" data-type="public">🌍 Sala</div>`;
-  messages.innerHTML = "";
-
   socket.emit("joinRoom", {
     nick: window.nick,
     room
   });
 };
 
-/* ================= RENDER MENSAJES ================= */
-
-function addMessage(user, html) {
-  const div = document.createElement("div");
-  div.className = "message";
-  div.innerHTML = `<strong>${user}:</strong> ${html}`;
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
-}
-
-/* ================= MENSAJES PUBLICOS ================= */
+/* ================= MENSAJES ================= */
 
 socket.on("message", data => {
-  if (activeChat.type !== "public") return;
-  addMessage(data.user, data.text);
-});
+  const msg = document.createElement("div");
+  msg.className = "message";
 
-/* ================= LISTA DE USUARIOS ================= */
+  const user = document.createElement("div");
+  user.className = "user";
+  user.textContent = data.user;
+  msg.appendChild(user);
 
-socket.on("users", users => {
-  usersList.innerHTML = "";
+  if (data.type === "audio") {
+    const audio = document.createElement("audio");
+    audio.controls = true;
+    audio.src = data.url;
+    audio.className = "chat-audio";
+    audio.load(); // 🔥 CLAVE MÓVIL
+    msg.appendChild(audio);
 
-  users.forEach(u => {
-    if (u.nick === window.nick) return;
+  } else if (data.type === "image") {
+    const img = document.createElement("img");
+    img.src = data.url;
+    img.className = "chat-img";
+    msg.appendChild(img);
 
-    const div = document.createElement("div");
-    div.className = "user";
-    div.textContent = u.nick;
-
-    div.onclick = () => openPrivateChat(u);
-
-    usersList.appendChild(div);
-  });
-
-  roomCount.textContent = `👥 ${users.length}`;
-});
-
-/* ================= PESTAÑAS PRIVADAS ================= */
-
-function openPrivateChat(user) {
-  if (!privateChats[user.socketId]) {
-    privateChats[user.socketId] = true;
-
-    const tab = document.createElement("div");
-    tab.className = "tab";
-    tab.textContent = "🔒 " + user.nick;
-    tab.dataset.type = "private";
-    tab.dataset.id = user.socketId;
-
-    tab.onclick = () => switchToPrivate(user.socketId);
-
-    chatTabs.appendChild(tab);
+  } else {
+    const text = document.createElement("div");
+    text.textContent = data.text;
+    msg.appendChild(text);
   }
 
-  switchToPrivate(user.socketId);
-}
-
-function switchToPrivate(socketId) {
-  document.querySelectorAll(".tab").forEach(t =>
-    t.classList.remove("active")
-  );
-
-  const tab = [...document.querySelectorAll(".tab")]
-    .find(t => t.dataset.id === socketId);
-
-  if (tab) tab.classList.add("active");
-
-  messages.innerHTML = "";
-  activeChat = { type: "private", id: socketId };
-}
-
-/* ================= MENSAJES PRIVADOS ================= */
-
-socket.on("privateMessage", data => {
-  openPrivateChat({
-    nick: data.from,
-    socketId: data.fromSocketId
-  });
-
-  if (activeChat.id === data.fromSocketId) {
-    addMessage("🔒 " + data.from, data.text);
-  }
+  messages.appendChild(msg);
+  messages.scrollTop = messages.scrollHeight;
 });
 
 /* ================= ENVIAR TEXTO ================= */
 
 sendBtn.onclick = sendText;
+
 msgInput.addEventListener("keydown", e => {
   if (e.key === "Enter") sendText();
 });
@@ -143,17 +75,10 @@ function sendText() {
   const text = msgInput.value.trim();
   if (!text) return;
 
-  if (activeChat.type === "private") {
-    socket.emit("privateMessage", {
-      toSocketId: activeChat.id,
-      text
-    });
-  } else {
-    socket.emit("chatMessage", {
-      room: window.currentRoom,
-      text
-    });
-  }
+  socket.emit("chatMessage", {
+    room: window.currentRoom,
+    text
+  });
 
   msgInput.value = "";
 }
@@ -176,11 +101,16 @@ fileInput.onchange = async () => {
 
   const data = await res.json();
 
-  sendRichMessage(`<img src="${data.url}" class="chat-img">`);
+  socket.emit("chatMessage", {
+    room: window.currentRoom,
+    type: "image",
+    url: data.url
+  });
+
   fileInput.value = "";
 };
 
-/* ================= AUDIO (NOTA DE VOZ) ================= */
+/* ================= AUDIO NOTA DE VOZ ================= */
 
 let mediaRecorder;
 let audioChunks = [];
@@ -195,7 +125,7 @@ recordBtn.onclick = async () => {
     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
 
     mediaRecorder.onstop = async () => {
-      const blob = new Blob(audioChunks, { type: "audio/webm" });
+      const blob = new Blob(audioChunks, { type: "audio/mp4" }); // ✅ COMPATIBLE iOS
       const formData = new FormData();
       formData.append("file", blob);
 
@@ -206,17 +136,18 @@ recordBtn.onclick = async () => {
 
       const data = await res.json();
 
-      sendRichMessage(`
-        <audio controls class="chat-audio">
-          <source src="${data.url}" type="audio/webm">
-        </audio>
-      `);
+      socket.emit("chatMessage", {
+        room: window.currentRoom,
+        type: "audio",
+        url: data.url
+      });
     };
 
     mediaRecorder.start();
     recording = true;
     recordBtn.textContent = "⏹️";
     recordBtn.classList.add("recording");
+
   } else {
     mediaRecorder.stop();
     recording = false;
@@ -224,19 +155,3 @@ recordBtn.onclick = async () => {
     recordBtn.classList.remove("recording");
   }
 };
-
-/* ================= UTIL RICH ================= */
-
-function sendRichMessage(html) {
-  if (activeChat.type === "private") {
-    socket.emit("privateMessage", {
-      toSocketId: activeChat.id,
-      text: html
-    });
-  } else {
-    socket.emit("chatMessage", {
-      room: window.currentRoom,
-      text: html
-    });
-  }
-}

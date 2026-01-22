@@ -41,7 +41,7 @@ socket.on("message", data => {
 
   messages.appendChild(msg);
 
-  // 🔥 SCROLL FIJO (PC + MÓVIL)
+  // 🔥 AUTO SCROLL FIJO (PC + MÓVIL)
   setTimeout(() => {
     messages.scrollTop = messages.scrollHeight;
   }, 50);

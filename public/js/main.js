@@ -13,8 +13,8 @@ const roomsList = document.getElementById("roomsList");
 
 const nickModal = document.getElementById("nickModal");
 const nickInput = document.getElementById("nickInput");
-const randomNick = document.getElementById("randomNick");
-const enterChat = document.getElementById("enterChat");
+const randomNickBtn = document.getElementById("randomNick");
+const enterChatBtn = document.getElementById("enterChat");
 
 const backBtn = document.getElementById("backToRooms");
 const roomTitle = document.getElementById("roomTitle");
@@ -22,7 +22,7 @@ const roomTitle = document.getElementById("roomTitle");
 /* ================= ESTADO GLOBAL ================= */
 
 window.nick = "";
-window.currentRoom = "";
+window.currentRoom = null;
 
 /* ================= BOOT ================= */
 
@@ -34,10 +34,13 @@ const bootLines = [
   "Sistema activo ✔"
 ];
 
-let i = 0;
+let bootIndex = 0;
+
 const bootInterval = setInterval(() => {
-  terminal.innerHTML += bootLines[i++] + "<br>";
-  if (i === bootLines.length) {
+  terminal.innerHTML += bootLines[bootIndex] + "<br>";
+  bootIndex++;
+
+  if (bootIndex === bootLines.length) {
     clearInterval(bootInterval);
     setTimeout(() => switchScreen("rooms"), 700);
   }
@@ -59,13 +62,16 @@ roomsList.innerHTML = "";
 rooms.forEach(room => {
   const div = document.createElement("div");
   div.className = "room";
-  div.innerHTML = room.name;
+  div.textContent = room.name;
 
   div.onclick = () => {
-    console.log("👉 CLICK SALA:", room.id);
+    console.log("👉 Sala seleccionada:", room.id);
+
     window.currentRoom = room.id;
     roomTitle.textContent = room.name;
+
     nickModal.classList.add("active");
+    nickInput.focus();
   };
 
   roomsList.appendChild(div);
@@ -73,37 +79,51 @@ rooms.forEach(room => {
 
 /* ================= NICK ================= */
 
-randomNick.onclick = () => {
-  nickInput.value = "ghost_" + Math.floor(Math.random() * 9999);
+randomNickBtn.onclick = () => {
+  nickInput.value = "ghost_" + Math.floor(Math.random() * 9000 + 1000);
 };
 
-enterChat.onclick = () => {
-  if (!nickInput.value.trim() || !window.currentRoom) return;
+enterChatBtn.onclick = () => {
+  const value = nickInput.value.trim();
 
-  window.nick = nickInput.value.trim();
+  if (!value) {
+    console.warn("⚠️ Nick vacío");
+    return;
+  }
+
+  if (!window.currentRoom) {
+    console.error("❌ No hay sala seleccionada");
+    return;
+  }
+
+  window.nick = value;
   nickModal.classList.remove("active");
 
   switchScreen("chat");
 
-  // 🔥 ESTA LÍNEA ES CLAVE
+  // conexión segura con chat.js
   if (typeof window.joinRoom === "function") {
+    console.log("🔌 joinRoom()", window.currentRoom);
     window.joinRoom(window.currentRoom);
   } else {
-    console.error("❌ joinRoom no existe");
+    console.error("❌ joinRoom no está definido (chat.js no cargó)");
   }
 };
 
-/* ================= BOTÓN VOLVER ================= */
+/* ================= VOLVER A SALAS ================= */
 
 backBtn.onclick = () => {
+  console.log("↩️ Volviendo a salas");
+
+  window.currentRoom = null;
   switchScreen("rooms");
 };
 
 /* ================= UTIL ================= */
 
 function switchScreen(name) {
-  Object.values(screens).forEach(s =>
-    s.classList.remove("active")
+  Object.values(screens).forEach(screen =>
+    screen.classList.remove("active")
   );
 
   if (!screens[name]) {

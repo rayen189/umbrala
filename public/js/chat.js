@@ -145,7 +145,7 @@ recordBtn.onclick = async () => {
       mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
 
       mediaRecorder.onstop = async () => {
-        const blob = new Blob(audioChunks, { type: "audio/webm" });
+        const blob = new Blob(audioChunks, { type: "audio/mp4" });
         const formData = new FormData();
         formData.append("file", blob);
 

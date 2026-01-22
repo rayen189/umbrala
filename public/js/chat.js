@@ -12,6 +12,15 @@ const fileInput = document.getElementById("fileInput");
 const imgBtn = document.getElementById("imgBtn");
 const recordBtn = document.getElementById("recordBtn");
 
+const usersList = document.getElementById("usersList");
+const roomCount = document.getElementById("roomCount");
+const chatTabs = document.getElementById("chatTabs");
+
+/* ================= ESTADO ================= */
+
+const privateChats = {}; // socketId => true
+let activeChat = { type: "public", id: null };
+
 /* ================= JOIN DESDE main.js ================= */
 
 window.joinRoom = function (room) {
@@ -22,25 +31,98 @@ window.joinRoom = function (room) {
 
   console.log("🔌 Uniéndose a sala:", room);
 
+  activeChat = { type: "public", id: null };
+  chatTabs.innerHTML = `<div class="tab active" data-type="public">🌍 Sala</div>`;
+  messages.innerHTML = "";
+
   socket.emit("joinRoom", {
     nick: window.nick,
     room
   });
 };
 
-/* ================= MENSAJES ================= */
+/* ================= RENDER MENSAJES ================= */
+
+function addMessage(user, html) {
+  const div = document.createElement("div");
+  div.className = "message";
+  div.innerHTML = `<strong>${user}:</strong> ${html}`;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+/* ================= MENSAJES PUBLICOS ================= */
 
 socket.on("message", data => {
-  const msg = document.createElement("div");
-  msg.className = "message";
+  if (activeChat.type !== "public") return;
+  addMessage(data.user, data.text);
+});
 
-  msg.innerHTML = `
-    <span class="user">${data.user}</span>
-    <div class="bubble">${data.text}</div>
-  `;
+/* ================= LISTA DE USUARIOS ================= */
 
-  messages.appendChild(msg);
-  messages.scrollTop = messages.scrollHeight;
+socket.on("users", users => {
+  usersList.innerHTML = "";
+
+  users.forEach(u => {
+    if (u.nick === window.nick) return;
+
+    const div = document.createElement("div");
+    div.className = "user";
+    div.textContent = u.nick;
+
+    div.onclick = () => openPrivateChat(u);
+
+    usersList.appendChild(div);
+  });
+
+  roomCount.textContent = `👥 ${users.length}`;
+});
+
+/* ================= PESTAÑAS PRIVADAS ================= */
+
+function openPrivateChat(user) {
+  if (!privateChats[user.socketId]) {
+    privateChats[user.socketId] = true;
+
+    const tab = document.createElement("div");
+    tab.className = "tab";
+    tab.textContent = "🔒 " + user.nick;
+    tab.dataset.type = "private";
+    tab.dataset.id = user.socketId;
+
+    tab.onclick = () => switchToPrivate(user.socketId);
+
+    chatTabs.appendChild(tab);
+  }
+
+  switchToPrivate(user.socketId);
+}
+
+function switchToPrivate(socketId) {
+  document.querySelectorAll(".tab").forEach(t =>
+    t.classList.remove("active")
+  );
+
+  const tab = [...document.querySelectorAll(".tab")]
+    .find(t => t.dataset.id === socketId);
+
+  if (tab) tab.classList.add("active");
+
+  messages.innerHTML = "";
+  activeChat = { type: "private", id: socketId };
+}
+
+/* ================= MENSAJES PRIVADOS ================= */
+
+socket.on("privateMessage", data => {
+  openPrivateChat({
+    nick: data.from,
+    socketId: data.fromSocketId
+  });
+
+  if (activeChat.id === data.fromSocketId) {
+    addMessage("🔒 " + data.from, data.text);
+  }
 });
 
 /* ================= ENVIAR TEXTO ================= */
@@ -54,15 +136,22 @@ function sendText() {
   const text = msgInput.value.trim();
   if (!text) return;
 
-  socket.emit("chatMessage", {
-    room: window.currentRoom,
-    text
-  });
+  if (activeChat.type === "private") {
+    socket.emit("privateMessage", {
+      toSocketId: activeChat.id,
+      text
+    });
+  } else {
+    socket.emit("chatMessage", {
+      room: window.currentRoom,
+      text
+    });
+  }
 
   msgInput.value = "";
 }
 
-/* ================= IMAGEN ================= */
+/* ================= ENVIAR IMAGEN ================= */
 
 imgBtn.onclick = () => fileInput.click();
 
@@ -80,15 +169,11 @@ fileInput.onchange = async () => {
 
   const data = await res.json();
 
-  socket.emit("chatMessage", {
-    room: window.currentRoom,
-    text: `<img src="${data.url}" class="chat-img">`
-  });
-
+  sendRichMessage(`<img src="${data.url}" class="chat-img">`);
   fileInput.value = "";
 };
 
-/* ================= AUDIO ================= */
+/* ================= AUDIO (NOTA DE VOZ) ================= */
 
 let mediaRecorder;
 let audioChunks = [];
@@ -114,45 +199,37 @@ recordBtn.onclick = async () => {
 
       const data = await res.json();
 
-      socket.emit("chatMessage", {
-        room: window.currentRoom,
-        text: `
-          <audio controls class="chat-audio">
-            <source src="${data.url}" type="audio/webm">
-          </audio>
-        `
-      });
+      sendRichMessage(`
+        <audio controls class="chat-audio">
+          <source src="${data.url}" type="audio/webm">
+        </audio>
+      `);
     };
 
     mediaRecorder.start();
     recording = true;
     recordBtn.textContent = "⏹️";
+    recordBtn.classList.add("recording");
   } else {
     mediaRecorder.stop();
     recording = false;
     recordBtn.textContent = "🎙️";
+    recordBtn.classList.remove("recording");
   }
 };
 
-/* ================= LISTA DE USUARIOS ================= */
+/* ================= UTIL RICH ================= */
 
-const usersList = document.getElementById("usersList");
-const roomCount = document.getElementById("roomCount");
-
-socket.on("users", users => {
-  if (!usersList) return;
-
-  usersList.innerHTML = "";
-
-  users.forEach(u => {
-    const div = document.createElement("div");
-    div.className = "user";
-    div.textContent = u.nick;
-
-    usersList.appendChild(div);
-  });
-
-  if (roomCount) {
-    roomCount.textContent = `👥 ${users.length}`;
+function sendRichMessage(html) {
+  if (activeChat.type === "private") {
+    socket.emit("privateMessage", {
+      toSocketId: activeChat.id,
+      text: html
+    });
+  } else {
+    socket.emit("chatMessage", {
+      room: window.currentRoom,
+      text: html
+    });
   }
-});
+}

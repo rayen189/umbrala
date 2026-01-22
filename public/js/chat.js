@@ -1,5 +1,7 @@
 console.log("🟢 chat.js cargado");
 
+/* ================= SOCKET ================= */
+
 const socket = io();
 
 /* ================= ELEMENTOS ================= */
@@ -11,6 +13,9 @@ const sendBtn = document.getElementById("sendBtn");
 const fileInput = document.getElementById("fileInput");
 const imgBtn = document.getElementById("imgBtn");
 const recordBtn = document.getElementById("recordBtn");
+
+const usersList = document.getElementById("usersList");
+const roomCount = document.getElementById("roomCount");
 
 /* ================= JOIN DESDE main.js ================= */
 
@@ -28,39 +33,46 @@ window.joinRoom = function (room) {
   });
 };
 
+/* ================= AUTO SCROLL INTELIGENTE ================= */
+
+function scrollIfNeeded() {
+  const isAtBottom =
+    messages.scrollTop + messages.clientHeight >=
+    messages.scrollHeight - 40;
+
+  if (isAtBottom) {
+    messages.scrollTop = messages.scrollHeight;
+  }
+}
+
 /* ================= MENSAJES ================= */
 
 socket.on("message", data => {
   const msg = document.createElement("div");
   msg.className = "message";
 
-  const user = document.createElement("div");
-  user.className = "user";
-  user.textContent = data.user;
-  msg.appendChild(user);
-
-  if (data.type === "audio") {
-    const audio = document.createElement("audio");
-    audio.controls = true;
-    audio.src = data.url;
-    audio.className = "chat-audio";
-    audio.load(); // 🔥 CLAVE MÓVIL
-    msg.appendChild(audio);
-
-  } else if (data.type === "image") {
-    const img = document.createElement("img");
-    img.src = data.url;
-    img.className = "chat-img";
-    msg.appendChild(img);
-
-  } else {
-    const text = document.createElement("div");
-    text.textContent = data.text;
-    msg.appendChild(text);
-  }
+  msg.innerHTML = `
+    <span class="user">${data.user}</span>
+    <div class="bubble">${data.text}</div>
+  `;
 
   messages.appendChild(msg);
-  messages.scrollTop = messages.scrollHeight;
+  scrollIfNeeded();
+});
+
+/* ================= USUARIOS ================= */
+
+socket.on("users", users => {
+  usersList.innerHTML = "";
+
+  users.forEach(u => {
+    const div = document.createElement("div");
+    div.className = "user";
+    div.textContent = u.nick;
+    usersList.appendChild(div);
+  });
+
+  roomCount.textContent = `👥 ${users.length}`;
 });
 
 /* ================= ENVIAR TEXTO ================= */
@@ -68,7 +80,10 @@ socket.on("message", data => {
 sendBtn.onclick = sendText;
 
 msgInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") sendText();
+  if (e.key === "Enter") {
+    e.preventDefault();
+    sendText();
+  }
 });
 
 function sendText() {
@@ -94,23 +109,27 @@ fileInput.onchange = async () => {
   const formData = new FormData();
   formData.append("file", file);
 
-  const res = await fetch("/upload", {
-    method: "POST",
-    body: formData
-  });
+  try {
+    const res = await fetch("/upload", {
+      method: "POST",
+      body: formData
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  socket.emit("chatMessage", {
-    room: window.currentRoom,
-    type: "image",
-    url: data.url
-  });
+    socket.emit("chatMessage", {
+      room: window.currentRoom,
+      text: `<img src="${data.url}" class="chat-img">`
+    });
+
+  } catch (err) {
+    console.error("❌ Error subiendo imagen", err);
+  }
 
   fileInput.value = "";
 };
 
-/* ================= AUDIO NOTA DE VOZ ================= */
+/* ================= AUDIO (NOTA DE VOZ) ================= */
 
 let mediaRecorder;
 let audioChunks = [];
@@ -118,35 +137,48 @@ let recording = false;
 
 recordBtn.onclick = async () => {
   if (!recording) {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder = new MediaRecorder(stream);
-    audioChunks = [];
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
 
-    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
 
-    mediaRecorder.onstop = async () => {
-      const blob = new Blob(audioChunks, { type: "audio/mp4" }); // ✅ COMPATIBLE iOS
-      const formData = new FormData();
-      formData.append("file", blob);
+      mediaRecorder.onstop = async () => {
+        const blob = new Blob(audioChunks, { type: "audio/webm" });
+        const formData = new FormData();
+        formData.append("file", blob);
 
-      const res = await fetch("/upload", {
-        method: "POST",
-        body: formData
-      });
+        try {
+          const res = await fetch("/upload", {
+            method: "POST",
+            body: formData
+          });
 
-      const data = await res.json();
+          const data = await res.json();
 
-      socket.emit("chatMessage", {
-        room: window.currentRoom,
-        type: "audio",
-        url: data.url
-      });
-    };
+          socket.emit("chatMessage", {
+            room: window.currentRoom,
+            text: `
+              <audio controls class="chat-audio">
+                <source src="${data.url}" type="audio/webm">
+              </audio>
+            `
+          });
 
-    mediaRecorder.start();
-    recording = true;
-    recordBtn.textContent = "⏹️";
-    recordBtn.classList.add("recording");
+        } catch (err) {
+          console.error("❌ Error subiendo audio", err);
+        }
+      };
+
+      mediaRecorder.start();
+      recording = true;
+      recordBtn.textContent = "⏹️";
+      recordBtn.classList.add("recording");
+
+    } catch (err) {
+      console.error("🎙️ Permiso de micrófono denegado", err);
+    }
 
   } else {
     mediaRecorder.stop();
